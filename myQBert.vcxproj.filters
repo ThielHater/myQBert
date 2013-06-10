@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Quellcodedateien">
+      <UniqueIdentifier>{12d29169-e232-4680-ad32-3e5a51dfb57a}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header-Dateien">
+      <UniqueIdentifier>{6d37bbb6-5269-4ddd-8ec5-6573f7e0d54a}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="SpaCE">
+      <UniqueIdentifier>{608db7ac-a1d6-4d49-af9b-645ec4c67ba8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="myQBert.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SpaCE\applikation.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\Beam.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\billboard.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\d3dfont.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\directx.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\dsutil.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\Objekt.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\partikelsystem.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\skybox.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\splashscreen.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\sprite.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\textbox.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaCE\Video.h">
+      <Filter>SpaCE</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="SpaCE\SpaCE.lib">
+      <Filter>SpaCE</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
