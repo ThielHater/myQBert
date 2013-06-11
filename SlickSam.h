@@ -1,0 +1,16 @@
+#pragma once
+#include "NPC.h"
+
+enum TypeEnum {SLICK, SAM};
+
+class SlickSam : public NPC
+{
+	public:
+		SlickSam(void);
+		~SlickSam(void);
+		TypeEnum Type; // Slick oder Sam?
+		int Step(void); // hüpft Spielfeld hinab, zufällig links/rechts
+		int Collision(void); // kein Effekt
+		int NodeEffect(void); // Slick setzt Feld ganz zurück, Sam setzt Feld um eine Stufe zurück
+};
+

@@ -1,25 +1,26 @@
-# include "SpaCE/applikation.h"
-# include <math.h>
-
-void EnableReflections(int ix, D3DMATERIAL9 *mat)
-{
-	D3DCOLORVALUE opaq = {1.0f, 1.0f, 1.0f, 0.0f};
-	mat->Specular = opaq;
-}
-
-void DisableReflections(int ix, D3DMATERIAL9 *mat)
-{
-	D3DCOLORVALUE trans = {0.0f, 0.0f, 0.0f, 0.0f};
-	mat->Specular = trans;
-}
+#include <math.h>
+#include "SpaCE/applikation.h"
+#include "Node.h"
+#include "Cube.h"
+#include "QBert.h"
 
 class spiel : public applikation
 {
 	private:
-		objekt cubes[28];
-		objekt qbert;
+		Node nodes[30]; // 28 Würfel und 2 Disks
+		Cube cubes[28];
+		textur cube_tex[20]; // 16 für Würfel, 4 für Disk
+		QBert qbert;
+		NPC npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen	
+		int Level;
+		int Round;
+		int LifeCount;
+		int Points;
+		bool timeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
+
 	public:
 		void setup();
+		int step();
 		int render();
 };
 
@@ -48,7 +49,7 @@ void spiel::setup()
 		D3DXMatrixTranslation(&trans, x*dia, y*5.0f, z);
 		cubes[i].load("Cube.x", "myQBert");
 		cubes[i].set_texture(0, &cube_tex);
-		cubes[i].forallmaterials(DisableReflections);
+		cubes[i].disable_reflections();
 		cubes[i].add_transform(&rota);
 		cubes[i].add_transform(&trans);
 		x++;
@@ -56,7 +57,7 @@ void spiel::setup()
 	D3DXMatrixRotationY(&rota, -D3DX_PI/4.0f);
 	D3DXMatrixTranslation(&trans, 3*dia, 15.0f, dia);
 	qbert.load("TriPrism.x", "myQBert");
-	qbert.forallmaterials(DisableReflections);
+	qbert.disable_reflections();
 	qbert.set_texture(0, &qbert_tex);
 	qbert.add_transform(&rota);
 	qbert.add_transform(&trans);
@@ -66,6 +67,18 @@ void spiel::setup()
 	blickrichtung = D3DXVECTOR3(0, -D3DX_PI/6.0f, 1);
 	standort = cubes[19].lookatme(&blickrichtung, 15.0f);
 	//standort = D3DXVECTOR3(dia*3.0f, 40, -45);
+
+	// Spiel
+	int Level = 0;
+	int Round = 1;
+	int LifeCount = 3;
+	int Points = 0;
+	bool timeFrozen = false;
+}
+
+int spiel::step()
+{
+	return 0;
 }
 
 int spiel::render()

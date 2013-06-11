@@ -131,6 +131,10 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Coily.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Disk.cpp" />
     <ClCompile Include="myQBert.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -138,8 +142,21 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NPC.cpp" />
+    <ClCompile Include="QBert.cpp" />
+    <ClCompile Include="SlickSam.cpp" />
+    <ClCompile Include="UggWrongWay.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ball.h" />
+    <ClInclude Include="Coily.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Disk.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="NPC.h" />
+    <ClInclude Include="QBert.h" />
+    <ClInclude Include="SlickSam.h" />
     <ClInclude Include="SpaCE\applikation.h" />
     <ClInclude Include="SpaCE\Beam.h" />
     <ClInclude Include="SpaCE\billboard.h" />
@@ -153,6 +170,7 @@
     <ClInclude Include="SpaCE\sprite.h" />
     <ClInclude Include="SpaCE\textbox.h" />
     <ClInclude Include="SpaCE\Video.h" />
+    <ClInclude Include="UggWrongWay.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SpaCE\SpaCE.lib" />
