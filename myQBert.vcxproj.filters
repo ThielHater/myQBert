@@ -112,10 +112,24 @@
     <ClInclude Include="QBert.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
+    <ClInclude Include="dirent.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="SpaCE\SpaCE.lib">
       <Filter>SpaCE</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="myQBert.rc">
+      <Filter>Quellcodedateien</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="myQBert.ico" />
   </ItemGroup>
 </Project>

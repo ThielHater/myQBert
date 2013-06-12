@@ -152,10 +152,12 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Coily.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="dirent.h" />
     <ClInclude Include="Disk.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="QBert.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SlickSam.h" />
     <ClInclude Include="SpaCE\applikation.h" />
     <ClInclude Include="SpaCE\Beam.h" />
@@ -174,6 +176,12 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="SpaCE\SpaCE.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="myQBert.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="myQBert.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

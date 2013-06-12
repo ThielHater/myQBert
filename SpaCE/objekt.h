@@ -63,8 +63,8 @@ class objekt
 		void forallmaterials( void (*doit)( int , D3DMATERIAL9 *));
 		int set_texture( int i, textur *tx);
 		int swap_texture( int i, textur *tx);
-		void enable_reflections() { D3DCOLORVALUE opaq = {1.0f, 1.0f, 1.0f, 0.0f}; for(int i=0; i<anz_mat; i++) (materialien+i)->Specular = opaq; }
-		void disable_reflections() { D3DCOLORVALUE trans = {0.0f, 0.0f, 0.0f, 0.0f}; for(int i=0; i<anz_mat; i++) (materialien+i)->Specular = trans; }
+		void enable_reflections() { D3DCOLORVALUE opaq = {1.0f, 1.0f, 1.0f, 0.0f}; for (DWORD i=0; i<anz_mat; i++) (materialien+i)->Specular = opaq; }
+		void disable_reflections() { D3DCOLORVALUE trans = {0.0f, 0.0f, 0.0f, 0.0f}; for (DWORD i=0; i<anz_mat; i++) (materialien+i)->Specular = trans; }
 	};
 
 # endif
