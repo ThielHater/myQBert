@@ -25,5 +25,5 @@ Thumbs.db
 obj/
 [Rr]elease*/
 _ReSharper*/
-myQBert.sdf
-myQBert.opensdf
+*.sdf
+*.opensdf
