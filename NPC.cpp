@@ -2,7 +2,7 @@
 
 NPC::NPC(void)
 {
-	speed = 5; // verschiedene Gegner / Qbert selbst haben unterschiedliche Geschwindigkeiten?
+	frames_per_jump = 5; // verschiedene Gegner / Qbert selbst haben unterschiedliche Geschwindigkeiten?
 }
 
 NPC::~NPC(void)
@@ -30,9 +30,9 @@ int NPC::Step()
 	static bool first_move_done = false;
 
 	D3DXMATRIX tr;
-	float sx = sqrt(50.0f) / 2 / speed; // halbe Diagonale
+	float sx = sqrt(50.0f) / 2 / frames_per_jump; // halbe Diagonale
 	float sz = sx;
-	float sy = 5.0f / speed; // Seitenlänge
+	float sy = 5.0f / frames_per_jump; // Seitenlänge
 		
 	// über Y-Achse bewegen
 	if (first_move == MOVE_Y && !first_move_done || first_move == MOVE_XZ && first_move_done) {
@@ -54,7 +54,7 @@ int NPC::Step()
 	}
 
 	// Bewegung fertig?
-	if (moved_sum >= speed) {
+	if (moved_sum >= frames_per_jump) {
 		if (first_move_done) {
 			is_moving = false;
 			first_move_done = false;
