@@ -1,11 +1,15 @@
 #include <math.h>
 #include <Windows.h>
+#include <vector>
+
 #include "SpaCE/applikation.h"
 #include "Node.h"
 #include "Cube.h"
 #include "QBert.h"
 //#include "dirent.h
 #include "resource.h"
+
+using namespace std;
 
 class spiel : public applikation
 {
@@ -14,7 +18,7 @@ class spiel : public applikation
 		Cube cubes[28];
 		textur cube_tex[40]; // 36 für Würfel, 4 für Disk
 		QBert qbert;
-		NPC npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen	
+		vector<NPC> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen	
 		int Level;
 		int Round;
 		int LifeCount;
