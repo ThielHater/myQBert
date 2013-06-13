@@ -249,13 +249,13 @@ int spiel::step()
 	poll_keyboard(keys);
 
 	if (keys[DIK_RIGHT])
-		qbert.move(QBert::RIGHTDOWN);
+		qbert.move(NPC::DIR_RIGHTDOWN);
 	else if (keys[DIK_LEFT])
-		qbert.move(QBert::LEFTUP);
+		qbert.move(NPC::DIR_LEFTUP);
 	else if (keys[DIK_UP])
-		qbert.move(QBert::RIGHTUP);
+		qbert.move(NPC::DIR_RIGHTUP);
 	else if (keys[DIK_DOWN])
-		qbert.move(QBert::LEFTDOWN);
+		qbert.move(NPC::DIR_LEFTDOWN);
 
 	qbert.Step();
 	return 0;
