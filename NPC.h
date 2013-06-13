@@ -18,6 +18,7 @@ class NPC : public objekt
 	private:
 		bool is_moving;
 		npc_direction move_direction;
+		int speed; // Geschwindigkeit der Sprung-Bewegung. Je kleiner, desto schneller.
 
 	public:
 		NPC(void);

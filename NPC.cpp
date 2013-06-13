@@ -2,6 +2,7 @@
 
 NPC::NPC(void)
 {
+	speed = 5; // verschiedene Gegner / Qbert selbst haben unterschiedliche Geschwindigkeiten?
 }
 
 NPC::~NPC(void)
@@ -27,8 +28,6 @@ int NPC::Step()
 
 	static int moved_sum = 0;
 	static bool first_move_done = false;
-	
-	int speed = 3; // je niedriger, desto schneller
 
 	D3DXMATRIX tr;
 	float sx = sqrt(50.0f) / 2 / speed; // halbe Diagonale
