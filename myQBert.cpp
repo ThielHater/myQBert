@@ -117,12 +117,25 @@ void spiel::setup()
 
 int spiel::step()
 {
+	poll_keyboard(keys);
+
+	if (keys[DIK_RIGHT])
+		qbert.move(QBert::RIGHTDOWN);
+	else if (keys[DIK_LEFT])
+		qbert.move(QBert::LEFTUP);
+	else if (keys[DIK_UP])
+		qbert.move(QBert::RIGHTUP);
+	else if (keys[DIK_DOWN])
+		qbert.move(QBert::LEFTDOWN);
+
 	qbert.Step();
 	return 0;
 }
 
 int spiel::render()
 {
+	step();
+
 	for(int i=0;i<28;i++)
 		cubes[i].render(0, RENDER_OPAQUE);
 	qbert.render(1, RENDER_ALL);
