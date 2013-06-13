@@ -44,6 +44,9 @@
     <ClCompile Include="QBert.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
+    <ClCompile Include="AdjacencyList.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpaCE\applikation.h">
@@ -116,6 +119,9 @@
       <Filter>Header-Dateien</Filter>
     </ClInclude>
     <ClInclude Include="dirent.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AdjacencyList.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
   </ItemGroup>

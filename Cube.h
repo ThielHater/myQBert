@@ -10,4 +10,3 @@ class Cube : public objekt
 		textur *CurTex;
 		textur *LastTex;
 };
-

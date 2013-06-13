@@ -13,4 +13,3 @@ class UggWrongWay : public NPC
 		int Collision(void); // Q*Bert verliert ein Leben
 		int NodeEffect(void); // kein Effekt
 };
-

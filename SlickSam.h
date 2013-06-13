@@ -13,4 +13,3 @@ class SlickSam : public NPC
 		int Collision(void); // kein Effekt
 		int NodeEffect(void); // Slick setzt Feld ganz zurück, Sam setzt Feld um eine Stufe zurück
 };
-

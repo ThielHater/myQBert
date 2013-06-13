@@ -10,4 +10,3 @@ class QBert : public NPC
 		int Collision(void); // kein Effekt
 		int NodeEffect(void); // Feld wird umgefärbt
 };
-

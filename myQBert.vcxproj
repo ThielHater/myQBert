@@ -131,6 +131,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AdjacencyList.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Coily.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="UggWrongWay.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdjacencyList.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Coily.h" />
     <ClInclude Include="Cube.h" />
