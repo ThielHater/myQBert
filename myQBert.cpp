@@ -1,5 +1,7 @@
 #include <math.h>
 #include <Windows.h>
+#include <vector>
+
 #include "SpaCE/applikation.h"
 #include "Node.h"
 #include "AdjacencyList.h"
@@ -10,6 +12,8 @@
 #include "resource.h"
 #include <fstream>
 
+using namespace std;
+
 class spiel : public applikation
 {
 	private:
@@ -17,12 +21,14 @@ class spiel : public applikation
 		Cube cubes[28];
 		textur cube_tex[40]; // 36 für Würfel, 4 für Disk
 		QBert qbert;
-		NPC npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen	
+		vector<NPC> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen	
 		int Level;
 		int Round;
+		int Points;
 		int LifeCount;
 		int Score;
 		bool timeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
+		unsigned char keys[256];
 
 	public:
 		void setup();
@@ -240,11 +246,25 @@ void spiel::setup()
 
 int spiel::step()
 {
+	poll_keyboard(keys);
+
+	if (keys[DIK_RIGHT])
+		qbert.move(QBert::RIGHTDOWN);
+	else if (keys[DIK_LEFT])
+		qbert.move(QBert::LEFTUP);
+	else if (keys[DIK_UP])
+		qbert.move(QBert::RIGHTUP);
+	else if (keys[DIK_DOWN])
+		qbert.move(QBert::LEFTDOWN);
+
+	qbert.Step();
 	return 0;
 }
 
 int spiel::render()
 {
+	step();
+
 	for(int i=0;i<28;i++)
 		cubes[i].render(0, RENDER_OPAQUE);
 	qbert.render(1, RENDER_ALL);
