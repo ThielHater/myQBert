@@ -21,9 +21,11 @@ class spiel : public applikation
 		vector<NPC> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen	
 		int Level;
 		int Round;
+		int Points;
 		int LifeCount;
 		int Score;
 		bool timeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
+		unsigned char keys[256];
 
 	public:
 		void setup();
@@ -106,15 +108,16 @@ void spiel::setup()
 	//standort = D3DXVECTOR3(dia*3.0f, 40, -45);
 
 	// Spiel
-	int Level = 1;
-	int Round = 1;
-	int LifeCount = 3;
-	int Points = 0;
-	bool timeFrozen = false;
+	Level = 1;
+	Round = 1;
+	LifeCount = 3;
+	Points = 0;
+	timeFrozen = false;
 }
 
 int spiel::step()
 {
+	qbert.Step();
 	return 0;
 }
 
