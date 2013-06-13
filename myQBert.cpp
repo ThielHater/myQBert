@@ -28,7 +28,7 @@ class spiel : public applikation
 		int LifeCount;
 		int Score;
 		bool timeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
-		unsigned char keys[256];
+		float cam_abstand;
 
 	public:
 		void setup();
@@ -105,9 +105,10 @@ void spiel::setup()
 	qbert.add_transform(&trans);
 
 	// Kamera
+	cam_abstand = 15.0f;
 	set_perspektive(D3DX_PI/4.0f, 1.0f, 100.0f);
 	blickrichtung = D3DXVECTOR3(0, -D3DX_PI/6.0f, 1);
-	standort = cubes[19].lookatme(&blickrichtung, 15.0f);
+	standort = cubes[19].lookatme(&blickrichtung, cam_abstand);
 	//standort = D3DXVECTOR3(dia*3.0f, 40, -45);
 
 	// Spiel
@@ -246,18 +247,37 @@ void spiel::setup()
 
 int spiel::step()
 {
-	poll_keyboard(keys);
-
-	if (keys[DIK_RIGHT])
-		qbert.move(NPC::DIR_RIGHTDOWN);
-	else if (keys[DIK_LEFT])
-		qbert.move(NPC::DIR_LEFTUP);
-	else if (keys[DIK_UP])
-		qbert.move(NPC::DIR_RIGHTUP);
-	else if (keys[DIK_DOWN])
-		qbert.move(NPC::DIR_LEFTDOWN);
+	unsigned char keys[256];
+	DIMOUSESTATE mouse;
 
 	qbert.Step();
+
+	if (poll_keyboard(keys)) {
+
+		// QBert Steuerung
+		if (keys[DIK_RIGHT])
+			qbert.move(NPC::DIR_RIGHTDOWN);
+		else if (keys[DIK_LEFT])
+			qbert.move(NPC::DIR_LEFTUP);
+		else if (keys[DIK_UP])
+			qbert.move(NPC::DIR_RIGHTUP);
+		else if (keys[DIK_DOWN])
+			qbert.move(NPC::DIR_LEFTDOWN);
+
+		// Camera zoom
+		if (keys[DIK_ADD])
+			cam_abstand -= 0.5f;
+		else if (keys[DIK_SUBTRACT]) 
+			cam_abstand += 0.5f;
+	}
+
+	// Camera Blickänderung
+	if (poll_mouse(&mouse) && mouse.rgbButtons[0]) {
+		blickrichtung.x += mouse.lX / 10000.0f;
+		blickrichtung.y -= mouse.lY / 10000.0f;
+	}
+
+	standort = cubes[19].lookatme(&blickrichtung, cam_abstand);
 	return 0;
 }
 
@@ -268,6 +288,7 @@ int spiel::render()
 	for(int i=0;i<28;i++)
 		cubes[i].render(0, RENDER_OPAQUE);
 	qbert.render(1, RENDER_ALL);
+	
 	return 1;
 }
 
