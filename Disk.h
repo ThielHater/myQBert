@@ -10,5 +10,5 @@ class Disk : public Cube
 		textur *FirstTex;
 		textur *CurTex;
 		textur *LastTex;
-		int Move(); // wird aufgerufen, wenn Q*Bert auf die Disk hüpft
+		int Move(void); // wird aufgerufen, wenn Q*Bert auf die Disk hüpft
 };

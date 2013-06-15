@@ -2,14 +2,14 @@
 
 Node::Node(void)
 {
-	target=0;
-	weight=0;
+	NodeNum = 0;
+	RelCube = 0;
 }
 
-Node::Node(int arg_target, double arg_weight)
+Node::Node(int ArgNodeNum, Cube* ArgCube)
 {
-	target=arg_target;
-	weight=arg_weight;
+	NodeNum = ArgNodeNum;
+	RelCube = ArgCube;
 }
 
 Node::~Node(void)

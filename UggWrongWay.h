@@ -6,7 +6,7 @@ enum TypeEnum {UGG, WRONGWAY};
 class UggWrongWay : public NPC
 {
 	public:
-		UggWrongWay(void);
+		UggWrongWay(Node ArgCurNode);
 		~UggWrongWay(void);
 		TypeEnum Type; // Ugg oder Wrong Way?
 		int Step(void); // bewegen sich von den unteren Ecken aus nach oben links/rechts, ungefähr in Richtung Q*Bert

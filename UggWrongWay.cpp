@@ -1,6 +1,6 @@
 #include "UggWrongWay.h"
 
-UggWrongWay::UggWrongWay(void)
+UggWrongWay::UggWrongWay(Node ArgCurNode)
 {
 }
 

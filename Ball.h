@@ -6,7 +6,7 @@ enum TypeEnum {RED, GREEN};
 class Ball : public NPC
 {
 	public:
-		Ball(void);
+		Ball(Node ArgCurNode);
 		~Ball(void);
 		TypeEnum Type; // Roter oder grüner Ball?
 		int Step(void); // hüpft Spielfeld hinab, zufällig links/rechts

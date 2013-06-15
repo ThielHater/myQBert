@@ -1,16 +1,26 @@
 #include "Coily.h"
+#include <vector>
+#include <string>
+#include <list>
+#include <limits> 
+#include <set>
+#include <utility> 
+#include <algorithm>
+#include <iterator>
+#include <time.h>
 
-Coily::Coily(int coily_node)
+Coily::Coily(Node ArgCurNode) : NPC(ArgCurNode)
 {
-	CurNode = coily_node;
+	FramesPerJump = 5;
 	isUnpacked = false;
+	InitGraphics("Coily");
 }
 
 Coily::~Coily(void)
 {
 }
 
-int Coily::Step(const AdjacencyList &adjacency_list, int qbert_node)
+int Coily::Step(const AdjacencyList &adjacency_list, Node qbert_node)
 {	
 	if (!isUnpacked)
 	{		
@@ -18,11 +28,11 @@ int Coily::Step(const AdjacencyList &adjacency_list, int qbert_node)
 		int rnd = rand();
 		int target;
 
-		// Nach Rechts oder Unten (bzw. Links)?
+		// Nach Rechts oder Links (bzw. Unten)?
 		if (rnd%2)
-			target = adjacency_list.adj[CurNode][1].target;
+			target = adjacency_list[CurNode.NodeNum][1].target;
 		else
-			target = adjacency_list.adj[CurNode][2].target;
+			target = adjacency_list[CurNode.NodeNum][2].target;
 
 		// Wurde die untere Kante erreicht (Coily kann am Anfang nicht seitlich runterfallen)?
 		if (target == 0)
@@ -34,10 +44,10 @@ int Coily::Step(const AdjacencyList &adjacency_list, int qbert_node)
 		else
 		{
 			// Zielknoten setzen
-			CurNode = target;
+			CurNode.NodeNum = target;
 		}
 	}
-	else if (CurNode != qbert_node)
+	else if (CurNode.NodeNum != qbert_node.NodeNum)
 	{
 		// nächsten Knoten ermitteln
 		CurNode = Step_Unpacked(adjacency_list, qbert_node);
@@ -49,16 +59,16 @@ int Coily::Step(const AdjacencyList &adjacency_list, int qbert_node)
 	}
 
 	// Knoten zurückgeben
-	return CurNode;
+	return CurNode.NodeNum;
 }
 
-int Coily::Step_Unpacked(const AdjacencyList &adjacency_list, int qbert_node)
+Node Coily::Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_node)
 {
 	// Schlange einen Knoten in Richtung Q*Bert bewegen
 	std::vector<double> min_distance;
 	std::vector<int> previous;
-	int n = adjacency_list.adj.size();
-	int source = CurNode;
+	int n = adjacency_list.size();
+	int source = CurNode.NodeNum;
 	double max_weight = std::numeric_limits<double>::infinity();
 
 	min_distance.clear();
@@ -74,8 +84,8 @@ int Coily::Step_Unpacked(const AdjacencyList &adjacency_list, int qbert_node)
 		double dist = vertex_queue.begin()->first;
 		int u = vertex_queue.begin()->second;
 		vertex_queue.erase(vertex_queue.begin());
-		const std::vector<Node> &neighbors = adjacency_list.adj[u];
-		for (std::vector<Node>::const_iterator neighbor_iter = neighbors.begin(); neighbor_iter != neighbors.end(); neighbor_iter++)
+		const std::vector<Edge> &neighbors = adjacency_list[u];
+		for (std::vector<Edge>::const_iterator neighbor_iter = neighbors.begin(); neighbor_iter != neighbors.end(); neighbor_iter++)
 		{
 			int v = neighbor_iter->target;
 			double weight = neighbor_iter->weight;
@@ -90,16 +100,10 @@ int Coily::Step_Unpacked(const AdjacencyList &adjacency_list, int qbert_node)
 		}
 	}
 
-	std::list<int> path;
-	for ( ; qbert_node != -1; qbert_node = previous[qbert_node])
+	std::list<Node> path;
+	for ( ; qbert_node.NodeNum != -1; qbert_node.NodeNum = previous[qbert_node.NodeNum])
 		path.push_front(qbert_node);
 	path.pop_front();
-
-	/*
-	std::list<int>::const_iterator iterator;
-	for (iterator = path.begin(); iterator != path.end(); ++iterator)		
-		 printf("%d ", *iterator);		
-	*/
 
 	// nächsten Knoten zurückgeben
 	return path.front();	

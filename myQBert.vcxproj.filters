@@ -17,9 +17,6 @@
     <ClCompile Include="myQBert.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>Quellcodedateien</Filter>
-    </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
@@ -45,6 +42,12 @@
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
     <ClCompile Include="AdjacencyList.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Edge.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,9 +91,6 @@
     <ClInclude Include="SpaCE\Video.h">
       <Filter>SpaCE</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header-Dateien</Filter>
-    </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
@@ -122,6 +122,12 @@
       <Filter>Header-Dateien</Filter>
     </ClInclude>
     <ClInclude Include="AdjacencyList.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Edge.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
   </ItemGroup>

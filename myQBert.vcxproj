@@ -143,6 +143,7 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Edge.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="QBert.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="dirent.h" />
     <ClInclude Include="Disk.h" />
+    <ClInclude Include="Edge.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="QBert.h" />

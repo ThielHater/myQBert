@@ -1,20 +1,12 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <list>
-#include <limits> 
-#include <set>
-#include <utility> 
-#include <algorithm>
-#include <iterator>
-#include <time.h>
+#include "Cube.h"
 
 class Node
 {
 	public:
 		Node(void);
-		Node(int arg_target, double arg_weight);
+		Node(int ArgNodeNum, Cube* ArgCube);
 		~Node(void);
-		int target;
-		double weight;
+		int NodeNum;
+		Cube *RelCube;
 };

@@ -1,6 +1,6 @@
 #include "Ball.h"
 
-Ball::Ball(void)
+Ball::Ball(Node ArgCurNode) : NPC(ArgCurNode)
 {
 }
 

@@ -4,6 +4,10 @@ QBert::QBert(void)
 {
 }
 
+QBert::QBert(Node ArgCurNode)
+{
+}
+
 QBert::~QBert(void)
 {
 }

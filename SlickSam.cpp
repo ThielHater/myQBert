@@ -1,6 +1,6 @@
 #include "SlickSam.h"
 
-SlickSam::SlickSam(void)
+SlickSam::SlickSam(Node ArgCurNode)
 {
 }
 
