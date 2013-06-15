@@ -54,7 +54,7 @@ void NPC::InitGraphics(char *ArgTexName)
 	ss <<"myQBert/Textures/" <<ArgTexName <<"-Up-Right-Jump.png";
 	TexUpRightJump.load((char*)ss.str().c_str());
 	ss.str(std::string()); ss.clear();
-	set_texture(0, TexDownLeft);
+	set_texture(0, &TexDownLeft);
 	disable_reflections();
 	add_transform(&rota);
 	add_transform(&pos);
