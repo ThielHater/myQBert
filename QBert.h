@@ -7,6 +7,8 @@ class QBert : public NPC
 		QBert(void);
 		QBert(Node ArgCurNode);
 		~QBert(void);
+		int Step(const AdjacencyList &adjacency_list, DirectionEnum direction);
 		int Collision(void); // kein Effekt
 		int NodeEffect(void); // Feld wird umgefärbt
+		int SetTexture(void); // Normal
 };

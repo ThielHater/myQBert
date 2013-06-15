@@ -1,10 +1,11 @@
 #pragma once
+#include "Node.h"
 
 class Edge
 {
 	public:		
-		Edge(int arg_target, double arg_weight);
+		Edge(Node arg_target, double arg_weight);
 		~Edge(void);
-		int target;
+		Node target;
 		double weight;
 };

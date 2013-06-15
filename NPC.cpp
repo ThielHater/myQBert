@@ -5,18 +5,32 @@
 NPC::NPC(void)
 {
 	isMoving = false;
+	isWaiting = false;
+	FirstMoveDone = false;
 	MoveDirection = DIR_NONE;
-	FramesPerJump = 10;
+	FramesPerJump = 0;
+	FramesPerWait = 0;
+	FramesJumped = 0;
+	FramesWaited = 0;
 	CurNode.NodeNum = 0;
 	CurNode.RelCube = 0;
+	TargetNode.NodeNum = 0;
+	TargetNode.RelCube = 0;
 }
 
 NPC::NPC(Node ArgCurNode)
 {
 	isMoving = false;
+	isWaiting = false;
+	FirstMoveDone = false;
 	MoveDirection = DIR_NONE;
 	FramesPerJump = 0;
+	FramesPerWait = 0;
+	FramesJumped = 0;
+	FramesWaited = 0;
 	CurNode=ArgCurNode;
+	TargetNode.NodeNum = 0;
+	TargetNode.RelCube = 0;
 }
 
 void NPC::InitGraphics(char *ArgTexName)
@@ -27,8 +41,7 @@ void NPC::InitGraphics(char *ArgTexName)
 	CurNode.RelCube->get_transform(&pos);
 	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
 	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
-	isMoving = false;
-	load("TriPrism.x", "myQBert/Models");	
+	load("TriPrism.x", "myQBert/Models");
 	std::stringstream ss;
 	ss <<"myQBert/Textures/" <<ArgTexName <<"-Down-Left.png";
 	TexDownLeft.load((char*)ss.str().c_str());
@@ -54,7 +67,7 @@ void NPC::InitGraphics(char *ArgTexName)
 	ss <<"myQBert/Textures/" <<ArgTexName <<"-Up-Right-Jump.png";
 	TexUpRightJump.load((char*)ss.str().c_str());
 	ss.str(std::string()); ss.clear();
-	set_texture(0, TexDownLeft);
+	set_texture(0, &TexDownLeft);
 	disable_reflections();
 	add_transform(&rota);
 	add_transform(&pos);
@@ -67,40 +80,30 @@ NPC::~NPC(void)
 
 void NPC::Move(DirectionEnum direction)
 {
-	if (!isMoving)
-	{
-		isMoving = true;
-		MoveDirection = direction;
-	}
-}
-
-int NPC::Step(const AdjacencyList &adjacency_list)
-{
-	if (!isMoving)	
-		return 0;	
-
-	enum first_move_e { MOVE_Y, MOVE_XZ };
-
-	// Wenn wir nach unten springen, erst über die XZ Achse bewegen, sonst erst über die Y Achse
-	first_move_e first_move = (MoveDirection == DIR_LEFTDOWN || MoveDirection == DIR_RIGHTDOWN) ? MOVE_XZ : MOVE_Y;
-
-	static int moved_sum = 0;
-	static bool first_move_done = false;
-
+	// Enum und Variablen
+	enum FirstMoveEnum { MOVE_Y, MOVE_XZ };
 	D3DXMATRIX tr;
 	float sx = sqrt(50.0f) / 2 / FramesPerJump; // halbe Diagonale
 	float sz = sx;
 	float sy = 5.0f / FramesPerJump; // Seitenlänge
-		
-	// über Y-Achse bewegen
-	if (first_move == MOVE_Y && !first_move_done || first_move == MOVE_XZ && first_move_done) {
+
+	// Textur ändern
+	SetTexture();
+
+	// Wenn wir nach unten springen, erst über die XZ Achse bewegen, sonst erst über die Y Achse
+	FirstMoveEnum first_move = (MoveDirection == DIR_LEFTDOWN || MoveDirection == DIR_RIGHTDOWN) ? MOVE_XZ : MOVE_Y;
+
+	if (first_move == MOVE_Y && !FirstMoveDone || first_move == MOVE_XZ && FirstMoveDone)
+	{
+		// über Y-Achse bewegen
 		if (MoveDirection == DIR_LEFTDOWN || MoveDirection == DIR_RIGHTDOWN)
 			D3DXMatrixTranslation(&tr, 0, -sy, 0);
 		else
 			D3DXMatrixTranslation(&tr, 0, sy, 0);
 	}
-	// über XZ-Achse bewegen
-	else {
+	else
+	{
+		// über XZ-Achse bewegen
 		if (MoveDirection == DIR_LEFTDOWN)
 			D3DXMatrixTranslation(&tr, -sx, 0, -sz);
 		else if (MoveDirection == DIR_LEFTUP)
@@ -111,22 +114,82 @@ int NPC::Step(const AdjacencyList &adjacency_list)
 			D3DXMatrixTranslation(&tr, sx, 0, sz);
 	}
 
-	// Bewegung fertig?
-	if (moved_sum >= FramesPerJump) {
-		if (first_move_done) {
-			isMoving = false;
-			first_move_done = false;
-		}
-		else {
-			first_move_done = true;
-		}
-
-		moved_sum = 0;
-		return 0;
-	}
-
+	// Transformation anwenden und Frames hochzählen
 	add_transform(&tr);
-	moved_sum++;
+	FramesJumped++;
+
+	// (Teil-)Bewegung fertig?
+	if (FramesJumped == FramesPerJump)
+	{
+		if (FirstMoveDone)
+		{
+			// ganze Bewegung fertig
+			FramesJumped = 0;
+			isMoving = false;
+			isWaiting = true;
+			FirstMoveDone = false;
+			CurNode = TargetNode;
+
+			// Textur ändern
+			SetTexture();
+		}
+		else
+		{
+			// nur erste Teilbewegung fertig
+			FramesJumped = 0;
+			FirstMoveDone = true;
+		}
+	}
+}
+
+int NPC::Step(const AdjacencyList &adjacency_list)
+{
+	// Wartet der NPC?
+	if (isWaiting)
+	{
+		// Weiter warten..
+		FramesWaited++;
+
+		// Hat der NPC genug gewartet?
+		if (FramesWaited == FramesPerWait)
+		{
+			// Freigeben
+			FramesWaited = 0;
+			isWaiting = false;
+		}
+	}
+	else
+	{
+		// Bewegt sich der NPC?
+		if (isMoving)
+		{
+			// Weiter bewegen..
+			Move(MoveDirection);
+		}
+		else
+		{
+			// Ist der NPC nicht auf dem NULL Knoten?
+			if (CurNode.NodeNum != 0)
+			{
+				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
+				int rnd = rand() % 2;
+				if (rnd%2)
+				{
+					TargetNode = adjacency_list[CurNode.NodeNum][1].target;
+					MoveDirection = DIR_RIGHTDOWN;
+				}
+				else
+				{
+					TargetNode = adjacency_list[CurNode.NodeNum][2].target;
+					MoveDirection = DIR_LEFTDOWN;
+				}
+
+				// NPC bewegen
+				isMoving = true;
+				Move(MoveDirection);
+			}
+		}
+	}
 
 	return 0;
 }
@@ -138,5 +201,32 @@ int NPC::Collision(void)
 
 int NPC::NodeEffect(void)
 {
+	return 0;
+}
+
+int NPC::SetTexture(void)
+{
+	if (isMoving)
+	{
+		if (MoveDirection == DIR_LEFTDOWN)
+			set_texture(0, &this->TexDownLeftJump);
+		else if (MoveDirection == DIR_RIGHTDOWN)
+			set_texture(0, &this->TexDownRightJump);
+		else if (MoveDirection == DIR_LEFTUP)
+			set_texture(0, &this->TexUpLeftJump);
+		else if (MoveDirection == DIR_RIGHTUP)
+			set_texture(0, &this->TexUpRightJump);
+	}
+	else
+	{
+		if (MoveDirection == DIR_LEFTDOWN)
+			set_texture(0, &this->TexDownLeft);
+		else if (MoveDirection == DIR_RIGHTDOWN)
+			set_texture(0, &this->TexDownRight);
+		else if (MoveDirection == DIR_LEFTUP)
+			set_texture(0, &this->TexUpLeft);
+		else if (MoveDirection == DIR_RIGHTUP)
+			set_texture(0, &this->TexUpRight);
+	}
 	return 0;
 }

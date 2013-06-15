@@ -1,6 +1,6 @@
 #pragma once
-#include "Edge.h"
 #include <vector>
+#include "Edge.h"
 
 class AdjacencyList : public std::vector<std::vector<Edge>>
 {
@@ -8,4 +8,5 @@ class AdjacencyList : public std::vector<std::vector<Edge>>
 		AdjacencyList(void);
 		AdjacencyList(int count);
 		~AdjacencyList(void);
+		//void add(int ArgEdgeNum, int ArgNodeNum, Cube* ArgCube);
 };
