@@ -12,5 +12,5 @@ class SlickSam : public NPC
 		int Step(const AdjacencyList &adjacency_list); // hüpft Spielfeld hinab, zufällig links/rechts
 		int Collision(void); // kein Effekt
 		int NodeEffect(void); // Slick setzt Feld ganz zurück, Sam setzt Feld um eine Stufe zurück
-		int SetTexture(void); // Normal
+		int SetTexture(void); // drei Sprungtexturen
 };

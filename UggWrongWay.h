@@ -12,5 +12,5 @@ class UggWrongWay : public NPC
 		int Step(const AdjacencyList &adjacency_list); // bewegen sich von den unteren Ecken aus nach oben links/rechts, ungefähr in Richtung Q*Bert
 		int Collision(void); // Q*Bert verliert ein Leben
 		int NodeEffect(void); // kein Effekt
-		int SetTexture(void); // Normal
+		int SetTexture(void); // drei Sprungtexturen
 };
