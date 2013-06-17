@@ -189,7 +189,7 @@ int NPC::Step(const AdjacencyList &adjacency_list)
 			// Ist der NPC nicht auf dem NULL Knoten?
 			if (CurNode.NodeNum != 0)
 			{
-				/* Tipp: Mit den Indizes "1" und "2" kommt man an die Würfel oberhalb des aktuellen, mit "0" und "3" an die unterhalb. Letzteres lässt sich für Ugg und Wrong Way nutzen. */
+				/* Tipp: Mit den Indizes "1" und "2" kommt man an die Würfel unterhalb des aktuellen Würfels, mit "0" und "3" an die oberhalb. Letzteres lässt sich für Ugg und Wrong Way nutzen. */
 
 				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
 				int rnd = rand() % 2;
