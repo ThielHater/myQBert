@@ -51,7 +51,7 @@ int QBert::Step(const AdjacencyList &adjacency_list, DirectionEnum direction)
 			// Ist der NPC nicht auf dem NULL Knoten?
 			if ((CurNode.NodeNum != 0) && (direction != DIR_NONE))
 			{
-				// gem‰ﬂ Tastatureingabe bewegen
+				// n‰chsten Knoten und Richtung gem‰ﬂ Tastatureingabe festlegen
 				if (direction == DIR_RIGHTUP)
 					TargetNode = adjacency_list[CurNode.NodeNum][0].target;
 				else if (direction == DIR_RIGHTDOWN)

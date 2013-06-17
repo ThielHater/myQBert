@@ -111,11 +111,6 @@ int Coily::Step(const AdjacencyList &adjacency_list, Node QBertNode)
 					isMoving = true;
 					Move(MoveDirection);
 				}
-				else
-				{
-					// Coily hat Q*Bert gefangen
-					Collision();
-				}
 			}
 		}
 	}

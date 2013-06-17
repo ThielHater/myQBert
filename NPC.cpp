@@ -147,6 +147,8 @@ int NPC::Step(const AdjacencyList &adjacency_list)
 	// Wartet der NPC?
 	if (isWaiting)
 	{
+		/* Tipp: Der Teil muss eigentlich nicht verändert werden. */
+
 		// Weiter warten..
 		FramesWaited++;
 
@@ -165,12 +167,30 @@ int NPC::Step(const AdjacencyList &adjacency_list)
 		{
 			// Weiter bewegen..
 			Move(MoveDirection);
+
+			/*
+				Tipp: NodeEffect() und Collision() sollten am besten von hier aufgerufen werden.
+
+				// Bewegung fertig?
+				if (!isMoving)
+				{
+					NodeEffect();
+				}
+
+				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
+				if (CurNode.NodeNum == QBertNode.NodeNum)
+				{			
+					Collision();
+				}
+			*/
 		}
 		else
 		{
 			// Ist der NPC nicht auf dem NULL Knoten?
 			if (CurNode.NodeNum != 0)
 			{
+				/* Tipp: Mit den Indizes "1" und "2" kommt man an die Würfel oberhalb des aktuellen, mit "0" und "3" an die unterhalb. Letzteres lässt sich für Ugg und Wrong Way nutzen. */
+
 				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
 				int rnd = rand() % 2;
 				if (rnd%2)

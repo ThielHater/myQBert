@@ -14,6 +14,13 @@
 #include "resource.h"
 //#include "dirent.h
 
+/*
+	- Spielstatistik als eigene Klasse auslagern und Zeiger auf Instanz davon den Step() Funktionen mitgeben
+	- NPCs brauchen eine einheitliche Step() Schnittstelle, oder eine getName() Funktion, um sie korrekt zu casten
+	- Texturen in NPC Klassen verschieben, eigene Init() Funktionen?
+	- Aufbau des Wegnetz in einer Schleife?
+*/
+
 class spiel : public applikation
 {
 	private:
@@ -22,7 +29,7 @@ class spiel : public applikation
 		textur cube_tex[40]; // 36 Würfel, 4 Disks
 		QBert qbert;
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen
-		int Level; int Round; int Points; int LifeCount; int Score; // Spielstatistik
+		int Level; int Round; int LifeCount; int Score; // Spielstatistik
 		bool timeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
 		float cam_abstand;
 
