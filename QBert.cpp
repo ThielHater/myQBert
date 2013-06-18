@@ -15,7 +15,7 @@ QBert::~QBert(void)
 {
 }
 
-int QBert::Step(const AdjacencyList &adjacency_list, DirectionEnum direction)
+int QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
 {
 	// Wartet der NPC?
 	if (isWaiting)

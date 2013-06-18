@@ -5,7 +5,7 @@
 class Coily : public NPC
 {
 	private:
-		Node Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_node);
+		Node Step_Unpacked(const AdjacencyList &adjacency_list, const Node qbert_node);
 
 	public:
 		Coily(Node ArgCurNode);
@@ -13,7 +13,7 @@ class Coily : public NPC
 		bool isUnpacked; // Ist Coily schon entrollt?
 		textur TexUnpacked;
 		textur TexUnpackedJump;
-		int Step(const AdjacencyList &adjacency_list, Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts, entrollt sich dann und hüpft Q*Bert hinterher
+		int Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts, entrollt sich dann und hüpft Q*Bert hinterher
 		int Collision(void); // Q*Bert verliert ein Leben
 		int NodeEffect(void); // kein Effekt
 		int SetTexture(void); // zwei Texturen mehr

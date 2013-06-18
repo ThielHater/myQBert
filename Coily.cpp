@@ -21,7 +21,7 @@ Coily::~Coily(void)
 {
 }
 
-int Coily::Step(const AdjacencyList &adjacency_list, Node QBertNode)
+int Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -46,7 +46,7 @@ int Coily::Step(const AdjacencyList &adjacency_list, Node QBertNode)
 			Move(MoveDirection);
 
 			// Sind Coily und Q*Bert auf dem gleichen Knoten?
-			if (CurNode.NodeNum == QBertNode.NodeNum)
+			if (CurNode.NodeNum == qbert_node.NodeNum)
 			{
 				// Coily hat Q*Bert gefangen
 				Collision();
@@ -78,7 +78,7 @@ int Coily::Step(const AdjacencyList &adjacency_list, Node QBertNode)
 					{
 						// Entpacken, nächsten Knoten berechnen und Richtung bestimmmen
 						isUnpacked=true;
-						TargetNode = Step_Unpacked(adjacency_list, QBertNode);
+						TargetNode = Step_Unpacked(adjacency_list, qbert_node);
 						if (adjacency_list[CurNode.NodeNum][0].target == TargetNode)
 							MoveDirection = DIR_RIGHTUP;
 						else if (adjacency_list[CurNode.NodeNum][1].target == TargetNode)
@@ -94,10 +94,10 @@ int Coily::Step(const AdjacencyList &adjacency_list, Node QBertNode)
 					Move(MoveDirection);
 				}
 				// Sind Coily und Q*Bert nicht auf dem gleichen Knoten?
-				else if (CurNode.NodeNum != QBertNode.NodeNum)
+				else if (CurNode.NodeNum != qbert_node.NodeNum)
 				{
 					// nächsten Knoten berechnen und Richtung bestimmmen
-					TargetNode = Step_Unpacked(adjacency_list, QBertNode);
+					TargetNode = Step_Unpacked(adjacency_list, qbert_node);
 					if (adjacency_list[CurNode.NodeNum][0].target == TargetNode)
 						MoveDirection = DIR_RIGHTUP;
 					else if (adjacency_list[CurNode.NodeNum][1].target == TargetNode)

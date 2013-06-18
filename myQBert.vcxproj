@@ -136,6 +136,7 @@
     <ClCompile Include="Coily.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Disk.cpp" />
+    <ClCompile Include="GameStats.cpp" />
     <ClCompile Include="myQBert.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -158,6 +159,7 @@
     <ClInclude Include="dirent.h" />
     <ClInclude Include="Disk.h" />
     <ClInclude Include="Edge.h" />
+    <ClInclude Include="GameStats.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="QBert.h" />

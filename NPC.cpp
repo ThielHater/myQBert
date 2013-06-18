@@ -142,7 +142,7 @@ void NPC::Move(DirectionEnum direction)
 	}
 }
 
-int NPC::Step(const AdjacencyList &adjacency_list)
+int NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)

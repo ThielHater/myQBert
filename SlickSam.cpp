@@ -14,7 +14,7 @@ SlickSam::~SlickSam(void)
 {
 }
 
-int SlickSam::Step(const AdjacencyList &adjacency_list)
+int SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	return 0;
 }

@@ -14,7 +14,7 @@ UggWrongWay::~UggWrongWay(void)
 {
 }
 
-int UggWrongWay::Step(const AdjacencyList &adjacency_list)
+int UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	return 0;
 }

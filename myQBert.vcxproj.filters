@@ -50,6 +50,9 @@
     <ClCompile Include="Node.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
+    <ClCompile Include="GameStats.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpaCE\applikation.h">
@@ -128,6 +131,9 @@
       <Filter>Header-Dateien</Filter>
     </ClInclude>
     <ClInclude Include="Node.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStats.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
   </ItemGroup>

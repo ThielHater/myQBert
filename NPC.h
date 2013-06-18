@@ -1,5 +1,6 @@
 #pragma once
 #include "SpaCE\objekt.h"
+#include "GameStats.h"
 #include "Node.h"
 #include "AdjacencyList.h"
 
@@ -32,7 +33,7 @@ class NPC : public objekt
 		textur TexUpRightJump; // Textur, wenn der NPC springt
 		void Move(DirectionEnum direction); // NPC räumlich in eine bestimmte Richtung bewegen
 		virtual int SetTexture(void); // Allgemein
-		virtual int Step(const AdjacencyList &adjacency_list); // bewegt den NPC, prüft Kollisionen, kümmert sich um Feldeffekte
+		virtual int Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // bewegt den NPC, prüft Kollisionen, kümmert sich um Feldeffekte
 		virtual int Collision(void); // wird aufgerufen, wenn eine Kollision aufgetreten ist
 		virtual int NodeEffect(void); // wird aufgerufen, wenn der NPC auf ein Feld kommt
 };

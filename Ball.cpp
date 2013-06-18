@@ -22,7 +22,7 @@ Ball::~Ball(void)
 {
 }
 
-int Ball::Step(const AdjacencyList &adjacency_list)
+int Ball::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	return 0;
 }

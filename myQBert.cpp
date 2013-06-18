@@ -5,6 +5,7 @@
 #include <list>
 #include <vector>
 #include "SpaCE/applikation.h"
+#include "GameStats.h"
 #include "Edge.h"
 #include "Node.h"
 #include "AdjacencyList.h"
@@ -15,8 +16,6 @@
 //#include "dirent.h
 
 /*
-	- Spielstatistik als eigene Klasse auslagern und Zeiger auf Instanz davon den Step() Funktionen mitgeben
-	- NPCs brauchen eine einheitliche Step() Schnittstelle, oder eine getName() Funktion, um sie korrekt zu casten
 	- Texturen in NPC Klassen verschieben, eigene Init() Funktionen?
 	- Aufbau des Wegnetz in einer Schleife?
 */
@@ -29,8 +28,7 @@ class spiel : public applikation
 		textur cube_tex[40]; // 36 Würfel, 4 Disks
 		QBert qbert;
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen
-		int Level; int Round; int LifeCount; int Score; // Spielstatistik
-		bool timeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
+		GameStats stats; // Spielstatistik		
 		float cam_abstand;
 
 	public:
@@ -118,12 +116,7 @@ void spiel::setup()
 	standort = cubes[8].lookatme(&blickrichtung, cam_abstand);
 	set_sunlight(0, &D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1.0f, 0.0f, 0.0f);
 
-	// Spielstatistik
-	Level = 1;
-	Round = 1;
-	LifeCount = 3;
-	Score = 0;
-	timeFrozen = false;
+	// zufällige Zufallszahlen
 	srand((long)time(NULL));
 
 	// Knoten und Kanten aufbauen
@@ -242,7 +235,7 @@ void spiel::setup()
 	adjacency_list[28].push_back(Edge(Node(21, &cubes[21]), 1));
 
 	// Konsole öffnen
-	open_console("my*QBert Debug Console");
+	open_console("myQ*Bert Debug Console");
 
 	// Q*Bert und Coily spawnen
 	QBert *q = new QBert(Node(8, &cubes[8]));
@@ -259,23 +252,22 @@ int spiel::step()
 
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 	{
-		// funktioniert, da zur Zeit nur Coily in der Liste ist
-		dynamic_cast<Coily*>(*it)->Step(adjacency_list, qbert.CurNode);
+		(*it)->Step(adjacency_list, stats, qbert.CurNode);
 	}
 
 	if (poll_keyboard(keys))
 	{
 		// Q*Bert Steuerung
 		if (keys[DIK_RIGHT])
-			qbert.Step(adjacency_list, DIR_RIGHTDOWN);
+			qbert.Step(adjacency_list, stats, DIR_RIGHTDOWN);
 		else if (keys[DIK_LEFT])
-			qbert.Step(adjacency_list, DIR_LEFTUP);
+			qbert.Step(adjacency_list, stats, DIR_LEFTUP);
 		else if (keys[DIK_UP])
-			qbert.Step(adjacency_list, DIR_RIGHTUP);
+			qbert.Step(adjacency_list, stats, DIR_RIGHTUP);
 		else if (keys[DIK_DOWN])
-			qbert.Step(adjacency_list, DIR_LEFTDOWN);
+			qbert.Step(adjacency_list, stats, DIR_LEFTDOWN);
 		else
-			qbert.Step(adjacency_list, DIR_NONE);
+			qbert.Step(adjacency_list, stats, DIR_NONE);
 
 		// Zoom
 		if (keys[DIK_ADD])
