@@ -90,6 +90,15 @@ void QBert::NodeEffect(GameStats &stats)
 	}
 	else if (stats.Level == 2)
 	{
+		if (this->CurNode.RelCube->cur < 2)
+		{
+			this->CurNode.RelCube->cur++;
+			this->CurNode.RelCube->update_texture();
+			stats.Score += 25;
+		}
+	}
+	else if (stats.Level == 3)
+	{
 		if (this->CurNode.RelCube->cur == 0)
 		{
 			this->CurNode.RelCube->cur++;

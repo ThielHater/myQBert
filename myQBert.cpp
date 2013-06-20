@@ -104,6 +104,10 @@ void spiel::setup()
 		ss.str(std::string()); ss.clear();
 	}
 
+	// TEST!!
+	stats.Level = 2;
+	stats.Round = 1;
+
 	// Score Sprites intialisieren
 	int offset = 48; int edge = 32;
 	for (int i=0; i<5; i++)
@@ -331,7 +335,7 @@ void spiel::qbert_hit()
 	D3DXMATRIX trans;
 	D3DXMATRIX null;
 	qbert.isMoving = false;
-	qbert.isWaiting = false;
+	qbert.isWaiting = true;
 	qbert.FirstMoveDone = false;
 	qbert.MoveDirection = DIR_NONE;
 	qbert.FramesJumped = 0;
