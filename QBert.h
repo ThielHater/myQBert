@@ -11,4 +11,5 @@ class QBert : public NPC
 		int Collision(void); // kein Effekt
 		int NodeEffect(GameStats &stats); // Feld wird umgefärbt
 		int SetTexture(void); // Normal
+		void Reset(Node &node);
 };

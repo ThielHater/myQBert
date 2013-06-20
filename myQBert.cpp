@@ -35,11 +35,13 @@ class spiel : public applikation
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen
 		GameStats stats; // Spielstatistik		
 		float cam_abstand;
+		Node qBertStartNode;
 
 	public:
 		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
 		void setup();
 		int step();
+		void reset();
 		int render();
 		void init_window(char *txt, WORD icon_num, int r, int g, int b)
 		{
@@ -67,6 +69,7 @@ void spiel::setup()
 	float x=l/2.0f*dia;
 	float y=l*5.0f;
 	float z=l*dia/2.0f;
+	qBertStartNode = Node(8, &cubes[8]);
 
 	// Titel, Icon und Hintergrundfarbe setzen
 	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
@@ -242,7 +245,7 @@ void spiel::setup()
 	open_console("myQ*Bert Debug Console");
 
 	// Q*Bert und Coily spawnen
-	QBert *q = new QBert(Node(8, &cubes[8]));
+	QBert *q = new QBert(qBertStartNode);
 	qbert = *q;
 	Coily *c = new Coily(Node(1, &cubes[1]));
 	npc_list.push_back(c);
@@ -251,15 +254,49 @@ void spiel::setup()
 	npc_list.push_back(ss);
 }
 
+void spiel::reset() {
+	npc_list.clear();
+	
+	qbert.Reset(qBertStartNode);
+
+	for(int i=1; i<=28; i++)
+		cubes[i].set_texture(0, cubes[i].FirstTex);
+
+	Coily *c = new Coily(Node(1, &cubes[1]));
+	npc_list.push_back(c);
+
+	stats.Reset();
+}
+
 int spiel::step()
 {
 	// Variablen
 	unsigned char keys[256];
 	DIMOUSESTATE mouse;
 
+	bool levelComplete = true;
+	for(int i=1; i<=28; i++) {
+		if (!cubes[i].IsDone()) {
+			levelComplete = false;
+			break;
+		}
+	}
+
+	// Alle Würfel fertig, Level abgeschlossen
+	if (levelComplete) {
+		reset();
+		return 1;
+	}
+
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 	{
 		(*it)->Step(adjacency_list, stats, qbert.CurNode);
+		
+		// Game Over
+		if (stats.GetLifeCount() == 0) {
+			reset();
+			return 0;
+		}
 	}
 
 	if (poll_keyboard(keys))
@@ -293,7 +330,7 @@ int spiel::step()
 	// Kamera aktualisieren
 	standort = cubes[8].lookatme(&blickrichtung, cam_abstand);
 
-	return 0;
+	return 1;
 }
 
 int spiel::render()

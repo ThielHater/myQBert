@@ -46,10 +46,10 @@ int Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Nod
 			Move(MoveDirection);
 
 			// Sind Coily und Q*Bert auf dem gleichen Knoten?
-			if (CurNode.NodeNum == qbert_node.NodeNum)
+			if (!isMoving && CurNode.NodeNum == qbert_node.NodeNum)
 			{
 				// Coily hat Q*Bert gefangen
-				Collision();
+				Collision(stats);
 			}
 		}
 		else
@@ -162,9 +162,11 @@ Node Coily::Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_node)
 	return path.front();
 }
 
-int Coily::Collision(void)
+int Coily::Collision(GameStats &stats)
 {
-	printf("%s", "GAME OVER, du Lusche!\n");
+	stats.SubLifeCount();
+
+	printf("KOLLISION, noch %d LEBEN!!!!\n", stats.GetLifeCount());
 	return 0;
 }
 

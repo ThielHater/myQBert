@@ -2,11 +2,7 @@
 
 GameStats::GameStats(void)
 {
-	Level = 1;
-	Round = 1;
-	LifeCount = 3;
-	Score = 0;
-	TimeFrozen = false;
+	Reset();
 }
 
 GameStats::~GameStats(void)
@@ -55,4 +51,12 @@ int GameStats::AddScore(int Scr)
 {
 	Score += Scr;
 	return Score;
+}
+
+void GameStats::Reset() {
+	Level = 1;
+	Round = 1;
+	LifeCount = 1;
+	Score = 0;
+	TimeFrozen = false;
 }
