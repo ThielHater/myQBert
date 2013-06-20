@@ -15,7 +15,8 @@ QBert::~QBert(void)
 {
 }
 
-void QBert::Reset(Node &node) {
+void QBert::Reset(Node &node)
+{
 	CurNode = node;
 
 	D3DXMATRIX pos, rota, trans, nullTrans;
@@ -30,13 +31,16 @@ void QBert::Reset(Node &node) {
 	add_transform(&rota);
 	add_transform(&pos);
 	add_transform(&trans);
-	set_texture(0, &this->TexDownRightJump);
+	set_texture(0, &TexDownRightJump);
 
 	isMoving = false;
 	isWaiting = false;
 	FirstMoveDone = false;
+	MoveDirection = DIR_NONE;
 	FramesJumped = 0;
 	FramesWaited = 0;
+	TargetNode.NodeNum = 0;
+	TargetNode.RelCube = 0;
 }
 
 int QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
@@ -103,21 +107,21 @@ int QBert::Collision(void)
 
 int QBert::NodeEffect(GameStats &stats)
 {
-	switch(stats.GetLevel())
+	if (stats.GetLevel() == 1)
 	{
-		case 1:
-			this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->LastTex);
-			break;
-		case 2:
-			if(CurNode.RelCube->CurTex != CurNode.RelCube->LastTex)
-				this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->CurTex++);
-			break;
-		case 3:
-			if(CurNode.RelCube->CurTex == CurNode.RelCube->LastTex)
-				this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->FirstTex);
-			else
-				this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->LastTex);
-			break;
+		if (this->CurNode.RelCube->cur != 2)
+		{
+			this->CurNode.RelCube->cur++;
+			this->CurNode.RelCube->update_texture();
+		}
+	}
+	else if (stats.GetLevel() == 2)
+	{
+		if (this->CurNode.RelCube->cur == 0)		
+			this->CurNode.RelCube->cur++;					
+		else		
+			this->CurNode.RelCube->cur--;
+		this->CurNode.RelCube->update_texture();
 	}
 	return 0;
 }

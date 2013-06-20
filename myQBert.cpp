@@ -4,9 +4,8 @@
 #include <fstream>
 #include <list>
 #include <vector>
-#include <string>       // std::string
-#include <iostream>     // std::cout
-#include <sstream>  
+#include <sstream>
+#include <string>
 #include "SpaCE/applikation.h"
 #include "GameStats.h"
 #include "Edge.h"
@@ -15,34 +14,30 @@
 #include "Cube.h"
 #include "QBert.h"
 #include "Coily.h"
-#include "resource.h"
 #include "SlickSam.h"
-#include "dirent.h"
-
-using namespace std;
-/*
-	- Texturen in NPC Klassen verschieben, eigene Init() Funktionen?
-	- Aufbau des Wegnetz in einer Schleife?
-*/
+#include "UggWrongWay.h"
+#include "resource.h"
 
 class spiel : public applikation
 {
 	private:
 		AdjacencyList adjacency_list; // 1 NULL, 28 Würfel, 2 Disks
-		Cube cubes[31];
-		textur cube_tex[7]; // 36 Würfel, 4 Disks
+		Cube cubes[28];
+		Cube disks[2];
+		textur cube_tex[3]; // werden jede Runde neu geladen
+		textur disk_tex[4];
 		QBert qbert;
-		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen
-		GameStats stats; // Spielstatistik		
+		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion aufgerufen
+		GameStats stats;
 		float cam_abstand;
-		Node qBertStartNode;
 
 	public:
 		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
 		void setup();
-		int step();
 		void reset();
+		int step();		
 		int render();
+
 		void init_window(char *txt, WORD icon_num, int r, int g, int b)
 		{
 			set_title(txt);
@@ -55,13 +50,22 @@ class spiel : public applikation
 			}
 			set_bkcolor(r, g, b);
 		}
+
+		void load_cube_tex()
+		{
+			std::stringstream ss;
+			for (int i=0; i<3; i++)
+			{
+				ss <<"myQBert/Textures/Cube-L" <<stats.GetLevel() <<"-R" <<stats.GetRound() <<"-" <<(i+1) <<".png";
+				cube_tex[i].load((char*)ss.str().c_str());
+				ss.str(std::string()); ss.clear();
+			}
+		}
 };
 
 void spiel::setup()
 {
 	// Variablendeklaration
-	textur *CubeTexFirst = new textur();
-	textur *CubeTexLast = new textur();
 	D3DXMATRIX rota;
 	D3DXMATRIX trans;
 	int l=6;
@@ -69,32 +73,18 @@ void spiel::setup()
 	float x=l/2.0f*dia;
 	float y=l*5.0f;
 	float z=l*dia/2.0f;
-	qBertStartNode = Node(8, &cubes[8]);
 
 	// Titel, Icon und Hintergrundfarbe setzen
 	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
 
-	//Disc Texturen laden
-	cube_tex[3].load("myQBert\\Textures\\Disc-1.png");
-	cube_tex[4].load("myQBert\\Textures\\Disc-2.png");
-	cube_tex[5].load("myQBert\\Textures\\Disc-3.png");
-	cube_tex[6].load("myQBert\\Textures\\Disc-4.png");
-
-	stats.AddLevel();
+	// Disk Texturen laden
+	disk_tex[0].load("myQBert/Textures/Disk-1.png");
+	disk_tex[1].load("myQBert/Textures/Disk-2.png");
+	disk_tex[2].load("myQBert/Textures/Disk-3.png");
+	disk_tex[3].load("myQBert/Textures/Disk-4.png");
 
 	// Modell und Textur der Würfel laden, Reflektionen ausschalten und Würfel positionieren
-	stringstream sss;
-	char ccc[100];
-	for(int i=0;i<3;i++)
-	{
-		sss << "myQBert\\Textures\\Cube-L" << stats.GetLevel() << "-R" << stats.GetRound() << "-" << i+1 << ".png";
-		sss >> ccc;
-		cube_tex[i].load(ccc);
-		sss.clear();
-	}
-	CubeTexFirst = &cube_tex[0];
-	CubeTexLast = &cube_tex[1];
-
+	load_cube_tex();
 	D3DXMatrixRotationY(&rota, D3DX_PI/4.0f);
 	for(int i=1; i<=28; i++)
 	{
@@ -107,9 +97,7 @@ void spiel::setup()
 		}
 		D3DXMatrixTranslation(&trans, x, y, z);
 		cubes[i].load("Cube.x", "myQBert/Models");
-		cubes[i].FirstTex = CubeTexFirst;
-		cubes[i].LastTex = CubeTexLast;
-		cubes[i].set_texture(0, cubes[i].FirstTex);
+		cubes[i].init_texture(cube_tex);
 		cubes[i].disable_reflections();
 		cubes[i].add_transform(&rota);
 		cubes[i].add_transform(&trans);
@@ -123,7 +111,7 @@ void spiel::setup()
 	standort = cubes[8].lookatme(&blickrichtung, cam_abstand);
 	set_sunlight(0, &D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1.0f, 0.0f, 0.0f);
 
-	// zufällige Zufallszahlen
+	// zufällige Zufallszahlen :)
 	srand((long)time(NULL));
 
 	// Knoten und Kanten aufbauen
@@ -245,22 +233,23 @@ void spiel::setup()
 	open_console("myQ*Bert Debug Console");
 
 	// Q*Bert und Coily spawnen
-	QBert *q = new QBert(qBertStartNode);
+	QBert *q = new QBert(Node(1, &cubes[1]));
 	qbert = *q;
-	Coily *c = new Coily(Node(1, &cubes[1]));
+	Coily *c = new Coily(Node(2, &cubes[2]));
 	npc_list.push_back(c);
-	TypeEnum t = SLICK;
-	SlickSam *ss = new SlickSam(Node(2,&cubes[2]), t); 
-	npc_list.push_back(ss);
 }
 
-void spiel::reset() {
+void spiel::reset()
+{
 	npc_list.clear();
-	
-	qbert.Reset(qBertStartNode);
 
-	for(int i=1; i<=28; i++)
-		cubes[i].set_texture(0, cubes[i].FirstTex);
+	qbert.Reset(Node(1, &cubes[1]));
+	
+	for (int i=1; i<=28; i++)
+	{
+		cubes[i].cur = 0;
+		cubes[i].update_texture();
+	}	
 
 	Coily *c = new Coily(Node(1, &cubes[1]));
 	npc_list.push_back(c);
@@ -275,15 +264,18 @@ int spiel::step()
 	DIMOUSESTATE mouse;
 
 	bool levelComplete = true;
-	for(int i=1; i<=28; i++) {
-		if (!cubes[i].IsDone()) {
+	for (int i=1; i<=28; i++)
+	{
+		if (cubes[i].cur != 2)
+		{
 			levelComplete = false;
 			break;
 		}
 	}
 
 	// Alle Würfel fertig, Level abgeschlossen
-	if (levelComplete) {
+	if (levelComplete)
+	{
 		reset();
 		return 1;
 	}
@@ -291,12 +283,13 @@ int spiel::step()
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 	{
 		(*it)->Step(adjacency_list, stats, qbert.CurNode);
-		
-		// Game Over
-		if (stats.GetLifeCount() == 0) {
-			reset();
-			return 0;
-		}
+	}
+
+	// Game Over
+	if (stats.GetLifeCount() == 0)
+	{
+		reset();
+		return 1;
 	}
 
 	if (poll_keyboard(keys))

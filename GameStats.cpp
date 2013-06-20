@@ -53,10 +53,11 @@ int GameStats::AddScore(int Scr)
 	return Score;
 }
 
-void GameStats::Reset() {
+void GameStats::Reset()
+{
 	Level = 1;
 	Round = 1;
-	LifeCount = 1;
+	LifeCount = 3;
 	Score = 0;
 	TimeFrozen = false;
 }

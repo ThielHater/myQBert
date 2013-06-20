@@ -1,14 +1,20 @@
 #include "SlickSam.h"
 
-SlickSam::SlickSam(Node ArgCurNode, TypeEnum t) : NPC(ArgCurNode)
+SlickSam::SlickSam(Node ArgCurNode) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	Type = t;
-	if (Type == SLICK)
+	int rnd = rand() % 2;
+	if (rnd%2)
+	{
+		Type = SLICK;
 		InitGraphics("Slick");
-	else if (Type == SAM)
+	}
+	else
+	{
+		Type = SAM;
 		InitGraphics("Sam");
+	}
 }
 
 SlickSam::~SlickSam(void)
@@ -86,17 +92,19 @@ int SlickSam::Collision()
 
 int SlickSam::NodeEffect(void)
 {
-	if(Type == SLICK)
+	if (Type == SLICK)
 	{
 		// Würfel umfärben (1. Farbe)
-		this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->FirstTex);
+		this->CurNode.RelCube->cur = 0;
+		this->CurNode.RelCube->update_texture();
 	}
-	else
+	else if (Type == SAM)
 	{
-		// Würfel umfärben (Farbe - 1)
-		if(CurNode.RelCube->CurTex != CurNode.RelCube->FirstTex)
+		// Würfel umfärben (Farbe - 1)		
+		if (CurNode.RelCube->cur > 0)
 		{
-			this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->CurTex-1);
+			this->CurNode.RelCube->cur--;
+			this->CurNode.RelCube->update_texture();	
 		}
 	}
 	return 0;
