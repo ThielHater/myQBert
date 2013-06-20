@@ -20,7 +20,7 @@
 
 /*
 	Zu erledigen:
-	- InitGraphics() und Texturen in von NPC abgeleitete Klassen verschieben	
+	- InitGraphics() und Texturen in von NPC abgeleitete Klassen verschieben
 */
 
 class spiel : public applikation
@@ -34,6 +34,8 @@ class spiel : public applikation
 		QBert qbert;
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion aufgerufen
 		GameStats stats;
+		textur digit_tex[10];
+		sprite score_sprite[5];
 
 	public:
 		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
@@ -44,10 +46,11 @@ class spiel : public applikation
 		void qbert_hit();
 		void reset();
 		void game_over();
-		void setup();	
+		void setup();
 		void setup_nodes();
-		void step();		
-		int render();				
+		void step();
+		void prep_sprites();
+		int render();
 };
 
 void spiel::init_window(char *txt, WORD icon_num, int r, int g, int b)
@@ -91,6 +94,25 @@ void spiel::setup()
 
 	// Titel, Icon und Hintergrundfarbe setzen
 	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
+
+	// Ziffern Texturen laden
+	std::stringstream ss;
+	for (int i=0; i<10; i++)
+	{
+		ss <<"myQBert/Textures/" <<i <<".png";
+		digit_tex[i].load((char*)ss.str().c_str());
+		ss.str(std::string()); ss.clear();
+	}
+
+	// Score Sprites intialisieren
+	int offset = 48; int edge = 32;
+	for (int i=0; i<5; i++)
+	{
+		ss <<"myQBert/Textures/" <<i <<".png";
+		score_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
+		ss.str(std::string()); ss.clear();
+		score_sprite[i].move(i*edge + offset, offset, (i+1)*edge + offset, edge + offset);
+	}
 
 	// Disk Texturen laden
 	disk_tex[0].load("myQBert/Textures/Disk-1.png");
@@ -141,7 +163,7 @@ void spiel::setup()
 }
 
 void spiel::setup_nodes()
-{	
+{
 	adjacency_list[1].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[1].push_back(Edge(Node(3, &cubes[3]), 1));
 	adjacency_list[1].push_back(Edge(Node(2, &cubes[2]), 1));
@@ -275,7 +297,7 @@ bool spiel::check_round()
 }
 
 void spiel::new_round()
-{	
+{
 	reset();
 
 	if (stats.Round != 4)
@@ -312,13 +334,13 @@ void spiel::qbert_hit()
 	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
 	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
 	D3DXMatrixTranslation(&null, 0, 0,0);
-	qbert.set_texture(0, &qbert.TexDownRightJump);	
+	qbert.set_texture(0, &qbert.TexDownRightJump);
 	qbert.set_transform(&null);
 	qbert.add_transform(&rota);
 	qbert.add_transform(&pos);
 	qbert.add_transform(&trans);
 
-	npc_list.clear();	
+	npc_list.clear();
 }
 
 void spiel::reset()
@@ -339,7 +361,7 @@ void spiel::reset()
 }
 
 void spiel::game_over()
-{	
+{
 	/* Frage: Was sollen wir machen? */
 	printf("Game Over, du Lusche!\n\n");
 	reset();
@@ -395,6 +417,17 @@ void spiel::step()
 	return;
 }
 
+void spiel::prep_sprites()
+{
+	int dig = 0; int score = stats.Score;
+	for (int i=4; i>=0; i--)
+	{
+		dig = score % 10;
+		score = score / 10;
+		score_sprite[i].set_tx(digit_tex[dig].get_tx());
+	}
+}
+
 int spiel::render()
 {
 	// Elemente auf dem Spielfeld berechnen
@@ -410,6 +443,13 @@ int spiel::render()
 	// NPCs rendern
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 		(*it)->render(1, RENDER_ALL);
+
+	// Sprites vorbereiten
+	prep_sprites();
+
+	// Sprites rendern
+	for (int i=0; i<5; i++)
+		score_sprite[i].render();
 
 	return 1;
 }

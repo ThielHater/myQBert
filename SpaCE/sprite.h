@@ -25,6 +25,7 @@ class sprite
 		void move( float xtrans, float ytrans, float xscale, float yscale, float zdreh);
 		void move( int lox, int loy, int rux, int ruy);
 		void render(int z = 0, int s = 0);
+		void set_tx(LPDIRECT3DTEXTURE9 arg_tx) { tx = arg_tx; }
 	};
 
 # endif
