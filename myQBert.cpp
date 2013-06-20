@@ -4,6 +4,9 @@
 #include <fstream>
 #include <list>
 #include <vector>
+#include <string>       // std::string
+#include <iostream>     // std::cout
+#include <sstream>  
 #include "SpaCE/applikation.h"
 #include "GameStats.h"
 #include "Edge.h"
@@ -13,8 +16,10 @@
 #include "QBert.h"
 #include "Coily.h"
 #include "resource.h"
-//#include "dirent.h
+#include "SlickSam.h"
+#include "dirent.h"
 
+using namespace std;
 /*
 	- Texturen in NPC Klassen verschieben, eigene Init() Funktionen?
 	- Aufbau des Wegnetz in einer Schleife?
@@ -25,7 +30,7 @@ class spiel : public applikation
 	private:
 		AdjacencyList adjacency_list; // 1 NULL, 28 Würfel, 2 Disks
 		Cube cubes[31];
-		textur cube_tex[40]; // 36 Würfel, 4 Disks
+		textur cube_tex[7]; // 36 Würfel, 4 Disks
 		QBert qbert;
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion durchlaufen
 		GameStats stats; // Spielstatistik		
@@ -66,28 +71,27 @@ void spiel::setup()
 	// Titel, Icon und Hintergrundfarbe setzen
 	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
 
-	/*
-	DIR *dir = 0; struct dirent *ent = 0; int i=0; char file_path[256]; dir = opendir("myQBert/Textures");
-	if (dir)
-	{
-		do
-		{
-			ent = readdir(dir);
-			if (ent && (strcmp(ent->d_name, "Cube") > 0))
-			{
-				sprintf_s(file_path, "%s/%s", "myQBert/Textures", ent->d_name);
-				cube_tex[i].load(file_path);
-				i++;
-			}
-		}
-		while (ent);
-		closedir (dir);
-	}
-	*/
+	//Disc Texturen laden
+	cube_tex[3].load("myQBert\\Textures\\Disc-1.png");
+	cube_tex[4].load("myQBert\\Textures\\Disc-2.png");
+	cube_tex[5].load("myQBert\\Textures\\Disc-3.png");
+	cube_tex[6].load("myQBert\\Textures\\Disc-4.png");
+
+	stats.AddLevel();
 
 	// Modell und Textur der Würfel laden, Reflektionen ausschalten und Würfel positionieren
-	CubeTexFirst->load("myQBert/Textures/Cube-L1-R1-1.png");
-	CubeTexLast->load("myQBert/Textures/Cube-L1-R1-2.png");
+	stringstream sss;
+	char ccc[100];
+	for(int i=0;i<3;i++)
+	{
+		sss << "myQBert\\Textures\\Cube-L" << stats.GetLevel() << "-R" << stats.GetRound() << "-" << i+1 << ".png";
+		sss >> ccc;
+		cube_tex[i].load(ccc);
+		sss.clear();
+	}
+	CubeTexFirst = &cube_tex[0];
+	CubeTexLast = &cube_tex[1];
+
 	D3DXMatrixRotationY(&rota, D3DX_PI/4.0f);
 	for(int i=1; i<=28; i++)
 	{
@@ -242,6 +246,9 @@ void spiel::setup()
 	qbert = *q;
 	Coily *c = new Coily(Node(1, &cubes[1]));
 	npc_list.push_back(c);
+	TypeEnum t = SLICK;
+	SlickSam *ss = new SlickSam(Node(2,&cubes[2]), t); 
+	npc_list.push_back(ss);
 }
 
 int spiel::step()

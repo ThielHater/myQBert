@@ -9,6 +9,6 @@ class QBert : public NPC
 		~QBert(void);
 		int Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction);
 		int Collision(void); // kein Effekt
-		int NodeEffect(void); // Feld wird umgefärbt
+		int NodeEffect(GameStats &stats); // Feld wird umgefärbt
 		int SetTexture(void); // Normal
 };

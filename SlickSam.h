@@ -6,7 +6,7 @@ enum TypeEnum {SLICK, SAM};
 class SlickSam : public NPC
 {
 	public:
-		SlickSam(Node ArgCurNode);
+		SlickSam(Node ArgCurNode, TypeEnum t);
 		~SlickSam(void);
 		TypeEnum Type; // Slick oder Sam?
 		int Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts

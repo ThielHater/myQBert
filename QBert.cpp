@@ -43,7 +43,7 @@ int QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Direction
 			if (!isMoving)
 			{
 				// Würfel umfärben
-				this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->LastTex);
+				NodeEffect(stats);
 			}
 		}
 		else
@@ -77,8 +77,24 @@ int QBert::Collision(void)
 	return 0;
 }
 
-int QBert::NodeEffect(void)
+int QBert::NodeEffect(GameStats &stats)
 {
+	switch(stats.GetLevel())
+	{
+		case 1:
+			this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->LastTex);
+			break;
+		case 2:
+			if(CurNode.RelCube->CurTex != CurNode.RelCube->LastTex)
+				this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->CurTex++);
+			break;
+		case 3:
+			if(CurNode.RelCube->CurTex == CurNode.RelCube->LastTex)
+				this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->FirstTex);
+			else
+				this->CurNode.RelCube->set_texture(0, this->CurNode.RelCube->LastTex);
+			break;
+	}
 	return 0;
 }
 
