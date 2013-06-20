@@ -9,4 +9,5 @@ class Cube : public objekt
 		textur *FirstTex;
 		textur *CurTex;
 		textur *LastTex;
+		bool IsDone();
 };

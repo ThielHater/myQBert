@@ -267,6 +267,20 @@ int spiel::step()
 	unsigned char keys[256];
 	DIMOUSESTATE mouse;
 
+	bool levelComplete = true;
+	for(int i=1; i<=28; i++) {
+		if (!cubes[i].IsDone()) {
+			levelComplete = false;
+			break;
+		}
+	}
+
+	// Alle Würfel fertig, Level abgeschlossen
+	if (levelComplete) {
+		reset();
+		return 1;
+	}
+
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 	{
 		(*it)->Step(adjacency_list, stats, qbert.CurNode);
