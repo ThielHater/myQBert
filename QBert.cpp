@@ -15,35 +15,7 @@ QBert::~QBert(void)
 {
 }
 
-void QBert::Reset(Node &node)
-{
-	CurNode = node;
-
-	D3DXMATRIX pos, rota, trans, nullTrans;
-
-	D3DXMatrixTranslation(&nullTrans, 0, 0,0);
-
-	CurNode.RelCube->get_transform(&pos);
-	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
-	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
-
-	set_transform(&nullTrans);
-	add_transform(&rota);
-	add_transform(&pos);
-	add_transform(&trans);
-	set_texture(0, &this->TexDownRightJump);
-
-	isMoving = false;
-	isWaiting = false;
-	FirstMoveDone = false;
-	MoveDirection = DIR_NONE;
-	FramesJumped = 0;
-	FramesWaited = 0;
-	TargetNode.NodeNum = 0;
-	TargetNode.RelCube = 0;
-}
-
-int QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
+void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -97,17 +69,17 @@ int QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Direction
 		}
 	}
 
-	return 0;
+	return;
 }
 
-int QBert::Collision(void)
+void QBert::Collision(void)
 {
-	return 0;
+	return;
 }
 
-int QBert::NodeEffect(GameStats &stats)
+void QBert::NodeEffect(GameStats &stats)
 {
-	if (stats.GetLevel() == 1)
+	if (stats.Level == 1)
 	{
 		if (this->CurNode.RelCube->cur < 1)
 		{
@@ -115,7 +87,7 @@ int QBert::NodeEffect(GameStats &stats)
 			this->CurNode.RelCube->update_texture();
 		}
 	}
-	else if (stats.GetLevel() == 2)
+	else if (stats.Level == 2)
 	{
 		if (this->CurNode.RelCube->cur == 0)		
 			this->CurNode.RelCube->cur++;					
@@ -123,10 +95,10 @@ int QBert::NodeEffect(GameStats &stats)
 			this->CurNode.RelCube->cur--;
 		this->CurNode.RelCube->update_texture();
 	}
-	return 0;
+	return;
 }
 
-int QBert::SetTexture(void)
+void QBert::SetTexture(void)
 {
 	if (isMoving)
 	{
@@ -150,5 +122,5 @@ int QBert::SetTexture(void)
 		else if (MoveDirection == DIR_RIGHTUP)
 			set_texture(0, &this->TexUpRight);
 	}
-	return 0;
+	return;
 }

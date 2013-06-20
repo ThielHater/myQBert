@@ -10,11 +10,11 @@ class Coily : public NPC
 	public:
 		Coily(Node ArgCurNode);
 		~Coily(void);
-		bool isUnpacked; // Ist Coily schon entrollt?
+		bool isUnpacked; // Ist Coily schon entpackt?
 		textur TexUnpacked;
 		textur TexUnpackedJump;
-		int Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts, entrollt sich dann und hüpft Q*Bert hinterher
-		int Collision(GameStats &stats); // Q*Bert verliert ein Leben
-		int NodeEffect(void); // kein Effekt
-		int SetTexture(void); // zwei Texturen mehr
+		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts, entpackt sich dann und hüpft Q*Bert hinterher
+		void Collision(GameStats &stats); // Q*Bert verliert ein Leben
+		void NodeEffect(void); // kein Effekt
+		void SetTexture(void); // zwei Texturen mehr
 };

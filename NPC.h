@@ -10,8 +10,7 @@ class NPC : public objekt
 {
 	public:
 		NPC(void);
-		NPC(Node ArgCurNode);
-		void InitGraphics(char *ArgTexName);
+		NPC(Node ArgCurNode);		
 		~NPC(void);
 		bool isMoving; // Bewegt sich der NPC?
 		bool isWaiting; // Wartet der NPC?
@@ -31,9 +30,10 @@ class NPC : public objekt
 		textur TexUpLeftJump; // Textur, wenn der NPC springt
 		textur TexUpRight; // Textur, wenn der NPC springt
 		textur TexUpRightJump; // Textur, wenn der NPC springt
+		void InitGraphics(char *ArgTexName);
 		void Move(DirectionEnum direction); // NPC räumlich in eine bestimmte Richtung bewegen
-		virtual int SetTexture(void); // Allgemein
-		virtual int Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // bewegt den NPC, prüft Kollisionen, kümmert sich um Feldeffekte
-		virtual int Collision(void); // wird aufgerufen, wenn eine Kollision aufgetreten ist
-		virtual int NodeEffect(void); // wird aufgerufen, wenn der NPC auf ein Feld kommt
+		virtual void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // bewegt den NPC, prüft Kollisionen, kümmert sich um Feldeffekte
+		virtual void Collision(void); // wird aufgerufen, wenn eine Kollision aufgetreten ist
+		virtual void NodeEffect(void); // wird aufgerufen, wenn der NPC auf ein Feld kommt
+		virtual void SetTexture(void); // Allgemein
 };

@@ -4,14 +4,17 @@ Ball::Ball(Node ArgCurNode) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	if (Type == RED)
+	int rnd = rand() % 2;
+	if (rnd%2)
 	{
+		Type = RED;
 		InitGraphics("Red-Ball");
 		TexNorm.load("myQBert/Textures/Red-Ball.png");
 		TexJump.load("myQBert/Textures/Red-Ball-Jump.png");
 	}
-	else if (Type == GREEN)
+	else
 	{
+		Type = GREEN;
 		InitGraphics("Green-Ball");
 		TexNorm.load("myQBert/Textures/Green-Ball.png");
 		TexJump.load("myQBert/Textures/Green-Ball-Jump.png");
@@ -22,26 +25,25 @@ Ball::~Ball(void)
 {
 }
 
-int Ball::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
+void Ball::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
-	return 0;
+	return;
 }
 
-int Ball::Collision(void)
+void Ball::Collision(void)
 {
-	return 0;
+	return;
 }
 
-int Ball::NodeEffect(void)
+void Ball::NodeEffect(void)
 {
-	return 0;
+	return;
 }
 
-int Ball::SetTexture(void)
+void Ball::SetTexture(void)
 {
 	if (isMoving)
 		set_texture(0, &this->TexJump);
 	else
 		set_texture(0, &this->TexNorm);
-	return 0;
 }

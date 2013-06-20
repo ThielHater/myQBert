@@ -142,7 +142,7 @@ void NPC::Move(DirectionEnum direction)
 	}
 }
 
-int NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
+void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -210,21 +210,20 @@ int NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node 
 			}
 		}
 	}
-
-	return 0;
+	return;
 }
 
-int NPC::Collision(void)
+void NPC::Collision(void)
 {
-	return 0;
+	return;
 }
 
-int NPC::NodeEffect(void)
+void NPC::NodeEffect(void)
 {
-	return 0;
+	return;
 }
 
-int NPC::SetTexture(void)
+void NPC::SetTexture(void)
 {
 	if (isMoving)
 	{
@@ -248,5 +247,5 @@ int NPC::SetTexture(void)
 		else if (MoveDirection == DIR_RIGHTUP)
 			set_texture(0, &this->TexUpRight);
 	}
-	return 0;
+	return;
 }

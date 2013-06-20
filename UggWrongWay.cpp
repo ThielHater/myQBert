@@ -4,32 +4,39 @@ UggWrongWay::UggWrongWay(Node ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	if (Type == UGG)
+	int rnd = rand() % 2;
+	if (rnd%2)
+	{
+		Type = UGG;
 		InitGraphics("Ugg");
-	else if (Type == WRONGWAY)
+	}
+	else
+	{
+		Type = WRONGWAY;
 		InitGraphics("Wrong-Way");
+	}
 }
 
 UggWrongWay::~UggWrongWay(void)
 {
 }
 
-int UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
+void UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
-	return 0;
+	return;
 }
 
-int UggWrongWay::Collision(void)
+void UggWrongWay::Collision(void)
 {
-	return 0;
+	return;
 }
 
-int UggWrongWay::NodeEffect(void)
+void UggWrongWay::NodeEffect(void)
 {
-	return 0;
+	return;
 }
 
-int UggWrongWay::SetTexture(void)
+void UggWrongWay::SetTexture(void)
 {
 	if (isMoving)
 	{
@@ -53,5 +60,5 @@ int UggWrongWay::SetTexture(void)
 		else if (MoveDirection == DIR_RIGHTUP)
 			set_texture(0, &this->TexUpRight);
 	}
-	return 0;
+	return;
 }

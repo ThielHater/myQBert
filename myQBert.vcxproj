@@ -156,7 +156,6 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Coily.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="dirent.h" />
     <ClInclude Include="Disk.h" />
     <ClInclude Include="Edge.h" />
     <ClInclude Include="GameStats.h" />

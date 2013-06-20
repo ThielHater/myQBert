@@ -21,7 +21,7 @@ SlickSam::~SlickSam(void)
 {
 }
 
-int SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
+void SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -81,36 +81,39 @@ int SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const 
 			}
 		}
 	}
-	return 0;
+	return;
 }
 
-int SlickSam::Collision()
+void SlickSam::Collision(void)
 {
-	printf("Great you catched Slick/Sam");
-	return 0;
+	if (Type == SLICK)
+		printf("Q*Bert hat Slick gefangen!");
+	else
+		printf("Q*Bert hat Sam gefangen!");
+	return;
 }
 
-int SlickSam::NodeEffect(void)
+void SlickSam::NodeEffect(void)
 {
 	if (Type == SLICK)
 	{
-		// Würfel umfärben (1. Farbe)
+		// Würfel umfärben (erste Farbe)
 		this->CurNode.RelCube->cur = 0;
 		this->CurNode.RelCube->update_texture();
 	}
 	else if (Type == SAM)
 	{
-		// Würfel umfärben (Farbe - 1)		
+		// Würfel umfärben (vorherige Farbe)		
 		if (CurNode.RelCube->cur > 0)
 		{
 			this->CurNode.RelCube->cur--;
 			this->CurNode.RelCube->update_texture();	
 		}
 	}
-	return 0;
+	return;
 }
 
-int SlickSam::SetTexture(void)
+void SlickSam::SetTexture(void)
 {
 	if (isMoving)
 	{
@@ -134,5 +137,5 @@ int SlickSam::SetTexture(void)
 		else if (MoveDirection == DIR_RIGHTUP)
 			set_texture(0, &this->TexUpRight);
 	}
-	return 0;
+	return;
 }

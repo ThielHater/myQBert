@@ -121,9 +121,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
-    <ClInclude Include="dirent.h">
-      <Filter>Header-Dateien</Filter>
-    </ClInclude>
     <ClInclude Include="AdjacencyList.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>

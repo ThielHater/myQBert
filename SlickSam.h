@@ -9,8 +9,8 @@ class SlickSam : public NPC
 		SlickSam(Node ArgCurNode);
 		~SlickSam(void);
 		TypeEnumSS Type; // Slick oder Sam?
-		int Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts
-		int Collision(void); // kein Effekt
-		int NodeEffect(void); // Slick setzt Feld ganz zurück, Sam setzt Feld um eine Stufe zurück
-		int SetTexture(void); // drei Sprungtexturen
+		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts
+		void Collision(void); // kein Effekt
+		void NodeEffect(void); // Slick setzt Feld ganz zurück, Sam setzt Feld um eine Stufe zurück
+		void SetTexture(void); // drei Sprungtexturen
 };

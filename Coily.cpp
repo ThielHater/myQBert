@@ -21,7 +21,7 @@ Coily::~Coily(void)
 {
 }
 
-int Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
+void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -76,8 +76,18 @@ int Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Nod
 					// Wurde die untere Kante erreicht (Coily kann am Anfang nicht seitlich runterfallen)?
 					if (TargetNode.NodeNum == 0)
 					{
-						// Entpacken, nächsten Knoten berechnen und Richtung bestimmmen
+						// Coily entpacken
 						isUnpacked=true;
+
+						// Sind Coily und Q*Bert gerade jetzt auf dem gleichen Knoten (Sonderfall)?
+						if (CurNode.NodeNum == qbert_node.NodeNum)
+						{
+							// Coily hat Q*Bert "gefangen"
+							Collision(stats);
+							return;
+						}
+
+						// nächsten Knoten berechnen und Richtung bestimmmen
 						TargetNode = Step_Unpacked(adjacency_list, qbert_node);
 						if (adjacency_list[CurNode.NodeNum][0].target == TargetNode)
 							MoveDirection = DIR_RIGHTUP;
@@ -93,6 +103,7 @@ int Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Nod
 					isMoving = true;
 					Move(MoveDirection);
 				}
+
 				// Sind Coily und Q*Bert nicht auf dem gleichen Knoten?
 				else if (CurNode.NodeNum != qbert_node.NodeNum)
 				{
@@ -114,12 +125,13 @@ int Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Nod
 			}
 		}
 	}
-
-	return 0;
+	return;
 }
 
 Node Coily::Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_node)
 {
+	/* Djikstra-Algorithmus */
+
 	std::vector<double> min_distance;
 	std::vector<int> previous;
 	int n = adjacency_list.size();
@@ -162,20 +174,22 @@ Node Coily::Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_node)
 	return path.front();
 }
 
-int Coily::Collision(GameStats &stats)
+void Coily::Collision(GameStats &stats)
 {
-	stats.SubLifeCount();
-
-	printf("KOLLISION, noch %d LEBEN!!!!\n", stats.GetLifeCount());
-	return 0;
+	stats.LifeCount--;
+	if (stats.LifeCount > 0)
+		printf("Q*Bert wurde von Coily gefangen, noch %d Leben!\n", stats.LifeCount);
+	else
+		printf("Q*Bert wurde von Coily gefangen, kein Leben mehr!\n", stats.LifeCount);
+	return;
 }
 
-int Coily::NodeEffect(void)
+void Coily::NodeEffect(void)
 {
-	return 0;
+	return;
 }
 
-int Coily::SetTexture(void)
+void Coily::SetTexture(void)
 {
 	if (isUnpacked)
 	{
@@ -209,5 +223,5 @@ int Coily::SetTexture(void)
 		else
 			set_texture(0, &this->TexUnpacked);
 	}
-	return 0;
+	return ;
 }
