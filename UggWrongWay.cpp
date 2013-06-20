@@ -23,6 +23,18 @@ UggWrongWay::~UggWrongWay(void)
 
 void UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
+	/*
+	if (Type == UGG)
+	{
+		TargetNode = adjacency_list[CurNode.NodeNum][0].target;
+		MoveDirection = DIR_RIGHTUP;
+	}
+	else if (Type == WRONGWAY)
+	{
+		TargetNode = adjacency_list[CurNode.NodeNum][3].target;
+		MoveDirection = DIR_LEFTUP;
+	}
+	*/
 	return;
 }
 
