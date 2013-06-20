@@ -109,7 +109,7 @@ int QBert::NodeEffect(GameStats &stats)
 {
 	if (stats.GetLevel() == 1)
 	{
-		if (this->CurNode.RelCube->cur != 2)
+		if (this->CurNode.RelCube->cur < 1)
 		{
 			this->CurNode.RelCube->cur++;
 			this->CurNode.RelCube->update_texture();

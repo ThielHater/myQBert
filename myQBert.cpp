@@ -22,7 +22,7 @@ class spiel : public applikation
 {
 	private:
 		AdjacencyList adjacency_list; // 1 NULL, 28 Würfel, 2 Disks
-		Cube cubes[28];
+		Cube cubes[29];
 		Cube disks[2];
 		textur cube_tex[3]; // werden jede Runde neu geladen
 		textur disk_tex[4];
@@ -249,7 +249,7 @@ void spiel::reset()
 	{
 		cubes[i].cur = 0;
 		cubes[i].update_texture();
-	}	
+	}
 
 	Coily *c = new Coily(Node(1, &cubes[1]));
 	npc_list.push_back(c);
