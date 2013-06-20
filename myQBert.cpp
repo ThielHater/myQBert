@@ -298,7 +298,8 @@ bool spiel::check_round()
 
 void spiel::new_round()
 {
-	reset();
+	qbert.CurNode = Node(1, &cubes[1]);
+	qbert_hit();
 
 	if (stats.Round != 4)
 	{
@@ -313,7 +314,14 @@ void spiel::new_round()
 	load_cube_tex();
 
 	for (int i=1; i<=28; i++)
+	{
 		cubes[i].init_texture(cube_tex);
+		cubes[i].cur = 0;
+		cubes[i].update_texture();
+	}
+
+	Coily *c = new Coily(Node(3, &cubes[3]));
+	npc_list.push_back(c);
 }
 
 void spiel::qbert_hit()
@@ -348,16 +356,19 @@ void spiel::reset()
 	qbert.CurNode = Node(1, &cubes[1]);
 	qbert_hit();
 
+	stats.Reset();
+
+	load_cube_tex();
+
 	for (int i=1; i<=28; i++)
 	{
+		cubes[i].init_texture(cube_tex);
 		cubes[i].cur = 0;
 		cubes[i].update_texture();
 	}
 
 	Coily *c = new Coily(Node(3, &cubes[3]));
 	npc_list.push_back(c);
-
-	stats.Reset();
 }
 
 void spiel::game_over()
@@ -408,6 +419,10 @@ void spiel::step()
 			qbert.Step(adjacency_list, stats, DIR_LEFTDOWN);
 		else
 			qbert.Step(adjacency_list, stats, DIR_NONE);
+
+		// Ist Q*Bert runtergefallen?
+		if (qbert.CurNode.NodeNum == 0)
+			game_over();
 	}
 
 	// Wurde die Runde abgeschlossen?

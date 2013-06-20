@@ -177,6 +177,7 @@ Node Coily::Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_node)
 void Coily::Collision(GameStats &stats)
 {
 	stats.LifeCount--;
+	stats.QBertHit = true;
 	if (stats.LifeCount > 0)
 		printf("Q*Bert wurde von Coily gefangen, noch %d Leben!\n", stats.LifeCount);
 	else
