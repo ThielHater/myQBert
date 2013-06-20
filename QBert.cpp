@@ -31,6 +31,12 @@ void QBert::Reset(Node &node) {
 	add_transform(&pos);
 	add_transform(&trans);
 	set_texture(0, &this->TexDownRightJump);
+
+	isMoving = false;
+	isWaiting = false;
+	FirstMoveDone = false;
+	FramesJumped = 0;
+	FramesWaited = 0;
 }
 
 int QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
