@@ -31,7 +31,7 @@ void QBert::Reset(Node &node)
 	add_transform(&rota);
 	add_transform(&pos);
 	add_transform(&trans);
-	set_texture(0, &TexDownRightJump);
+	set_texture(0, &this->TexDownRightJump);
 
 	isMoving = false;
 	isWaiting = false;
