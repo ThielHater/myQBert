@@ -20,4 +20,5 @@ class GameStats
 		int AddRound(void);
 		int SubLifeCount(void);
 		int AddScore(int);
+		void Reset();
 };

@@ -15,6 +15,24 @@ QBert::~QBert(void)
 {
 }
 
+void QBert::Reset(Node &node) {
+	CurNode = node;
+
+	D3DXMATRIX pos, rota, trans, nullTrans;
+
+	D3DXMatrixTranslation(&nullTrans, 0, 0,0);
+
+	CurNode.RelCube->get_transform(&pos);
+	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
+	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
+
+	set_transform(&nullTrans);
+	add_transform(&rota);
+	add_transform(&pos);
+	add_transform(&trans);
+	set_texture(0, &this->TexDownRightJump);
+}
+
 int QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
 {
 	// Wartet der NPC?
