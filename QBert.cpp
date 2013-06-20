@@ -79,18 +79,9 @@ void QBert::Collision(void)
 
 void QBert::NodeEffect(GameStats &stats)
 {
-	if (stats.Level == 1)
+	if ((stats.Level == 1) || (stats.Level == 2))
 	{
-		if (this->CurNode.RelCube->cur < 1)
-		{
-			this->CurNode.RelCube->cur++;
-			this->CurNode.RelCube->update_texture();
-			stats.Score += 25;
-		}
-	}
-	else if (stats.Level == 2)
-	{
-		if (this->CurNode.RelCube->cur < 2)
+		if (this->CurNode.RelCube->cur < stats.Level)
 		{
 			this->CurNode.RelCube->cur++;
 			this->CurNode.RelCube->update_texture();
