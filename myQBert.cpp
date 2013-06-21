@@ -34,8 +34,7 @@ class spiel : public applikation
 		QBert qbert;
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion aufgerufen
 		GameStats stats;
-		textur digit_tex[10];
-		sprite score_sprite[5];
+		sprite digit_sprite[10];
 
 	public:
 		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
@@ -49,7 +48,7 @@ class spiel : public applikation
 		void setup();
 		void setup_nodes();
 		void step();
-		void prep_sprites();
+		void render_sprites();
 		int render();
 };
 
@@ -99,23 +98,13 @@ void spiel::setup()
 	stats.Level = 2;
 	stats.Round = 1;
 
-	// Ziffern Texturen laden
+	// Ziffern Sprites laden
 	std::stringstream ss;
 	for (int i=0; i<10; i++)
 	{
 		ss <<"myQBert/Textures/" <<i <<".png";
-		digit_tex[i].load((char*)ss.str().c_str());
+		digit_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
 		ss.str(std::string()); ss.clear();
-	}
-
-	// Score Sprites intialisieren
-	int offset = 48; int edge = 32;
-	for (int i=0; i<5; i++)
-	{
-		ss <<"myQBert/Textures/" <<i <<".png";
-		score_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
-		ss.str(std::string()); ss.clear();
-		score_sprite[i].move(i*edge + offset, offset, (i+1)*edge + offset, edge + offset);
 	}
 
 	// Disk Texturen laden
@@ -429,14 +418,34 @@ void spiel::step()
 	return;
 }
 
-void spiel::prep_sprites()
+void spiel::render_sprites()
 {
-	int dig = 0; int score = stats.Score;
-	for (int i=4; i>=0; i--)
+	// Variablendeklaration und -initialisierung
+	int digit = 0;
+	int digit_count = (stats.Score > 0) ? 0 : 1;
+	int score = stats.Score;
+	int offset = 48;
+	int edge = 32;
+
+	// alle Sprites ausblenden
+	for (int i=0; i<5; i++)
+		digit_sprite[i].move(0, 0, 0, 0);
+
+	// Anzahl der Stellen ermitteln
+	while (score)
 	{
-		dig = score % 10;
 		score = score / 10;
-		score_sprite[i].set_tx(digit_tex[dig].get_tx());
+		digit_count++;
+    }	
+
+	// alle Stellen durchlaufen
+	score = stats.Score;
+	for (int i=digit_count-1; i>=0; i--)
+	{
+		digit = score % 10;
+		score = score / 10;
+		digit_sprite[digit].move(i*edge + offset, offset, (i+1)*edge + offset, edge + offset);
+		digit_sprite[digit].render();
 	}
 }
 
@@ -456,12 +465,8 @@ int spiel::render()
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 		(*it)->render(1, RENDER_ALL);
 
-	// Sprites vorbereiten
-	prep_sprites();
-
 	// Sprites rendern
-	for (int i=0; i<5; i++)
-		score_sprite[i].render();
+	render_sprites();
 
 	return 1;
 }
