@@ -95,6 +95,10 @@ void spiel::setup()
 	// Titel, Icon und Hintergrundfarbe setzen
 	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
 
+	/* Hinweis: Test! */
+	stats.Level = 2;
+	stats.Round = 1;
+
 	// Ziffern Texturen laden
 	std::stringstream ss;
 	for (int i=0; i<10; i++)
@@ -103,10 +107,6 @@ void spiel::setup()
 		digit_tex[i].load((char*)ss.str().c_str());
 		ss.str(std::string()); ss.clear();
 	}
-
-	// TEST!!
-	stats.Level = 2;
-	stats.Round = 1;
 
 	// Score Sprites intialisieren
 	int offset = 48; int edge = 32;
@@ -318,11 +318,7 @@ void spiel::new_round()
 	load_cube_tex();
 
 	for (int i=1; i<=28; i++)
-	{
 		cubes[i].init_texture(cube_tex);
-		cubes[i].cur = 0;
-		cubes[i].update_texture();
-	}
 
 	Coily *c = new Coily(Node(3, &cubes[3]));
 	npc_list.push_back(c);
@@ -365,11 +361,7 @@ void spiel::reset()
 	load_cube_tex();
 
 	for (int i=1; i<=28; i++)
-	{
 		cubes[i].init_texture(cube_tex);
-		cubes[i].cur = 0;
-		cubes[i].update_texture();
-	}
 
 	Coily *c = new Coily(Node(3, &cubes[3]));
 	npc_list.push_back(c);
@@ -378,6 +370,7 @@ void spiel::reset()
 void spiel::game_over()
 {
 	/* Frage: Was sollen wir machen? */
+
 	printf("Game Over, du Lusche!\n\n");
 	reset();
 }
