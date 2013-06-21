@@ -52,7 +52,7 @@ class spiel : public applikation
 		void setup();
 		void setup_nodes();
 		void step();
-		void render_stats();
+		void render_sprites();
 		int render();
 };
 
@@ -428,7 +428,7 @@ void spiel::step()
 	return;
 }
 
-void spiel::render_stats()
+void spiel::render_sprites()
 {
 	// Variablendeklaration und -initialisierung
 	int digit = 0;
@@ -498,8 +498,8 @@ int spiel::render()
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 		(*it)->render(1, RENDER_ALL);
 
-	// Statistik rendern
-	render_stats();
+	// Sprites rendern
+	render_sprites();
 
 	return 1;
 }
