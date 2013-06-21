@@ -35,6 +35,10 @@ class spiel : public applikation
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion aufgerufen
 		GameStats stats;
 		sprite digit_sprite[10];
+		sprite player_sprite;
+		sprite lvl_sprite;
+		sprite rnd_sprite;
+		sprite life_sprite;
 
 	public:
 		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
@@ -48,12 +52,13 @@ class spiel : public applikation
 		void setup();
 		void setup_nodes();
 		void step();
-		void render_sprites();
+		void render_stats();
 		int render();
 };
 
 void spiel::init_window(char *txt, WORD icon_num, int r, int g, int b)
 {
+	//set_window(32, 48, 1280, 720, 1);
 	set_title(txt);
 	HWND handle = FindWindow(NULL, _TEXT(txt));
 	const HICON icon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(icon_num));
@@ -98,7 +103,7 @@ void spiel::setup()
 	stats.Level = 2;
 	stats.Round = 1;
 
-	// Ziffern Sprites laden
+	// Sprites laden
 	std::stringstream ss;
 	for (int i=0; i<10; i++)
 	{
@@ -106,6 +111,11 @@ void spiel::setup()
 		digit_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
 		ss.str(std::string()); ss.clear();
 	}
+
+	player_sprite.load("myQBert/Textures/Player.png", 0xffffff00);
+	lvl_sprite.load("myQBert/Textures/Level.png", 0xffffff00);
+	rnd_sprite.load("myQBert/Textures/Round.png", 0xffffff00);
+	life_sprite.load("myQBert/Textures/Life.png", 0xffffff00);
 
 	// Disk Texturen laden
 	disk_tex[0].load("myQBert/Textures/Disk-1.png");
@@ -418,18 +428,24 @@ void spiel::step()
 	return;
 }
 
-void spiel::render_sprites()
+void spiel::render_stats()
 {
 	// Variablendeklaration und -initialisierung
 	int digit = 0;
 	int digit_count = (stats.Score > 0) ? 0 : 1;
 	int score = stats.Score;
-	int offset = 48;
 	int edge = 32;
+	int x = 0;
+	int y = 0;
 
-	// alle Sprites ausblenden
-	for (int i=0; i<5; i++)
-		digit_sprite[i].move(0, 0, 0, 0);
+	// Fenstergröße abfragen und Rastereinheit ausrechnen
+	get_windowsize(0, 0, &x, &y, 1);
+	x = x/32;
+	y = y/32;
+
+	// Player rendern
+	player_sprite.move(x, y*2, x + player_sprite.get_x(), y*2 + player_sprite.get_y());
+	player_sprite.render();
 
 	// Anzahl der Stellen ermitteln
 	while (score)
@@ -438,14 +454,31 @@ void spiel::render_sprites()
 		digit_count++;
     }	
 
-	// alle Stellen durchlaufen
+	// alle Stellen durchlaufen und Ziffer rendern
 	score = stats.Score;
 	for (int i=digit_count-1; i>=0; i--)
 	{
 		digit = score % 10;
 		score = score / 10;
-		digit_sprite[digit].move(i*edge + offset, offset, (i+1)*edge + offset, edge + offset);
+		digit_sprite[digit].move(x + i*(digit_sprite[digit].get_x()/2), y*5, x + (i+1)*(digit_sprite[digit].get_x()/2), y*5 + (digit_sprite[digit].get_y())/2);
 		digit_sprite[digit].render();
+	}
+
+	// Level / Round rendern
+	lvl_sprite.move(x*24, y*6, x*24 + lvl_sprite.get_x()/2, y*6 + lvl_sprite.get_y()/2);
+	lvl_sprite.render();
+	rnd_sprite.move(x*24, y*9, x*24 + rnd_sprite.get_x()/2, y*9 + rnd_sprite.get_y()/2);
+	rnd_sprite.render();
+	digit_sprite[stats.Level].move(x*24 + lvl_sprite.get_x()/2 + digit_sprite[stats.Level].get_x()/2, y*6, x*24 + lvl_sprite.get_x()/2 + digit_sprite[stats.Level].get_x(), y*6 + digit_sprite[stats.Level].get_y()/2);
+	digit_sprite[stats.Level].render();
+	digit_sprite[stats.Round].move(x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Level].get_x()/2, y*9, x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Round].get_x(), y*9 + digit_sprite[stats.Round].get_y()/2);
+	digit_sprite[stats.Round].render();
+	
+	// Leben rendern
+	for (int i=0; i<stats.LifeCount; i++)
+	{
+		life_sprite.move(x, y*12 + i*(life_sprite.get_y()/2), x + (life_sprite.get_x()/2), y*12 + (i+1)*(life_sprite.get_y()/2));
+		life_sprite.render();
 	}
 }
 
@@ -465,8 +498,8 @@ int spiel::render()
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 		(*it)->render(1, RENDER_ALL);
 
-	// Sprites rendern
-	render_sprites();
+	// Statistik rendern
+	render_stats();
 
 	return 1;
 }

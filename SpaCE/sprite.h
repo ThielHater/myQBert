@@ -26,6 +26,8 @@ class sprite
 		void move( int lox, int loy, int rux, int ruy);
 		void render(int z = 0, int s = 0);
 		void set_tx(LPDIRECT3DTEXTURE9 arg_tx) { tx = arg_tx; }
+		int get_x() { return breite; }
+		int get_y() { return hoehe; }
 	};
 
 # endif
