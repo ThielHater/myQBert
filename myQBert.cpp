@@ -20,13 +20,18 @@
 
 /*
 	Zu erledigen:
+	- dafür sorgen, dass alle NPCs instanziierbar sind
 	- InitGraphics() und Texturen in von NPC abgeleitete Klassen verschieben
+	- einen NPC alle x Sekunden spawnen lassen
+	- Fall der NPCs darstellen
+	- jede Menge Sounds
+	- ...
 */
 
 class spiel : public applikation
 {
 	private:
-		AdjacencyList adjacency_list; // 31 = 1 NULL Knoten + 28 Würfel + 2 Disks
+		AdjacencyList adjacency_list; // 31 = 1 Abgrund + 28 Würfel + 2 Disks
 		Cube cubes[29]; // 29 = 1 Abgrund + 28 Würfel
 		Cube disks[2];
 		textur cube_tex[3]; // werden jede Runde neu geladen!
@@ -111,7 +116,6 @@ void spiel::setup()
 		digit_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
 		ss.str(std::string()); ss.clear();
 	}
-
 	player_sprite.load("myQBert/Textures/Player.png", 0xffffff00);
 	lvl_sprite.load("myQBert/Textures/Level.png", 0xffffff00);
 	rnd_sprite.load("myQBert/Textures/Round.png", 0xffffff00);
