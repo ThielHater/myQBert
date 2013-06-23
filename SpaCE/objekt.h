@@ -16,7 +16,6 @@ class textur
 		textur();
 		~textur();
 		int load( char *txfilename);
-		LPDIRECT3DTEXTURE9 get_tx() { return tx; }
 	};
 
 class objekt

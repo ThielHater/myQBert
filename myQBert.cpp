@@ -383,6 +383,26 @@ void spiel::step()
 	// Array für Tastatureingaben
 	unsigned char keys[256];
 
+	// Wurde eine Taste gedrückt?
+	if (poll_keyboard(keys))
+	{
+		// Q*Bert ziehen
+		if (keys[DIK_RIGHT])
+			qbert.Step(adjacency_list, stats, DIR_RIGHTDOWN);
+		else if (keys[DIK_LEFT])
+			qbert.Step(adjacency_list, stats, DIR_LEFTUP);
+		else if (keys[DIK_UP])
+			qbert.Step(adjacency_list, stats, DIR_RIGHTUP);
+		else if (keys[DIK_DOWN])
+			qbert.Step(adjacency_list, stats, DIR_LEFTDOWN);
+		else
+			qbert.Step(adjacency_list, stats, DIR_NONE);
+
+		// Ist Q*Bert runtergefallen?
+		if (qbert.CurNode.NodeNum == 0)
+			game_over();
+	}
+
 	// NPCs durchlaufen
 	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 	{
@@ -403,26 +423,6 @@ void spiel::step()
 			qbert_hit();
 			return;
 		}
-	}
-
-	// Wurde eine Taste gedrückt?
-	if (poll_keyboard(keys))
-	{
-		// Q*Bert ziehen
-		if (keys[DIK_RIGHT])
-			qbert.Step(adjacency_list, stats, DIR_RIGHTDOWN);
-		else if (keys[DIK_LEFT])
-			qbert.Step(adjacency_list, stats, DIR_LEFTUP);
-		else if (keys[DIK_UP])
-			qbert.Step(adjacency_list, stats, DIR_RIGHTUP);
-		else if (keys[DIK_DOWN])
-			qbert.Step(adjacency_list, stats, DIR_LEFTDOWN);
-		else
-			qbert.Step(adjacency_list, stats, DIR_NONE);
-
-		// Ist Q*Bert runtergefallen?
-		if (qbert.CurNode.NodeNum == 0)
-			game_over();
 	}
 
 	// Wurde die Runde abgeschlossen?
@@ -488,6 +488,9 @@ void spiel::render_sprites()
 
 int spiel::render()
 {
+	// Array für Tastatureingaben
+	unsigned char keys[256];
+
 	// Elemente auf dem Spielfeld berechnen
 	step();
 
@@ -504,6 +507,14 @@ int spiel::render()
 
 	// Sprites rendern
 	render_sprites();
+
+	// Wurde eine Taste gedrückt?
+	if (poll_keyboard(keys))
+	{
+		// Screenshot machen
+		if (keys[DIK_F1])
+			screenshot("myQBert");
+	}
 
 	return 1;
 }

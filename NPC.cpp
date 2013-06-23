@@ -127,8 +127,7 @@ void NPC::Move(DirectionEnum direction)
 			FramesJumped = 0;
 			isMoving = false;
 			isWaiting = true;
-			FirstMoveDone = false;
-			CurNode = TargetNode;
+			FirstMoveDone = false;			
 
 			// Textur ändern
 			SetTexture();
@@ -138,6 +137,7 @@ void NPC::Move(DirectionEnum direction)
 			// nur erste Teilbewegung fertig
 			FramesJumped = 0;
 			FirstMoveDone = true;
+			CurNode = TargetNode;
 		}
 	}
 }
