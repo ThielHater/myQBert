@@ -19,7 +19,7 @@ class UggWrongWay : public NPC
 		textur TexRightJump3;
 		void InitGraphics(char *TexName);
 		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // bewegen sich von den unteren Ecken aus nach oben links/rechts, ungefähr in Richtung Q*Bert
-		void Collision(void); // Q*Bert verliert ein Leben
+		void Collision(GameStats &stats); // Q*Bert verliert ein Leben
 		void NodeEffect(void); // kein Effekt
 		void SetTexture(void); // drei Sprungtexturen
 };

@@ -80,11 +80,6 @@ void SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const
 			FramesWaited = 0;
 			isWaiting = false;
 		}
-		// Bewegung fertig?
-		if(!isMoving)
-		{
-			NodeEffect();
-		}
 	}
 	else
 	{
@@ -94,17 +89,21 @@ void SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const
 			// Weiter bewegen..
 			Move(MoveDirection);
 
-			// Sind Coily und Q*Bert auf dem gleichen Knoten?
-			if (CurNode.NodeNum == qbert_node.NodeNum)
+			// Bewegung fertig?
+			if (!isMoving)
 			{
-				// Q*Bert hat Slick/Sam gefangen
-				Collision();
+				// Würfel umfärben
+				NodeEffect();
+
+				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
+				if (CurNode.NodeNum == qbert_node.NodeNum)					
+					Collision(stats);					
 			}
 		}
 		else
 		{
-			// Ist der NPC nicht auf dem NULL Knoten?
-			if (CurNode.NodeNum != 0)
+			// Sind der NPC und Q*Bert nicht auf dem gleichen Knoten?
+			if (CurNode.NodeNum != qbert_node.NodeNum)
 			{
 				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
 				int rnd = rand() % 2;
@@ -123,12 +122,17 @@ void SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const
 				isMoving = true;
 				Move(MoveDirection);
 			}
+			else
+			{
+				// Kollision
+				Collision(stats);
+			}
 		}
 	}
 	return;
 }
 
-void SlickSam::Collision(void)
+void SlickSam::Collision(GameStats &stats)
 {
 	if (Type == SLICK)
 		printf("Q*Bert hat Slick gefangen!");

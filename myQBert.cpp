@@ -24,7 +24,6 @@
 /*
 	Zu erledigen:
 	- dafür sorgen, dass alle NPCs instanziierbar sind
-	- einen NPC alle x Sekunden spawnen lassen
 	- Fall der NPCs darstellen
 	- jede Menge Sounds
 	- ...
@@ -348,13 +347,13 @@ void spiel::qbert_hit()
 	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
 	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
 	D3DXMatrixTranslation(&null, 0, 0,0);
-	qbert.set_texture(0, &qbert.TexDownRightJump);
+	qbert.set_texture(0, &qbert.TexDownLeft);
 	qbert.set_transform(&null);
 	qbert.add_transform(&rota);
 	qbert.add_transform(&pos);
 	qbert.add_transform(&trans);
 
-	stats.SpawnTimer = 0;
+	stats.FramesNoSpawn = 0;
 	npc_list.clear();
 }
 
@@ -403,12 +402,12 @@ void spiel::step()
 			qbert.Step(adjacency_list, stats, DIR_NONE);
 
 		// Ist Q*Bert runtergefallen?
-		if (qbert.CurNode.NodeNum == 0)		
+		if (qbert.CurNode.NodeNum == 0)
 			game_over();
 	}
 
 	// alle 10 Sekunden neuen NPC spawnen
-	if (stats.SpawnTimer >= 200)
+	if (stats.FramesNoSpawn >= 200)
 	{
 		// NPC auswürfeln und einketten
 		int rnd = 1 + (rand() % 4);
@@ -435,28 +434,69 @@ void spiel::step()
 		}
 
 		// Spawn Timer zurücksetzen
-		stats.SpawnTimer = 0;
+		stats.FramesNoSpawn = 0;
 	}
 
-	// NPCs durchlaufen
-	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
+	// Steht die Zeit nicht still?
+	if (!stats.TimeFrozen)
 	{
-		// NPC ziehen
-		(*it)->Step(adjacency_list, stats, qbert.CurNode);
-
-		// Game Over?
-		if (stats.LifeCount == 0)
+		// NPCs durchlaufen
+		std::list<NPC*>::iterator it = npc_list.begin();
+		while (it != npc_list.end())
 		{
-			game_over();
-			return;
+			// NPC ziehen
+			(*it)->Step(adjacency_list, stats, qbert.CurNode);
+
+			// Game Over?
+			if (stats.LifeCount == 0)
+			{
+				game_over();
+				return;
+			}
+
+			// Wurde Q*Bert getroffen?
+			else if (stats.QBertHit)
+			{
+				stats.QBertHit = false;
+				qbert_hit();
+				return;
+			}
+
+			// Ist der NPC runtergefallen oder die Zeit angehalten worden?
+			else if (((*it)->CurNode.NodeNum == 0) || (stats.TimeFrozen))
+			{
+				// NPC entfernen
+				it = npc_list.erase(it);
+				continue;
+			}
+
+			// nächster NPC
+			++it;
 		}
-
-		// Wurde Q*Bert getroffen?
-		else if (stats.QBertHit)
+	}
+	else
+	{
+		// War die Zeit 5 Sekunden gefroren?
+		if (stats.FramesTimeFrozen == 100)
 		{
-			stats.QBertHit = false;
-			qbert_hit();
-			return;
+			// Zeit auftauen
+			stats.TimeFrozen = false;
+			stats.FramesTimeFrozen = 0;
+			set_bkcolor(0, 0, 0);
+		}
+		else
+		{
+			// Epileptiker-Warnung??
+			int rnd = 1 + rand() % 4;
+			if (rnd == 1)
+				set_bkcolor(155, 121, 60);
+			else if (rnd == 2)
+				set_bkcolor(161, 98, 229);
+			else if (rnd == 3)
+				set_bkcolor(165, 60, 117);
+			else
+				set_bkcolor(155, 65, 38);
+			stats.FramesTimeFrozen++;
 		}
 	}
 
@@ -465,7 +505,7 @@ void spiel::step()
 		new_round();
 
 	// Spawn Timer hochzählen
-	stats.SpawnTimer++;
+	stats.FramesNoSpawn++;
 }
 
 void spiel::render_sprites()
@@ -492,7 +532,7 @@ void spiel::render_sprites()
 	{
 		score = score / 10;
 		digit_count++;
-    }	
+    }
 
 	// alle Stellen durchlaufen und Ziffer rendern
 	score = stats.Score;
@@ -513,7 +553,7 @@ void spiel::render_sprites()
 	digit_sprite[stats.Level].render();
 	digit_sprite[stats.Round].move(x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Level].get_x()/2, y*9, x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Round].get_x(), y*9 + digit_sprite[stats.Round].get_y()/2);
 	digit_sprite[stats.Round].render();
-	
+
 	// Leben rendern
 	for (int i=0; i<stats.LifeCount; i++)
 	{

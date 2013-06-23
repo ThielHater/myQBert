@@ -13,7 +13,7 @@ class Ball : public NPC
 		textur TexJump;
 		void InitGraphics(char *TexName);
 		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts
-		void Collision(void); // Rot: Q*Bert verliert ein Leben, Grün: Zeit wird pausiert, nur Q*Bert kann sich bewegen
+		void Collision(GameStats &stats); // Rot: Q*Bert verliert ein Leben, Grün: Zeit wird pausiert, nur Q*Bert kann sich bewegen
 		void NodeEffect(void); // kein Effekt
 		void SetTexture(void); // nur zwei Texturen
 };

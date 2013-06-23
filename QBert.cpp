@@ -92,8 +92,8 @@ void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Directio
 		}
 		else
 		{
-			// Ist der NPC nicht auf dem NULL Knoten?
-			if ((CurNode.NodeNum != 0) && (direction != DIR_NONE))
+			// Soll der NPC sich bewegen?
+			if (direction != DIR_NONE)
 			{
 				// n‰chsten Knoten und Richtung gem‰ﬂ Tastatureingabe festlegen
 				if (direction == DIR_RIGHTUP)
@@ -112,7 +112,6 @@ void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Directio
 			}
 		}
 	}
-
 	return;
 }
 

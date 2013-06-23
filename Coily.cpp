@@ -15,7 +15,6 @@ Coily::Coily(Node ArgCurNode) : NPC(ArgCurNode)
 	FramesPerWait = 5;
 	isUnpacked = false;
 	InitGraphics("Coily");
-
 }
 
 Coily::~Coily(void)
@@ -90,68 +89,46 @@ void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const No
 			// Weiter bewegen..
 			Move(MoveDirection);
 
-			// Sind Coily und Q*Bert auf dem gleichen Knoten?
-			if (!isMoving && CurNode.NodeNum == qbert_node.NodeNum)
+			// Bewegung fertig?
+			if (!isMoving)
 			{
-				// Coily hat Q*Bert gefangen
-				Collision(stats);
+				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
+				if (CurNode.NodeNum == qbert_node.NodeNum)
+					Collision(stats);
 			}
 		}
 		else
 		{
-			// Ist der NPC nicht auf dem NULL Knoten?
-			if (CurNode.NodeNum != 0)
+			// Ist Coily noch nicht entpackt?
+			if (!isUnpacked)
 			{
-				// Ist Coily noch nicht entpackt?
-				if (!isUnpacked)
+				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
+				int rnd = rand() % 2;
+				if (rnd)
 				{
-					// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
-					int rnd = rand() % 2;
-					if (rnd)
-					{
-						TargetNode = adjacency_list[CurNode.NodeNum][1].target;
-						MoveDirection = DIR_RIGHTDOWN;
-					}
-					else
-					{
-						TargetNode = adjacency_list[CurNode.NodeNum][2].target;
-						MoveDirection = DIR_LEFTDOWN;
-					}
-
-					// Wurde die untere Kante erreicht (Coily kann am Anfang nicht seitlich runterfallen)?
-					if (TargetNode.NodeNum == 0)
-					{
-						// Coily entpacken
-						isUnpacked=true;
-
-						// Sind Coily und Q*Bert gerade jetzt auf dem gleichen Knoten (Sonderfall)?
-						if (CurNode.NodeNum == qbert_node.NodeNum)
-						{
-							// Coily hat Q*Bert "gefangen"
-							Collision(stats);
-							return;
-						}
-
-						// nächsten Knoten berechnen und Richtung bestimmmen
-						TargetNode = Step_Unpacked(adjacency_list, qbert_node);
-						if (adjacency_list[CurNode.NodeNum][0].target == TargetNode)
-							MoveDirection = DIR_RIGHTUP;
-						else if (adjacency_list[CurNode.NodeNum][1].target == TargetNode)
-							MoveDirection = DIR_RIGHTDOWN;
-						else if (adjacency_list[CurNode.NodeNum][2].target == TargetNode)
-							MoveDirection = DIR_LEFTDOWN;
-						else if (adjacency_list[CurNode.NodeNum][3].target == TargetNode)
-							MoveDirection = DIR_LEFTUP;
-					}
-
-					// NPC bewegen
-					isMoving = true;
-					Move(MoveDirection);
+					TargetNode = adjacency_list[CurNode.NodeNum][1].target;
+					MoveDirection = DIR_RIGHTDOWN;
+				}
+				else
+				{
+					TargetNode = adjacency_list[CurNode.NodeNum][2].target;
+					MoveDirection = DIR_LEFTDOWN;
 				}
 
-				// Sind Coily und Q*Bert nicht auf dem gleichen Knoten?
-				else if (CurNode.NodeNum != qbert_node.NodeNum)
+				// Wurde die untere Kante erreicht (Coily kann am Anfang nicht seitlich runterfallen)?
+				if (TargetNode.NodeNum == 0)
 				{
+					// Coily entpacken
+					isUnpacked=true;
+
+					// Sind Coily und Q*Bert gerade jetzt auf dem gleichen Knoten (Sonderfall)?
+					if (CurNode.NodeNum == qbert_node.NodeNum)
+					{
+						// Coily hat Q*Bert "gefangen"
+						Collision(stats);
+						return;
+					}
+
 					// nächsten Knoten berechnen und Richtung bestimmmen
 					TargetNode = Step_Unpacked(adjacency_list, qbert_node);
 					if (adjacency_list[CurNode.NodeNum][0].target == TargetNode)
@@ -162,16 +139,35 @@ void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const No
 						MoveDirection = DIR_LEFTDOWN;
 					else if (adjacency_list[CurNode.NodeNum][3].target == TargetNode)
 						MoveDirection = DIR_LEFTUP;
+				}
 
-					// NPC bewegen
-					isMoving = true;
-					Move(MoveDirection);
-				}
-				else
-				{
-					// Coily hat Q*Bert gefangen
-					Collision(stats);
-				}
+				// NPC bewegen
+				isMoving = true;
+				Move(MoveDirection);
+			}
+
+			// Sind Coily und Q*Bert nicht auf dem gleichen Knoten?
+			else if (CurNode.NodeNum != qbert_node.NodeNum)
+			{
+				// nächsten Knoten berechnen und Richtung bestimmmen
+				TargetNode = Step_Unpacked(adjacency_list, qbert_node);
+				if (adjacency_list[CurNode.NodeNum][0].target == TargetNode)
+					MoveDirection = DIR_RIGHTUP;
+				else if (adjacency_list[CurNode.NodeNum][1].target == TargetNode)
+					MoveDirection = DIR_RIGHTDOWN;
+				else if (adjacency_list[CurNode.NodeNum][2].target == TargetNode)
+					MoveDirection = DIR_LEFTDOWN;
+				else if (adjacency_list[CurNode.NodeNum][3].target == TargetNode)
+					MoveDirection = DIR_LEFTUP;
+
+				// NPC bewegen
+				isMoving = true;
+				Move(MoveDirection);
+			}
+			else
+			{
+				// Coily hat Q*Bert gefangen (Sonderfall?)
+				Collision(stats);
 			}
 		}
 	}

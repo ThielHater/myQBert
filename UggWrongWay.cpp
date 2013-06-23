@@ -82,7 +82,7 @@ void UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, co
 	return;
 }
 
-void UggWrongWay::Collision(void)
+void UggWrongWay::Collision(GameStats &stats)
 {
 	return;
 }

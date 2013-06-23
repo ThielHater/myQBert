@@ -7,7 +7,7 @@ Ball::Ball(Node ArgCurNode) : NPC(ArgCurNode)
 	FramesPerJump = 5;
 	FramesPerWait = 5;
 	int rnd = rand() % 2;
-	if (rnd)	
+	if (rnd)
 	{
 		Type = RED;
 		InitGraphics("Red-Ball");
@@ -49,11 +49,85 @@ void Ball::InitGraphics(char *TexName)
 
 void Ball::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
+	// Wartet der NPC?
+	if (isWaiting)
+	{
+		// Weiter warten..
+		FramesWaited++;
+
+		// Hat der NPC genug gewartet?
+		if (FramesWaited == FramesPerWait)
+		{
+			// Freigeben
+			FramesWaited = 0;
+			isWaiting = false;
+		}
+	}
+	else
+	{
+		// Bewegt sich der NPC?
+		if (isMoving)
+		{
+			// Weiter bewegen..
+			Move(MoveDirection);
+
+			// Bewegung fertig?
+			if (!isMoving)
+			{
+				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
+				if (CurNode.NodeNum == qbert_node.NodeNum)					
+					Collision(stats);					
+			}
+		}
+		else
+		{
+			// Sind der NPC und Q*Bert nicht auf dem gleichen Knoten?
+			if (CurNode.NodeNum != qbert_node.NodeNum)
+			{
+				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
+				int rnd = rand() % 2;
+				if (rnd)
+				{
+					TargetNode = adjacency_list[CurNode.NodeNum][1].target;
+					MoveDirection = DIR_RIGHTDOWN;
+				}
+				else
+				{
+					TargetNode = adjacency_list[CurNode.NodeNum][2].target;
+					MoveDirection = DIR_LEFTDOWN;
+				}
+
+				// NPC bewegen
+				isMoving = true;
+				Move(MoveDirection);
+			}
+			else
+			{
+				// Kollision
+				Collision(stats);
+			}
+		}
+	}
 	return;
 }
 
-void Ball::Collision(void)
+void Ball::Collision(GameStats &stats)
 {
+	if (Type == RED)
+	{
+		stats.LifeCount--;
+		stats.QBertHit = true;
+		if (stats.LifeCount > 0)
+			printf("Q*Bert wurde vom roten Ball getroffen, noch %d Leben!\n", stats.LifeCount);
+		else
+			printf("Q*Bert wurde vom roten Ball getroffen, kein Leben mehr!\n", stats.LifeCount);
+	}
+	else if (Type == GREEN)
+	{		
+		stats.TimeFrozen = true;
+		stats.Score += 100;
+		printf("Q*Bert hat den gr\fcnen Ball gefangen, die Zeit steht still!\n");
+	}
 	return;
 }
 

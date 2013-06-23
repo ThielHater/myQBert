@@ -133,13 +133,12 @@ void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node
 				// Bewegung fertig?
 				if (!isMoving)
 				{
+					// Würfel umfärben
 					NodeEffect();
-				}
 
-				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
-				if (CurNode.NodeNum == QBertNode.NodeNum)
-				{			
-					Collision();
+					// Sind der NPC und Q*Bert auf dem gleichen Knoten?
+					if (CurNode.NodeNum == qbert_node.NodeNum)					
+						Collision(stats);					
 				}
 			*/
 		}
