@@ -380,6 +380,7 @@ void spiel::game_over()
 
 void spiel::step()
 {
+	static int counter = 0;
 	// Array für Tastatureingaben
 	unsigned char keys[256];
 
@@ -399,8 +400,15 @@ void spiel::step()
 			qbert.Step(adjacency_list, stats, DIR_NONE);
 
 		// Ist Q*Bert runtergefallen?
-		if (qbert.CurNode.NodeNum == 0)
+		if (qbert.CurNode.NodeNum == 0) {
 			game_over();
+			counter = 0;
+		}
+		else if (counter >= 20 * 5) { // Alle 5 Sekunden neuer Coily
+			Coily *npc = new Coily(Node(2, &cubes[2]));
+			npc_list.push_back(npc);
+			counter = 0;
+		}
 	}
 
 	// NPCs durchlaufen
@@ -426,10 +434,12 @@ void spiel::step()
 	}
 
 	// Wurde die Runde abgeschlossen?
-	if (check_round())
+	if (check_round()) {
+		counter = 0;
 		new_round();
+	}
 
-	return;
+	counter++;
 }
 
 void spiel::render_sprites()
