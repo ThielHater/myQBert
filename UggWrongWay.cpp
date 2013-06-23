@@ -2,7 +2,7 @@
 #include <string>
 #include "UggWrongWay.h"
 
-UggWrongWay::UggWrongWay(Node ArgCurNode)
+UggWrongWay::UggWrongWay(Node ArgCurNode) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
