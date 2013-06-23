@@ -2,6 +2,8 @@
 #include <limits>
 #include <list>
 #include <set>
+#include <sstream>
+#include <string>
 #include <utility>
 #include <vector>
 #include "Coily.h"
@@ -13,12 +15,55 @@ Coily::Coily(Node ArgCurNode) : NPC(ArgCurNode)
 	FramesPerWait = 5;
 	isUnpacked = false;
 	InitGraphics("Coily");
-	TexUnpacked.load("myQBert/Textures/Purple-Ball.png");
-	TexUnpackedJump.load("myQBert/Textures/Purple-Ball-Jump.png");
+
 }
 
 Coily::~Coily(void)
 {
+}
+
+void Coily::InitGraphics(char *TexName)
+{
+	D3DXMATRIX pos;
+	D3DXMATRIX rota;
+	D3DXMATRIX trans;
+	CurNode.RelCube->get_transform(&pos);
+	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
+	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
+	load("TriPrism.x", "myQBert/Models");
+	std::stringstream ss;
+	ss <<"myQBert/Textures/" <<TexName <<"-Down-Left.png";
+	TexDownLeft.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	ss <<"myQBert/Textures/" <<TexName <<"-Down-Left-Jump.png";
+	TexDownLeftJump.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	ss <<"myQBert/Textures/" <<TexName <<"-Down-Right.png";
+	TexDownRight.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	ss <<"myQBert/Textures/" <<TexName <<"-Down-Right-Jump.png";
+	TexDownRightJump.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	ss <<"myQBert/Textures/" <<TexName <<"-Up-Left.png";
+	TexUpLeft.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	ss <<"myQBert/Textures/" <<TexName <<"-Up-Left-Jump.png";
+	TexUpLeftJump.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	ss <<"myQBert/Textures/" <<TexName <<"-Up-Right.png";
+	TexUpRight.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	ss <<"myQBert/Textures/" <<TexName <<"-Up-Right-Jump.png";
+	TexUpRightJump.load((char*)ss.str().c_str());
+	ss.str(std::string()); ss.clear();
+	TexUnpacked.load("myQBert/Textures/Purple-Ball.png");
+	TexUnpackedJump.load("myQBert/Textures/Purple-Ball-Jump.png");
+	set_texture(0, &TexDownLeft);
+	disable_reflections();
+	add_transform(&rota);
+	add_transform(&pos);
+	add_transform(&trans);
+	return;
 }
 
 void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
@@ -62,7 +107,7 @@ void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const No
 				{
 					// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
 					int rnd = rand() % 2;
-					if (rnd%2)
+					if (rnd)
 					{
 						TargetNode = adjacency_list[CurNode.NodeNum][1].target;
 						MoveDirection = DIR_RIGHTDOWN;
@@ -121,6 +166,11 @@ void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const No
 					// NPC bewegen
 					isMoving = true;
 					Move(MoveDirection);
+				}
+				else
+				{
+					// Coily hat Q*Bert gefangen
+					Collision(stats);
 				}
 			}
 		}

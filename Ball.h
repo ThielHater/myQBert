@@ -11,6 +11,7 @@ class Ball : public NPC
 		TypeEnumBl Type; // Roter oder grüner Ball?
 		textur TexNorm;
 		textur TexJump;
+		void InitGraphics(char *TexName);
 		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts
 		void Collision(void); // Rot: Q*Bert verliert ein Leben, Grün: Zeit wird pausiert, nur Q*Bert kann sich bewegen
 		void NodeEffect(void); // kein Effekt

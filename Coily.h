@@ -13,6 +13,15 @@ class Coily : public NPC
 		bool isUnpacked; // Ist Coily schon entpackt?
 		textur TexUnpacked;
 		textur TexUnpackedJump;
+		textur TexDownLeft;
+		textur TexDownLeftJump;
+		textur TexDownRight;
+		textur TexDownRightJump;
+		textur TexUpLeft;
+		textur TexUpLeftJump;
+		textur TexUpRight;
+		textur TexUpRightJump;
+		void InitGraphics(char *TexName);
 		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts, entpackt sich dann und hüpft Q*Bert hinterher
 		void Collision(GameStats &stats); // Q*Bert verliert ein Leben
 		void NodeEffect(void); // kein Effekt

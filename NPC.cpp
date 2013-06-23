@@ -33,47 +33,6 @@ NPC::NPC(Node ArgCurNode)
 	TargetNode.RelCube = 0;
 }
 
-void NPC::InitGraphics(char *ArgTexName)
-{
-	D3DXMATRIX pos;
-	D3DXMATRIX rota;
-	D3DXMATRIX trans;
-	CurNode.RelCube->get_transform(&pos);
-	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
-	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
-	load("TriPrism.x", "myQBert/Models");
-	std::stringstream ss;
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Down-Left.png";
-	TexDownLeft.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Down-Left-Jump.png";
-	TexDownLeftJump.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Down-Right.png";
-	TexDownRight.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Down-Right-Jump.png";
-	TexDownRightJump.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Up-Left.png";
-	TexUpLeft.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Up-Left-Jump.png";
-	TexUpLeftJump.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Up-Right.png";
-	TexUpRight.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	ss <<"myQBert/Textures/" <<ArgTexName <<"-Up-Right-Jump.png";
-	TexUpRightJump.load((char*)ss.str().c_str());
-	ss.str(std::string()); ss.clear();
-	set_texture(0, &TexDownLeft);
-	disable_reflections();
-	add_transform(&rota);
-	add_transform(&pos);
-	add_transform(&trans);
-}
-
 NPC::~NPC(void)
 {
 }
@@ -193,7 +152,7 @@ void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node
 
 				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
 				int rnd = rand() % 2;
-				if (rnd%2)
+				if (rnd)
 				{
 					TargetNode = adjacency_list[CurNode.NodeNum][1].target;
 					MoveDirection = DIR_RIGHTDOWN;
@@ -213,6 +172,11 @@ void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node
 	return;
 }
 
+void NPC::InitGraphics(char *TexName)
+{
+	return;
+}
+
 void NPC::Collision(void)
 {
 	return;
@@ -225,27 +189,5 @@ void NPC::NodeEffect(void)
 
 void NPC::SetTexture(void)
 {
-	if (isMoving)
-	{
-		if (MoveDirection == DIR_LEFTDOWN)
-			set_texture(0, &this->TexDownLeftJump);
-		else if (MoveDirection == DIR_RIGHTDOWN)
-			set_texture(0, &this->TexDownRightJump);
-		else if (MoveDirection == DIR_LEFTUP)
-			set_texture(0, &this->TexUpLeftJump);
-		else if (MoveDirection == DIR_RIGHTUP)
-			set_texture(0, &this->TexUpRightJump);
-	}
-	else
-	{
-		if (MoveDirection == DIR_LEFTDOWN)
-			set_texture(0, &this->TexDownLeft);
-		else if (MoveDirection == DIR_RIGHTDOWN)
-			set_texture(0, &this->TexDownRight);
-		else if (MoveDirection == DIR_LEFTUP)
-			set_texture(0, &this->TexUpLeft);
-		else if (MoveDirection == DIR_RIGHTUP)
-			set_texture(0, &this->TexUpRight);
-	}
 	return;
 }

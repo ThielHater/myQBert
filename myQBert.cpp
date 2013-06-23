@@ -7,13 +7,16 @@
 #include <sstream>
 #include <string>
 #include "SpaCE/applikation.h"
+#include "Cube.h"
+#include "Disk.h"
 #include "GameStats.h"
 #include "Edge.h"
 #include "Node.h"
 #include "AdjacencyList.h"
 #include "Cube.h"
-#include "QBert.h"
+#include "Ball.h"
 #include "Coily.h"
+#include "QBert.h"
 #include "SlickSam.h"
 #include "UggWrongWay.h"
 #include "resource.h"
@@ -21,7 +24,6 @@
 /*
 	Zu erledigen:
 	- dafür sorgen, dass alle NPCs instanziierbar sind
-	- InitGraphics() und Texturen in von NPC abgeleitete Klassen verschieben
 	- einen NPC alle x Sekunden spawnen lassen
 	- Fall der NPCs darstellen
 	- jede Menge Sounds
@@ -103,6 +105,7 @@ void spiel::setup()
 
 	// Titel, Icon und Hintergrundfarbe setzen
 	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
+	set_cps(20);
 
 	/* Hinweis: Test! */
 	stats.Level = 2;
@@ -351,6 +354,7 @@ void spiel::qbert_hit()
 	qbert.add_transform(&pos);
 	qbert.add_transform(&trans);
 
+	stats.SpawnTimer = 0;
 	npc_list.clear();
 }
 
@@ -380,7 +384,6 @@ void spiel::game_over()
 
 void spiel::step()
 {
-	static int counter = 0;
 	// Array für Tastatureingaben
 	unsigned char keys[256];
 
@@ -400,15 +403,39 @@ void spiel::step()
 			qbert.Step(adjacency_list, stats, DIR_NONE);
 
 		// Ist Q*Bert runtergefallen?
-		if (qbert.CurNode.NodeNum == 0) {
+		if (qbert.CurNode.NodeNum == 0)		
 			game_over();
-			counter = 0;
+	}
+
+	// alle 10 Sekunden neuen NPC spawnen
+	if (stats.SpawnTimer >= 200)
+	{
+		// NPC auswürfeln und einketten
+		int rnd = 1 + (rand() % 4);
+		int i = 2 + (rand() % 2);
+		if (rnd == 1)
+		{
+			Ball *b = new Ball(Node(i, &cubes[i]));
+			npc_list.push_back(b);
 		}
-		else if (counter >= 20 * 5) { // Alle 5 Sekunden neuer Coily
-			Coily *npc = new Coily(Node(2, &cubes[2]));
-			npc_list.push_back(npc);
-			counter = 0;
+		else if (rnd == 2)
+		{
+			Coily *c = new Coily(Node(i, &cubes[i]));
+			npc_list.push_back(c);
 		}
+		else if (rnd == 3)
+		{
+			SlickSam *ss = new SlickSam(Node(i, &cubes[i]));
+			npc_list.push_back(ss);
+		}
+		else if (rnd == 4)
+		{
+			UggWrongWay *uww = new UggWrongWay(Node(i, &cubes[i]));
+			npc_list.push_back(uww);
+		}
+
+		// Spawn Timer zurücksetzen
+		stats.SpawnTimer = 0;
 	}
 
 	// NPCs durchlaufen
@@ -434,12 +461,11 @@ void spiel::step()
 	}
 
 	// Wurde die Runde abgeschlossen?
-	if (check_round()) {
-		counter = 0;
+	if (check_round())
 		new_round();
-	}
 
-	counter++;
+	// Spawn Timer hochzählen
+	stats.SpawnTimer++;
 }
 
 void spiel::render_sprites()

@@ -22,16 +22,8 @@ class NPC : public objekt
 		int FramesWaited;
 		Node CurNode; // Knoten, auf dem der NPC steht
 		Node TargetNode; // nächster Knoten
-		textur TexDownLeft; // Textur, wenn der NPC auf einem Feld steht
-		textur TexDownLeftJump; // Textur, wenn der NPC auf einem Feld steht
-		textur TexDownRight; // Textur, wenn der NPC auf einem Feld steht
-		textur TexDownRightJump; // Textur, wenn der NPC auf einem Feld steht
-		textur TexUpLeft; // Textur, wenn der NPC springt
-		textur TexUpLeftJump; // Textur, wenn der NPC springt
-		textur TexUpRight; // Textur, wenn der NPC springt
-		textur TexUpRightJump; // Textur, wenn der NPC springt
-		void InitGraphics(char *ArgTexName);
 		void Move(DirectionEnum direction); // NPC räumlich in eine bestimmte Richtung bewegen
+		virtual void InitGraphics(char *TexName); // Modell und Texturen laden
 		virtual void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // bewegt den NPC, prüft Kollisionen, kümmert sich um Feldeffekte
 		virtual void Collision(void); // wird aufgerufen, wenn eine Kollision aufgetreten ist
 		virtual void NodeEffect(void); // wird aufgerufen, wenn der NPC auf ein Feld kommt
