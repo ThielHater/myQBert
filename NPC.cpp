@@ -176,12 +176,12 @@ void NPC::InitGraphics(char *TexName)
 	return;
 }
 
-void NPC::Collision(void)
+void NPC::Collision(GameStats &stats)
 {
 	return;
 }
 
-void NPC::NodeEffect(void)
+void NPC::NodeEffect(GameStats &stats)
 {
 	return;
 }

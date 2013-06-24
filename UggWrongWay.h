@@ -20,6 +20,6 @@ class UggWrongWay : public NPC
 		void InitGraphics(char *TexName);
 		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // bewegen sich von den unteren Ecken aus nach oben links/rechts, ungefähr in Richtung Q*Bert
 		void Collision(GameStats &stats); // Q*Bert verliert ein Leben
-		void NodeEffect(void); // kein Effekt
+		void NodeEffect(GameStats &stats); // kein Effekt
 		void SetTexture(void); // drei Sprungtexturen
 };

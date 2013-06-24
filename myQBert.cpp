@@ -23,9 +23,10 @@
 
 /*
 	Zu erledigen:
-	- dafür sorgen, dass alle NPCs instanziierbar sind
 	- Fall der NPCs darstellen
 	- jede Menge Sounds
+	- Special Effect beim Rundenende
+	- Splashscreens für die Level
 	- ...
 */
 
@@ -106,10 +107,6 @@ void spiel::setup()
 	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
 	set_cps(20);
 
-	/* Hinweis: Test! */
-	stats.Level = 2;
-	stats.Round = 1;
-
 	// Sprites laden
 	std::stringstream ss;
 	for (int i=0; i<10; i++)
@@ -162,11 +159,9 @@ void spiel::setup()
 	standort = cubes[8].lookatme(&blickrichtung, 15.0f);
 	set_sunlight(0, &D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1.0f, 0.0f, 0.0f);
 
-	// Q*Bert und Coily spawnen
+	// Q*Bert
 	QBert *q = new QBert(Node(1, &cubes[1]));
 	qbert = *q;
-	Coily *c = new Coily(Node(2, &cubes[2]));
-	npc_list.push_back(c);
 
 	return;
 }
@@ -353,7 +348,7 @@ void spiel::qbert_hit()
 	qbert.add_transform(&pos);
 	qbert.add_transform(&trans);
 
-	stats.FramesNoSpawn = 0;
+	stats.FramesLastSpawn = 0;
 	npc_list.clear();
 }
 
@@ -407,7 +402,7 @@ void spiel::step()
 	}
 
 	// alle 10 Sekunden neuen NPC spawnen
-	if (stats.FramesNoSpawn >= 200)
+	if (stats.FramesLastSpawn >= 200)
 	{
 		// NPC auswürfeln und einketten
 		int rnd = 1 + (rand() % 4);
@@ -429,12 +424,13 @@ void spiel::step()
 		}
 		else if (rnd == 4)
 		{
+			i = (i == 2) ? 22 : 28;
 			UggWrongWay *uww = new UggWrongWay(Node(i, &cubes[i]));
 			npc_list.push_back(uww);
 		}
 
 		// Spawn Timer zurücksetzen
-		stats.FramesNoSpawn = 0;
+		stats.FramesLastSpawn = 0;
 	}
 
 	// Steht die Zeit nicht still?
@@ -505,7 +501,7 @@ void spiel::step()
 		new_round();
 
 	// Spawn Timer hochzählen
-	stats.FramesNoSpawn++;
+	stats.FramesLastSpawn++;
 }
 
 void spiel::render_sprites()

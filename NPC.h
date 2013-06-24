@@ -25,7 +25,7 @@ class NPC : public objekt
 		void Move(DirectionEnum direction); // NPC räumlich in eine bestimmte Richtung bewegen
 		virtual void InitGraphics(char *TexName); // Modell und Texturen laden
 		virtual void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // bewegt den NPC, prüft Kollisionen, kümmert sich um Feldeffekte
-		virtual void Collision(void); // wird aufgerufen, wenn eine Kollision aufgetreten ist
-		virtual void NodeEffect(void); // wird aufgerufen, wenn der NPC auf ein Feld kommt
+		virtual void Collision(GameStats &stats); // wird aufgerufen, wenn eine Kollision aufgetreten ist
+		virtual void NodeEffect(GameStats &stats); // wird aufgerufen, wenn der NPC auf ein Feld kommt
 		virtual void SetTexture(void); // Allgemein
 };

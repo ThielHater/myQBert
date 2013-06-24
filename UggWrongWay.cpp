@@ -6,8 +6,7 @@ UggWrongWay::UggWrongWay(Node ArgCurNode) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	int rnd = rand() % 2;
-	if (rnd)
+	if (CurNode.NodeNum == 22) // kleiner Hack :)
 	{
 		Type = UGG;
 		InitGraphics("Ugg");
@@ -67,27 +66,108 @@ void UggWrongWay::InitGraphics(char *TexName)
 
 void UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
 {
-	/*
-	if (Type == UGG)
+	// Wartet der NPC?
+	if (isWaiting)
 	{
-		TargetNode = adjacency_list[CurNode.NodeNum][0].target;
-		MoveDirection = DIR_RIGHTUP;
+		// Weiter warten..
+		FramesWaited++;
+
+		// Hat der NPC genug gewartet?
+		if (FramesWaited == FramesPerWait)
+		{
+			// Freigeben
+			FramesWaited = 0;
+			isWaiting = false;
+		}
 	}
-	else if (Type == WRONGWAY)
+	else
 	{
-		TargetNode = adjacency_list[CurNode.NodeNum][3].target;
-		MoveDirection = DIR_LEFTUP;
+		// Bewegt sich der NPC?
+		if (isMoving)
+		{
+			// Weiter bewegen..
+			Move(MoveDirection);
+
+			// Bewegung fertig?
+			if (!isMoving)
+			{
+				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
+				if (CurNode.NodeNum == qbert_node.NodeNum)
+					Collision(stats);
+			}
+		}
+		else
+		{
+			// Sind der NPC und Q*Bert nicht auf dem gleichen Knoten?
+			if (CurNode.NodeNum != qbert_node.NodeNum)
+			{
+				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
+				int rnd = rand() % 2;
+				if (Type == UGG)
+				{
+					// Würde Ugg nicht abstürzen, wenn er nach unten geht?
+					if (rnd && (adjacency_list[CurNode.NodeNum][1].target.NodeNum != 0))
+					{
+						TargetNode = adjacency_list[CurNode.NodeNum][1].target;
+						MoveDirection = DIR_RIGHTDOWN;
+					}
+					else
+					{
+						TargetNode = adjacency_list[CurNode.NodeNum][0].target;
+						MoveDirection = DIR_RIGHTUP;
+					}
+				}
+				else
+				{
+					// Würde Wrong Way nicht abstürzen, wenn er nach unten geht?
+					if (rnd && (adjacency_list[CurNode.NodeNum][2].target.NodeNum != 0))
+					{
+						TargetNode = adjacency_list[CurNode.NodeNum][2].target;
+						MoveDirection = DIR_LEFTDOWN;
+					}
+					else
+					{
+						TargetNode = adjacency_list[CurNode.NodeNum][3].target;
+						MoveDirection = DIR_LEFTUP;
+					}
+				}
+
+				// NPC bewegen
+				isMoving = true;
+				Move(MoveDirection);
+			}
+			else
+			{
+				// Kollision
+				Collision(stats);
+			}
+		}
 	}
-	*/
 	return;
 }
 
 void UggWrongWay::Collision(GameStats &stats)
 {
+	stats.LifeCount--;
+	stats.QBertHit = true;
+	if (Type == UGG)
+	{
+		if (stats.LifeCount > 0)
+			printf("Q*Bert wurde von Ugg gefangen, noch %d Leben!\n", stats.LifeCount);
+		else
+			printf("Q*Bert wurde von Ugg gefangen, kein Leben mehr!\n", stats.LifeCount);
+	}
+	else
+	{
+		if (stats.LifeCount > 0)
+			printf("Q*Bert wurde von Wrong Way gefangen, noch %d Leben!\n", stats.LifeCount);
+		else
+			printf("Q*Bert wurde von Wrong Way gefangen, kein Leben mehr!\n", stats.LifeCount);
+	}
 	return;
 }
 
-void UggWrongWay::NodeEffect(void)
+void UggWrongWay::NodeEffect(GameStats &stats)
 {
 	return;
 }
@@ -95,32 +175,32 @@ void UggWrongWay::NodeEffect(void)
 void UggWrongWay::SetTexture(void)
 {
 	if (isMoving)
-	{
+	{		
 		int rnd = 1 + rand() % 3;
-		if (MoveDirection == DIR_LEFTUP)
+		if ((MoveDirection == DIR_LEFTUP) || (MoveDirection == DIR_RIGHTDOWN))
 		{
-			if (rnd == 1)				
+			if (rnd == 1)
 				set_texture(0, &this->TexLeftJump1);
 			else if (rnd == 2)
 				set_texture(0, &this->TexLeftJump2);
 			else
 				set_texture(0, &this->TexLeftJump3);
 		}
-		else if (MoveDirection == DIR_RIGHTUP)
-		{		
-			if (rnd == 1)				
+		else if ((MoveDirection == DIR_RIGHTUP) || (MoveDirection == DIR_LEFTDOWN))
+		{
+			if (rnd == 1)
 				set_texture(0, &this->TexRightJump1);
 			else if (rnd == 2)
 				set_texture(0, &this->TexRightJump2);
 			else
 				set_texture(0, &this->TexRightJump3);
-		}
+		}	
 	}
 	else
 	{
-		if (MoveDirection == DIR_LEFTUP)
+		if ((MoveDirection == DIR_LEFTUP) || (MoveDirection == DIR_RIGHTDOWN))
 			set_texture(0, &this->TexLeft);
-		else if (MoveDirection == DIR_RIGHTUP)
+		else if ((MoveDirection == DIR_RIGHTUP) || (MoveDirection == DIR_LEFTDOWN))
 			set_texture(0, &this->TexRight);
 	}
 	return;

@@ -17,6 +17,6 @@ void GameStats::Reset()
 	Score = 0;
 	TimeFrozen = false;
 	QBertHit = false;
-	FramesNoSpawn = 0;
+	FramesLastSpawn = 0;
 	FramesTimeFrozen = 0;
 }

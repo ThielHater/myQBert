@@ -6,6 +6,7 @@ SlickSam::SlickSam(Node ArgCurNode) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
+	FramesLastTexChange = FramesPerJump;
 	int rnd = rand() % 2;
 	if (rnd)
 	{
@@ -93,7 +94,7 @@ void SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const
 			if (!isMoving)
 			{
 				// Würfel umfärben
-				NodeEffect();
+				NodeEffect(stats);
 
 				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
 				if (CurNode.NodeNum == qbert_node.NodeNum)					
@@ -134,6 +135,8 @@ void SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const
 
 void SlickSam::Collision(GameStats &stats)
 {
+	CurNode.NodeNum = 0; // kleiner Hack :)
+	stats.Score += 300;
 	if (Type == SLICK)
 		printf("Q*Bert hat Slick gefangen!");
 	else
@@ -141,19 +144,21 @@ void SlickSam::Collision(GameStats &stats)
 	return;
 }
 
-void SlickSam::NodeEffect(void)
+void SlickSam::NodeEffect(GameStats &stats)
 {
 	if (Type == SLICK)
 	{
 		// Würfel umfärben (erste Farbe)
+		stats.Score -= CurNode.RelCube->cur*25;
 		this->CurNode.RelCube->cur = 0;
 		this->CurNode.RelCube->update_texture();
 	}
-	else if (Type == SAM)
+	else
 	{
 		// Würfel umfärben (vorherige Farbe)		
 		if (CurNode.RelCube->cur > 0)
 		{
+			stats.Score -= 25;
 			this->CurNode.RelCube->cur--;
 			this->CurNode.RelCube->update_texture();	
 		}
@@ -166,18 +171,18 @@ void SlickSam::SetTexture(void)
 	if (isMoving)
 	{
 		int rnd = 1 + rand() % 3;
-		if (MoveDirection == DIR_LEFTUP)
+		if (MoveDirection == DIR_LEFTDOWN)
 		{
-			if (rnd == 1)				
+			if (rnd == 1)
 				set_texture(0, &this->TexLeftJump1);
 			else if (rnd == 2)
 				set_texture(0, &this->TexLeftJump2);
 			else
 				set_texture(0, &this->TexLeftJump3);
 		}
-		else if (MoveDirection == DIR_RIGHTUP)
-		{		
-			if (rnd == 1)				
+		else if (MoveDirection == DIR_RIGHTDOWN)
+		{
+			if (rnd == 1)
 				set_texture(0, &this->TexRightJump1);
 			else if (rnd == 2)
 				set_texture(0, &this->TexRightJump2);
@@ -187,9 +192,10 @@ void SlickSam::SetTexture(void)
 	}
 	else
 	{
-		if (MoveDirection == DIR_LEFTUP)
+		if (MoveDirection == DIR_LEFTDOWN)
 			set_texture(0, &this->TexLeft);
-		else if (MoveDirection == DIR_RIGHTUP)
+		else if (MoveDirection == DIR_RIGHTDOWN)
 			set_texture(0, &this->TexRight);
 	}
-	return;}
+	return;
+}

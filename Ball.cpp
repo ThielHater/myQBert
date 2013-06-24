@@ -131,7 +131,7 @@ void Ball::Collision(GameStats &stats)
 	return;
 }
 
-void Ball::NodeEffect(void)
+void Ball::NodeEffect(GameStats &stats)
 {
 	return;
 }

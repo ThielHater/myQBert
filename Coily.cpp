@@ -29,7 +29,10 @@ void Coily::InitGraphics(char *TexName)
 	CurNode.RelCube->get_transform(&pos);
 	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
 	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
-	load("TriPrism.x", "myQBert/Models");
+	if (isUnpacked)
+		load("TriPrismH.x", "myQBert/Models");
+	else
+		load("TriPrism.x", "myQBert/Models");
 	std::stringstream ss;
 	ss <<"myQBert/Textures/" <<TexName <<"-Down-Left.png";
 	TexDownLeft.load((char*)ss.str().c_str());
@@ -118,8 +121,9 @@ void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const No
 				// Wurde die untere Kante erreicht (Coily kann am Anfang nicht seitlich runterfallen)?
 				if (TargetNode.NodeNum == 0)
 				{
-					// Coily entpacken
+					// Coily entpacken und anderes Modell laden
 					isUnpacked=true;
+					InitGraphics("Coily");
 
 					// Sind Coily und Q*Bert gerade jetzt auf dem gleichen Knoten (Sonderfall)?
 					if (CurNode.NodeNum == qbert_node.NodeNum)
@@ -166,7 +170,7 @@ void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const No
 			}
 			else
 			{
-				// Coily hat Q*Bert gefangen (Sonderfall?)
+				// Coily hat Q*Bert gefangen
 				Collision(stats);
 			}
 		}
@@ -231,7 +235,7 @@ void Coily::Collision(GameStats &stats)
 	return;
 }
 
-void Coily::NodeEffect(void)
+void Coily::NodeEffect(GameStats &stats)
 {
 	return;
 }

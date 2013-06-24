@@ -20,6 +20,6 @@ class SlickSam : public NPC
 		void InitGraphics(char *TexName);
 		void Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node); // hüpft Spielfeld hinab, zufällig links/rechts
 		void Collision(GameStats &stats); // kein Effekt
-		void NodeEffect(void); // Slick setzt Feld ganz zurück, Sam setzt Feld um eine Stufe zurück
+		void NodeEffect(GameStats &stats); // Slick setzt Feld ganz zurück, Sam setzt Feld um eine Stufe zurück
 		void SetTexture(void); // drei Sprungtexturen
 };

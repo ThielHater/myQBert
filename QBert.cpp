@@ -115,7 +115,7 @@ void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Directio
 	return;
 }
 
-void QBert::Collision(void)
+void QBert::Collision(GameStats &stats)
 {
 	return;
 }
