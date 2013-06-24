@@ -92,12 +92,13 @@ void SlickSam::Step(const AdjacencyList &adjacency_list, GameStats &stats, const
 			// Bewegung fertig?
 			if (!isMoving)
 			{
-				// Würfel umfärben
-				NodeEffect(stats);
-
 				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
 				if (CurNode.NodeNum == qbert_node.NodeNum)					
 					Collision(stats);					
+
+				// Würfel umfärben
+				if (CurNode.NodeNum != 0)
+					NodeEffect(stats);
 			}
 		}
 		else

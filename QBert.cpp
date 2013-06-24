@@ -87,7 +87,8 @@ void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Directio
 			if (!isMoving)
 			{
 				// Würfel umfärben
-				NodeEffect(stats);
+				if (CurNode.NodeNum != 0)
+					NodeEffect(stats);
 			}
 		}
 		else
