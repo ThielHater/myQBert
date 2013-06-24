@@ -351,7 +351,7 @@ void spiel::qbert_hit()
 			qbert.set_texture(0, &qbert.TexUpRightBalloon);
 		else if (qbert.MoveDirection == DIR_RIGHTDOWN)
 			qbert.set_texture(0, &qbert.TexDownRightBalloon);
-		else if (qbert.MoveDirection == DIR_LEFTDOWN)
+		else if ((qbert.MoveDirection == DIR_LEFTDOWN) || (qbert.MoveDirection == DIR_NONE))
 			qbert.set_texture(0, &qbert.TexDownLeftBalloon);
 		else if (qbert.MoveDirection == DIR_LEFTUP)
 			qbert.set_texture(0, &qbert.TexUpLeftBalloon);
@@ -363,7 +363,7 @@ void spiel::qbert_hit()
 			qbert.set_texture(0, &qbert.TexUpRight);
 		else if (qbert.MoveDirection == DIR_RIGHTDOWN)
 			qbert.set_texture(0, &qbert.TexDownRight);
-		else if (qbert.MoveDirection == DIR_LEFTDOWN)
+		else if ((qbert.MoveDirection == DIR_LEFTDOWN) || (qbert.MoveDirection == DIR_NONE))
 			qbert.set_texture(0, &qbert.TexDownLeft);
 		else if (qbert.MoveDirection == DIR_LEFTUP)
 			qbert.set_texture(0, &qbert.TexUpLeft);
