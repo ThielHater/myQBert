@@ -23,6 +23,7 @@
 
 /*
 	Zu erledigen:
+	- Disks
 	- jede Menge Sounds
 	- Fall der NPCs darstellen
 */
