@@ -6,7 +6,6 @@ SlickSam::SlickSam(Node ArgCurNode) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	FramesLastTexChange = FramesPerJump;
 	int rnd = rand() % 2;
 	if (rnd)
 	{
