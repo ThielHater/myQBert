@@ -155,9 +155,6 @@ void spiel::setup()
 	// Knoten und Kanten aufbauen
 	setup_nodes();
 
-	// Konsole öffnen
-	open_console("myQ*Bert Debug Console");
-
 	// Kamera
 	set_perspektive(D3DX_PI/4.0f, 1.0f, 1000.0f);
 	blickrichtung = D3DXVECTOR3(0, -D3DX_PI/6.0f, 1.0f);
@@ -167,6 +164,11 @@ void spiel::setup()
 	// Q*Bert spawnen
 	QBert *q = new QBert(Node(1, &cubes[1]));
 	qbert = *q;
+
+	/*
+	// Konsole öffnen
+	open_console("myQ*Bert Debug Console");
+	*/
 
 	return;
 }
@@ -368,14 +370,13 @@ void spiel::qbert_hit()
 		else if (qbert.MoveDirection == DIR_LEFTUP)
 			qbert.set_texture(0, &qbert.TexUpLeft);
 		qbert.MoveDirection = DIR_NONE;
+		stats.FramesLastSpawn = 0;
+		npc_list.clear();
 	}
 	qbert.set_transform(&null);
 	qbert.add_transform(&rota);
 	qbert.add_transform(&pos);
 	qbert.add_transform(&trans);
-
-	stats.FramesLastSpawn = 0;
-	npc_list.clear();
 }
 
 void spiel::reset()
