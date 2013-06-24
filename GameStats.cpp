@@ -19,9 +19,11 @@ void GameStats::Reset()
 	QBertHit = false;
 	RoundDone = false;
 	ShowSplash = true;
+	Pause = false;
 	FramesLastSpawn = 0;
 	FramesTimeFrozen = 0;
 	FramesQBertHit = 0;
 	FramesRoundDone = 0;
 	FramesSplashShown = 0;
+	FramesPauseChanged = 0;
 }

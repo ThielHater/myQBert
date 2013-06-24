@@ -23,8 +23,8 @@
 
 /*
 	Zu erledigen:
-	- Disks
 	- jede Menge Sounds
+	- Disks
 	- Fall der NPCs darstellen
 */
 
@@ -48,7 +48,8 @@ class spiel : public applikation
 
 	public:
 		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
-		void init_window(char *txt, WORD icon_num, int r, int g, int b);
+		void window_init(char *txt, WORD icon_num, int r, int g, int b);
+		void window_mode(char *txt, bool window);
 		void load_cube_tex();
 		bool check_round();
 		void new_round();
@@ -62,7 +63,7 @@ class spiel : public applikation
 		int render();
 };
 
-void spiel::init_window(char *txt, WORD icon_num, int r, int g, int b)
+void spiel::window_init(char *txt, WORD icon_num, int r, int g, int b)
 {
 	//set_window(32, 48, 1280, 720, 1);
 	set_title(txt);
@@ -74,6 +75,21 @@ void spiel::init_window(char *txt, WORD icon_num, int r, int g, int b)
 		SendMessage(handle, WM_SETICON, ICON_SMALL, (LPARAM)icon);
 	}
 	set_bkcolor(r, g, b);
+}
+
+void spiel::window_mode(char *txt, bool full_screen)
+{
+	HWND handle = FindWindow(NULL, _TEXT(txt));
+	if (full_screen)
+	{
+		SendMessage(handle, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		SetWindowLong(handle, GWL_STYLE, WS_POPUPWINDOW | WS_VISIBLE);		
+	}
+	else
+	{
+		SetWindowLong(handle, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+		SendMessage(handle, WM_SYSCOMMAND, SC_RESTORE, 0);
+	}
 }
 
 void spiel::load_cube_tex()
@@ -103,7 +119,8 @@ void spiel::setup()
 	srand((long)time(NULL));
 
 	// Titel, Icon und Hintergrundfarbe setzen
-	init_window("myQ*Bert", IDI_MYICON, 0, 0, 0);
+	window_init("myQ*Bert", IDI_MYICON, 0, 0, 0);
+	window_mode("myQ*Bert", true);
 	set_cps(20);
 
 	// Sprites laden
@@ -402,8 +419,8 @@ void spiel::game_over()
 
 void spiel::step()
 {
-	// Wurde Q*bert nicht getroffen, ist die Runde nicht zu Ende und soll der Splashscreen nicht dargestellt werden?
-	if ((!stats.QBertHit) && (!stats.RoundDone) && (!stats.ShowSplash))
+	// Wurde Q*bert nicht getroffen, ist die Runde nicht zu Ende, soll der Splashscreen nicht dargestellt werden und ist das Spiel nicht pausiert?
+	if (!stats.QBertHit && !stats.RoundDone && !stats.ShowSplash && !stats.Pause)
 	{
 		// Array für Tastatureingaben
 		unsigned char keys[256];
@@ -588,6 +605,8 @@ void spiel::step()
 			}
 		}
 	}
+	stats.FramesPauseChanged++;
+	return;
 }
 
 void spiel::render_sprites()
@@ -684,11 +703,28 @@ int spiel::render()
 		// Wurde eine Taste gedrückt?
 		if (poll_keyboard(keys))
 		{
-			// Screenshot machen
 			if (keys[DIK_F1])
+			{
+				// Screenshot machen
 				screenshot("myQBert");
+			}			
+			else if ((keys[DIK_F2] || keys[DIK_PAUSE] || keys[DIK_P]) && (stats.FramesPauseChanged >= 10))
+			{
+				// Spiel pausieren
+				stats.FramesPauseChanged = 0;
+				stats.Pause = !stats.Pause;
+			}			
+			else if (keys[DIK_F3])
+			{
+				// Fenstermodus
+				window_mode("myQ*Bert", false);
+			}
+			else if (keys[DIK_F4])
+			{
+				// Vollbildmodus
+				window_mode("myQ*Bert", true);
+			}
 		}
-
 		return 1;
 	}
 	else
