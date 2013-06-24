@@ -63,7 +63,7 @@ class spiel : public applikation
 
 void spiel::init_window(char *txt, WORD icon_num, int r, int g, int b)
 {
-	set_window(32, 48, 1280, 720, 1);
+	//set_window(32, 48, 1280, 720, 1);
 	set_title(txt);
 	HWND handle = FindWindow(NULL, _TEXT(txt));
 	const HICON icon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(icon_num));
