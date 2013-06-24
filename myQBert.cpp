@@ -25,8 +25,6 @@
 	Zu erledigen:
 	- Fall der NPCs darstellen
 	- jede Menge Sounds
-	- Special Effect beim Rundenende
-	- Splashscreens für die Level
 	- ...
 */
 
@@ -46,6 +44,7 @@ class spiel : public applikation
 		sprite lvl_sprite;
 		sprite rnd_sprite;
 		sprite life_sprite;
+		sprite splash_sprite[3];
 
 	public:
 		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
@@ -65,7 +64,7 @@ class spiel : public applikation
 
 void spiel::init_window(char *txt, WORD icon_num, int r, int g, int b)
 {
-	//set_window(32, 48, 1280, 720, 1);
+	set_window(32, 48, 1280, 720, 1);
 	set_title(txt);
 	HWND handle = FindWindow(NULL, _TEXT(txt));
 	const HICON icon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(icon_num));
@@ -115,6 +114,12 @@ void spiel::setup()
 		digit_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
 		ss.str(std::string()); ss.clear();
 	}
+	for (int i=0; i<3; i++)
+	{
+		ss <<"myQBert/Textures/Level-Splash-" <<(i+1) <<".png";
+		splash_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
+		ss.str(std::string()); ss.clear();
+	}
 	player_sprite.load("myQBert/Textures/Player.png", 0xffffff00);
 	lvl_sprite.load("myQBert/Textures/Level.png", 0xffffff00);
 	rnd_sprite.load("myQBert/Textures/Round.png", 0xffffff00);
@@ -159,7 +164,7 @@ void spiel::setup()
 	standort = cubes[8].lookatme(&blickrichtung, 15.0f);
 	set_sunlight(0, &D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1.0f, 0.0f, 0.0f);
 
-	// Q*Bert
+	// Q*Bert spawnen
 	QBert *q = new QBert(Node(1, &cubes[1]));
 	qbert = *q;
 
@@ -311,6 +316,7 @@ void spiel::new_round()
 	}
 	else
 	{
+		stats.ShowSplash = true;
 		stats.Round = 1;
 		stats.Level++;
 	}
@@ -395,8 +401,8 @@ void spiel::game_over()
 
 void spiel::step()
 {
-	// Wurde Q*bert nicht getroffen?
-	if (!stats.QBertHit)
+	// Wurde Q*bert nicht getroffen, ist die Runde nicht zu Ende und soll der Splashscreen nicht dargestellt werden?
+	if ((!stats.QBertHit) && (!stats.RoundDone) && (!stats.ShowSplash))
 	{
 		// Array für Tastatureingaben
 		unsigned char keys[256];
@@ -490,8 +496,7 @@ void spiel::step()
 			}
 
 			// Wurde die Runde abgeschlossen?
-			if (check_round())
-				new_round();
+			stats.RoundDone = check_round();
 
 			// Spawn Timer hochzählen
 			stats.FramesLastSpawn++;
@@ -524,72 +529,128 @@ void spiel::step()
 	}
 	else
 	{
-		// War die Zeit 3 Sekunden angehalten?
-		if (stats.FramesQBertHit == 60)
+		// Wurde Q*Bert getroffen?
+		if (stats.QBertHit)
 		{
-			// Q*Bert freigeben
-			stats.QBertHit = false;
-			stats.FramesQBertHit = 0;
-			qbert_hit();
+			// War die Zeit 3 Sekunden angehalten?
+			if (stats.FramesQBertHit == 60)
+			{
+				// Q*Bert freigeben
+				stats.QBertHit = false;
+				stats.FramesQBertHit = 0;
+				qbert_hit();
+			}
+			else
+			{
+				stats.FramesQBertHit++;
+			}
 		}
-		else
+
+		// Ist die Runde zu Ende?
+		else if (stats.RoundDone)
 		{
-			stats.FramesQBertHit++;
+			// War die Zeit 3 Sekunden angehalten?
+			if (stats.FramesRoundDone == 60)
+			{
+				// Spiel freigeben
+				stats.RoundDone = false;
+				stats.FramesRoundDone = 0;
+				set_bkcolor(0, 0, 0);
+				new_round();
+			}
+			else
+			{
+				// Epileptiker-Warnung??
+				int rnd = rand() % 3;
+				for (int i=1; i<=28; i++)
+				{
+					cubes[i].cur = rnd;
+					cubes[i].update_texture();
+				}
+				stats.FramesRoundDone++;
+			}
+		}
+
+		// Soll der Splashscreen dargestellt werden?
+		else if (stats.ShowSplash)
+		{
+			// Wurde der Splashscreen 3 Sekunden dargestellt?
+			if (stats.FramesSplashShown == 60)
+			{
+				stats.ShowSplash = false;
+				stats.FramesSplashShown = 0;
+			}
+			else
+			{
+				stats.FramesSplashShown++;
+			}
 		}
 	}
 }
 
 void spiel::render_sprites()
 {
-	// Variablendeklaration und -initialisierung
-	int digit = 0;
-	int digit_count = (stats.Score > 0) ? 0 : 1;
-	int score = stats.Score;
-	int edge = 32;
-	int x = 0;
-	int y = 0;
-
-	// Fenstergröße abfragen und Rastereinheit ausrechnen
-	get_windowsize(0, 0, &x, &y, 1);
-	x = x/32;
-	y = y/32;
-
-	// Player rendern
-	player_sprite.move(x, y*2, x + player_sprite.get_x(), y*2 + player_sprite.get_y());
-	player_sprite.render();
-
-	// Anzahl der Stellen ermitteln
-	while (score)
+	// Ist die Runde nicht zu Ende?
+	if (!stats.ShowSplash)
 	{
-		score = score / 10;
-		digit_count++;
-    }
+		// Variablendeklaration und -initialisierung
+		int digit = 0;
+		int digit_count = (stats.Score > 0) ? 0 : 1;
+		int score = stats.Score;
+		int edge = 32;
+		int x = 0; int y = 0;
 
-	// alle Stellen durchlaufen und Ziffer rendern
-	score = stats.Score;
-	for (int i=digit_count-1; i>=0; i--)
-	{
-		digit = score % 10;
-		score = score / 10;
-		digit_sprite[digit].move(x + i*(digit_sprite[digit].get_x()/2), y*5, x + (i+1)*(digit_sprite[digit].get_x()/2), y*5 + (digit_sprite[digit].get_y())/2);
-		digit_sprite[digit].render();
+		// Fenstergröße abfragen und Rastereinheit ausrechnen
+		get_windowsize(0, 0, &x, &y, 1);
+		x = x/32; y = y/32;
+
+		// Player rendern
+		player_sprite.move(x, y*2, x + player_sprite.get_x(), y*2 + player_sprite.get_y());
+		player_sprite.render();
+
+		// Anzahl der Stellen ermitteln
+		while (score)
+		{
+			score = score / 10;
+			digit_count++;
+		}
+
+		// alle Stellen durchlaufen und Ziffer rendern
+		score = stats.Score;
+		for (int i=digit_count-1; i>=0; i--)
+		{
+			digit = score % 10;
+			score = score / 10;
+			digit_sprite[digit].move(x + i*(digit_sprite[digit].get_x()/2), y*5, x + (i+1)*(digit_sprite[digit].get_x()/2), y*5 + (digit_sprite[digit].get_y())/2);
+			digit_sprite[digit].render();
+		}
+
+		// Level / Round rendern
+		lvl_sprite.move(x*24, y*6, x*24 + lvl_sprite.get_x()/2, y*6 + lvl_sprite.get_y()/2);
+		lvl_sprite.render();
+		rnd_sprite.move(x*24, y*9, x*24 + rnd_sprite.get_x()/2, y*9 + rnd_sprite.get_y()/2);
+		rnd_sprite.render();
+		digit_sprite[stats.Level].move(x*24 + lvl_sprite.get_x()/2 + digit_sprite[stats.Level].get_x()/2, y*6, x*24 + lvl_sprite.get_x()/2 + digit_sprite[stats.Level].get_x(), y*6 + digit_sprite[stats.Level].get_y()/2);
+		digit_sprite[stats.Level].render();
+		digit_sprite[stats.Round].move(x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Level].get_x()/2, y*9, x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Round].get_x(), y*9 + digit_sprite[stats.Round].get_y()/2);
+		digit_sprite[stats.Round].render();
+
+		// Leben rendern
+		for (int i=0; i<stats.LifeCount; i++)
+		{
+			life_sprite.move(x, y*12 + i*(life_sprite.get_y()/2), x + (life_sprite.get_x()/2), y*12 + (i+1)*(life_sprite.get_y()/2));
+			life_sprite.render();
+		}
 	}
-
-	// Level / Round rendern
-	lvl_sprite.move(x*24, y*6, x*24 + lvl_sprite.get_x()/2, y*6 + lvl_sprite.get_y()/2);
-	lvl_sprite.render();
-	rnd_sprite.move(x*24, y*9, x*24 + rnd_sprite.get_x()/2, y*9 + rnd_sprite.get_y()/2);
-	rnd_sprite.render();
-	digit_sprite[stats.Level].move(x*24 + lvl_sprite.get_x()/2 + digit_sprite[stats.Level].get_x()/2, y*6, x*24 + lvl_sprite.get_x()/2 + digit_sprite[stats.Level].get_x(), y*6 + digit_sprite[stats.Level].get_y()/2);
-	digit_sprite[stats.Level].render();
-	digit_sprite[stats.Round].move(x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Level].get_x()/2, y*9, x*24 + rnd_sprite.get_x()/2 + digit_sprite[stats.Round].get_x(), y*9 + digit_sprite[stats.Round].get_y()/2);
-	digit_sprite[stats.Round].render();
-
-	// Leben rendern
-	for (int i=0; i<stats.LifeCount; i++)
+	else
 	{
-		life_sprite.move(x, y*12 + i*(life_sprite.get_y()/2), x + (life_sprite.get_x()/2), y*12 + (i+1)*(life_sprite.get_y()/2));
-		life_sprite.render();
+		// Variablendeklaration und -initialisierung
+		int x = 0; int y = 0;
+
+		// Splashscreen darstellen
+		get_windowsize(0, 0, &x, &y, 1);
+		splash_sprite[stats.Level-1].move(0, 0, x, y);
+		splash_sprite[stats.Level-1].render();
 	}
 }
 

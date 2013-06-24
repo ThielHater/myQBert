@@ -12,7 +12,11 @@ class GameStats
 		int FramesLastSpawn;
 		int FramesTimeFrozen;
 		int FramesQBertHit;
+		int FramesRoundDone;
+		int FramesSplashShown;
 		bool TimeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
-		bool QBertHit; // in Step() setzen, in myQBert.cpp abfragen!
+		bool QBertHit;
+		bool RoundDone;
+		bool ShowSplash;
 		void Reset();
 };
