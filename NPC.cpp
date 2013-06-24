@@ -101,7 +101,7 @@ void NPC::Move(DirectionEnum direction)
 	}
 }
 
-void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
+void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -134,7 +134,7 @@ void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node
 				if (!isMoving)
 				{
 					// Sind der NPC und Q*Bert auf dem gleichen Knoten?
-					if (CurNode.NodeNum == qbert_node.NodeNum)					
+					if (CurNode.NodeNum == qbert_cur_node.NodeNum)					
 						Collision(stats);					
 
 					// Würfel umfärben
@@ -146,7 +146,7 @@ void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node
 		else
 		{
 			// Sind der NPC und Q*Bert nicht auf dem gleichen Knoten?
-			if (CurNode.NodeNum != qbert_node.NodeNum)
+			if (CurNode.NodeNum != qbert_cur_node.NodeNum)
 			{
 				/* Tipp: Mit den Indizes "1" und "2" kommt man an die Würfel unterhalb des aktuellen Würfels, mit "0" und "3" an die oberhalb. Letzteres lässt sich für Ugg und Wrong Way nutzen. */
 

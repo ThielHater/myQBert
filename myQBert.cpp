@@ -23,9 +23,8 @@
 
 /*
 	Zu erledigen:
-	- Fall der NPCs darstellen
 	- jede Menge Sounds
-	- ...
+	- Fall der NPCs darstellen
 */
 
 class spiel : public applikation
@@ -427,8 +426,8 @@ void spiel::step()
 				game_over();
 		}
 
-		// alle 8 Sekunden neuen NPC spawnen
-		if (stats.FramesLastSpawn >= 160)
+		// alle X Sekunden neuen NPC spawnen
+		if (stats.FramesLastSpawn >= (200 - 40*stats.Level))
 		{
 			// NPC auswürfeln und einketten
 			int rnd = 1 + (rand() % 4);
@@ -467,11 +466,12 @@ void spiel::step()
 			while (it != npc_list.end())
 			{
 				// NPC ziehen
-				(*it)->Step(adjacency_list, stats, qbert.CurNode);
+				(*it)->Step(adjacency_list, stats, qbert.CurNode, qbert.TargetNode);
 
 				// Game Over?
 				if (stats.LifeCount == 0)
 				{
+					stats.QBertHit = false; // kleiner Hack :)
 					game_over();
 					return;
 				}
@@ -656,35 +656,43 @@ void spiel::render_sprites()
 
 int spiel::render()
 {
-	// Array für Tastatureingaben
-	unsigned char keys[256];
-
-	// Elemente auf dem Spielfeld berechnen
-	step();
-
-	// Würfel rendern
-	for(int i=1;i<=28;i++)
-		cubes[i].render(0, RENDER_OPAQUE);
-
-	// Q*Bert rendern
-	qbert.render(1, RENDER_ALL);
-
-	// NPCs rendern
-	for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
-		(*it)->render(1, RENDER_ALL);
-
-	// Sprites rendern
-	render_sprites();
-
-	// Wurde eine Taste gedrückt?
-	if (poll_keyboard(keys))
+	// Sicherheitsabfrage
+	if (stats.Level != 4)
 	{
-		// Screenshot machen
-		if (keys[DIK_F1])
-			screenshot("myQBert");
-	}
+		// Array für Tastatureingaben
+		unsigned char keys[256];
 
-	return 1;
+		// Elemente auf dem Spielfeld berechnen
+		step();
+
+		// Würfel rendern
+		for(int i=1;i<=28;i++)
+			cubes[i].render(0, RENDER_OPAQUE);
+
+		// Q*Bert rendern
+		qbert.render(1, RENDER_ALL);
+
+		// NPCs rendern
+		for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
+			(*it)->render(1, RENDER_ALL);
+
+		// Sprites rendern
+		render_sprites();
+
+		// Wurde eine Taste gedrückt?
+		if (poll_keyboard(keys))
+		{
+			// Screenshot machen
+			if (keys[DIK_F1])
+				screenshot("myQBert");
+		}
+
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 spiel myQBert(31);

@@ -64,7 +64,7 @@ void UggWrongWay::InitGraphics(char *TexName)
 	return;
 }
 
-void UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_node)
+void UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -88,18 +88,22 @@ void UggWrongWay::Step(const AdjacencyList &adjacency_list, GameStats &stats, co
 			// Weiter bewegen..
 			Move(MoveDirection);
 
+			// Springen der NPC und Q*Bert sich entgegen?
+			if ((CurNode.NodeNum == qbert_tar_node.NodeNum) && (TargetNode.NodeNum == qbert_cur_node.NodeNum))
+				Collision(stats);
+
 			// Bewegung fertig?
 			if (!isMoving)
 			{
 				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
-				if (CurNode.NodeNum == qbert_node.NodeNum)
+				if (CurNode.NodeNum == qbert_cur_node.NodeNum)
 					Collision(stats);
 			}
 		}
 		else
 		{
 			// Sind der NPC und Q*Bert nicht auf dem gleichen Knoten?
-			if (CurNode.NodeNum != qbert_node.NodeNum)
+			if (CurNode.NodeNum != qbert_cur_node.NodeNum)
 			{
 				// neuen Knoten und damit auch die neue Richtung zufällig bestimmen
 				int rnd = rand() % 2;
