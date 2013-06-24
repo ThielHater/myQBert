@@ -319,9 +319,6 @@ void spiel::new_round()
 
 	for (int i=1; i<=28; i++)
 		cubes[i].init_texture(cube_tex);
-
-	Coily *c = new Coily(Node(3, &cubes[3]));
-	npc_list.push_back(c);
 }
 
 void spiel::qbert_hit()
@@ -363,9 +360,6 @@ void spiel::reset()
 
 	for (int i=1; i<=28; i++)
 		cubes[i].init_texture(cube_tex);
-
-	Coily *c = new Coily(Node(3, &cubes[3]));
-	npc_list.push_back(c);
 }
 
 void spiel::game_over()
@@ -401,8 +395,8 @@ void spiel::step()
 			game_over();
 	}
 
-	// alle 10 Sekunden neuen NPC spawnen
-	if (stats.FramesLastSpawn >= 200)
+	// alle 8 Sekunden neuen NPC spawnen
+	if (stats.FramesLastSpawn >= 160)
 	{
 		// NPC auswürfeln und einketten
 		int rnd = 1 + (rand() % 4);
