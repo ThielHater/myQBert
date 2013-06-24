@@ -330,7 +330,6 @@ void spiel::qbert_hit()
 	qbert.isMoving = false;
 	qbert.isWaiting = true;
 	qbert.FirstMoveDone = false;
-	qbert.MoveDirection = DIR_NONE;
 	qbert.FramesJumped = 0;
 	qbert.FramesWaited = 0;
 	qbert.TargetNode.NodeNum = 0;
@@ -339,7 +338,31 @@ void spiel::qbert_hit()
 	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
 	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
 	D3DXMatrixTranslation(&null, 0, 0,0);
-	qbert.set_texture(0, &qbert.TexDownLeft);
+	if (stats.QBertHit)
+	{
+		qbert.load("TriPrismH.x", "myQBert/Models");
+		if (qbert.MoveDirection == DIR_RIGHTUP)
+			qbert.set_texture(0, &qbert.TexUpRightBalloon);
+		else if (qbert.MoveDirection == DIR_RIGHTDOWN)
+			qbert.set_texture(0, &qbert.TexDownRightBalloon);
+		else if (qbert.MoveDirection == DIR_LEFTDOWN)
+			qbert.set_texture(0, &qbert.TexDownLeftBalloon);
+		else if (qbert.MoveDirection == DIR_LEFTUP)
+			qbert.set_texture(0, &qbert.TexUpLeftBalloon);
+	}
+	else
+	{
+		qbert.load("TriPrism.x", "myQBert/Models");
+		if (qbert.MoveDirection == DIR_RIGHTUP)
+			qbert.set_texture(0, &qbert.TexUpRight);
+		else if (qbert.MoveDirection == DIR_RIGHTDOWN)
+			qbert.set_texture(0, &qbert.TexDownRight);
+		else if (qbert.MoveDirection == DIR_LEFTDOWN)
+			qbert.set_texture(0, &qbert.TexDownLeft);
+		else if (qbert.MoveDirection == DIR_LEFTUP)
+			qbert.set_texture(0, &qbert.TexUpLeft);
+		qbert.MoveDirection = DIR_NONE;
+	}
 	qbert.set_transform(&null);
 	qbert.add_transform(&rota);
 	qbert.add_transform(&pos);
@@ -372,130 +395,148 @@ void spiel::game_over()
 
 void spiel::step()
 {
-	// Array für Tastatureingaben
-	unsigned char keys[256];
-
-	// Wurde eine Taste gedrückt?
-	if (poll_keyboard(keys))
+	// Wurde Q*bert nicht getroffen?
+	if (!stats.QBertHit)
 	{
-		// Q*Bert ziehen
-		if (keys[DIK_RIGHT])
-			qbert.Step(adjacency_list, stats, DIR_RIGHTDOWN);
-		else if (keys[DIK_LEFT])
-			qbert.Step(adjacency_list, stats, DIR_LEFTUP);
-		else if (keys[DIK_UP])
-			qbert.Step(adjacency_list, stats, DIR_RIGHTUP);
-		else if (keys[DIK_DOWN])
-			qbert.Step(adjacency_list, stats, DIR_LEFTDOWN);
-		else
-			qbert.Step(adjacency_list, stats, DIR_NONE);
+		// Array für Tastatureingaben
+		unsigned char keys[256];
 
-		// Ist Q*Bert runtergefallen?
-		if (qbert.CurNode.NodeNum == 0)
-			game_over();
-	}
+		// Wurde eine Taste gedrückt?
+		if (poll_keyboard(keys))
+		{
+			// Q*Bert ziehen
+			if (keys[DIK_RIGHT])
+				qbert.Step(adjacency_list, stats, DIR_RIGHTDOWN);
+			else if (keys[DIK_LEFT])
+				qbert.Step(adjacency_list, stats, DIR_LEFTUP);
+			else if (keys[DIK_UP])
+				qbert.Step(adjacency_list, stats, DIR_RIGHTUP);
+			else if (keys[DIK_DOWN])
+				qbert.Step(adjacency_list, stats, DIR_LEFTDOWN);
+			else
+				qbert.Step(adjacency_list, stats, DIR_NONE);
 
-	// alle 8 Sekunden neuen NPC spawnen
-	if (stats.FramesLastSpawn >= 160)
-	{
-		// NPC auswürfeln und einketten
-		int rnd = 1 + (rand() % 4);
-		int i = 2 + (rand() % 2);
-		if (rnd == 1)
-		{
-			Ball *b = new Ball(Node(i, &cubes[i]));
-			npc_list.push_back(b);
-		}
-		else if (rnd == 2)
-		{
-			Coily *c = new Coily(Node(i, &cubes[i]));
-			npc_list.push_back(c);
-		}
-		else if (rnd == 3)
-		{
-			SlickSam *ss = new SlickSam(Node(i, &cubes[i]));
-			npc_list.push_back(ss);
-		}
-		else if (rnd == 4)
-		{
-			i = (i == 2) ? 22 : 28;
-			UggWrongWay *uww = new UggWrongWay(Node(i, &cubes[i]));
-			npc_list.push_back(uww);
-		}
-
-		// Spawn Timer zurücksetzen
-		stats.FramesLastSpawn = 0;
-	}
-
-	// Steht die Zeit nicht still?
-	if (!stats.TimeFrozen)
-	{
-		// NPCs durchlaufen
-		std::list<NPC*>::iterator it = npc_list.begin();
-		while (it != npc_list.end())
-		{
-			// NPC ziehen
-			(*it)->Step(adjacency_list, stats, qbert.CurNode);
-
-			// Game Over?
-			if (stats.LifeCount == 0)
-			{
+			// Ist Q*Bert runtergefallen?
+			if (qbert.CurNode.NodeNum == 0)
 				game_over();
-				return;
-			}
+		}
 
-			// Wurde Q*Bert getroffen?
-			else if (stats.QBertHit)
+		// alle 8 Sekunden neuen NPC spawnen
+		if (stats.FramesLastSpawn >= 160)
+		{
+			// NPC auswürfeln und einketten
+			int rnd = 1 + (rand() % 4);
+			int i = 2 + (rand() % 2);
+			if (rnd == 1)
 			{
-				stats.QBertHit = false;
-				qbert_hit();
-				return;
+				Ball *b = new Ball(Node(i, &cubes[i]));
+				npc_list.push_back(b);
 			}
-
-			// Ist der NPC runtergefallen oder die Zeit angehalten worden?
-			else if (((*it)->CurNode.NodeNum == 0) || (stats.TimeFrozen))
+			else if (rnd == 2)
 			{
-				// NPC entfernen
-				it = npc_list.erase(it);
-				continue;
+				Coily *c = new Coily(Node(i, &cubes[i]));
+				npc_list.push_back(c);
+			}
+			else if (rnd == 3)
+			{
+				SlickSam *ss = new SlickSam(Node(i, &cubes[i]));
+				npc_list.push_back(ss);
+			}
+			else if (rnd == 4)
+			{
+				i = (i == 2) ? 22 : 28;
+				UggWrongWay *uww = new UggWrongWay(Node(i, &cubes[i]));
+				npc_list.push_back(uww);
 			}
 
-			// nächster NPC
-			++it;
+			// Spawn Timer zurücksetzen
+			stats.FramesLastSpawn = 0;
+		}
+
+		// Steht die Zeit nicht still?
+		if (!stats.TimeFrozen)
+		{
+			// NPCs durchlaufen
+			std::list<NPC*>::iterator it = npc_list.begin();
+			while (it != npc_list.end())
+			{
+				// NPC ziehen
+				(*it)->Step(adjacency_list, stats, qbert.CurNode);
+
+				// Game Over?
+				if (stats.LifeCount == 0)
+				{
+					game_over();
+					return;
+				}
+
+				// Wurde Q*Bert getroffen?
+				else if (stats.QBertHit)
+				{
+					qbert_hit();
+					return;
+				}
+
+				// Ist der NPC runtergefallen oder die Zeit angehalten worden?
+				else if (((*it)->CurNode.NodeNum == 0) || (stats.TimeFrozen))
+				{
+					// NPC entfernen
+					it = npc_list.erase(it);
+					continue;
+				}
+
+				// nächster NPC
+				++it;
+			}
+
+			// Wurde die Runde abgeschlossen?
+			if (check_round())
+				new_round();
+
+			// Spawn Timer hochzählen
+			stats.FramesLastSpawn++;
+		}
+		else
+		{
+			// War die Zeit 5 Sekunden gefroren?
+			if (stats.FramesTimeFrozen == 100)
+			{
+				// Zeit auftauen
+				stats.TimeFrozen = false;
+				stats.FramesTimeFrozen = 0;
+				set_bkcolor(0, 0, 0);
+			}
+			else
+			{
+				// Epileptiker-Warnung??
+				int rnd = 1 + rand() % 4;
+				if (rnd == 1)
+					set_bkcolor(155, 121, 60);
+				else if (rnd == 2)
+					set_bkcolor(161, 98, 229);
+				else if (rnd == 3)
+					set_bkcolor(165, 60, 117);
+				else if (rnd == 4)
+					set_bkcolor(155, 65, 38);
+				stats.FramesTimeFrozen++;
+			}
 		}
 	}
 	else
 	{
-		// War die Zeit 5 Sekunden gefroren?
-		if (stats.FramesTimeFrozen == 100)
+		// War die Zeit 3 Sekunden angehalten?
+		if (stats.FramesQBertHit == 60)
 		{
-			// Zeit auftauen
-			stats.TimeFrozen = false;
-			stats.FramesTimeFrozen = 0;
-			set_bkcolor(0, 0, 0);
+			// Q*Bert freigeben
+			stats.QBertHit = false;
+			stats.FramesQBertHit = 0;
+			qbert_hit();
 		}
 		else
 		{
-			// Epileptiker-Warnung??
-			int rnd = 1 + rand() % 4;
-			if (rnd == 1)
-				set_bkcolor(155, 121, 60);
-			else if (rnd == 2)
-				set_bkcolor(161, 98, 229);
-			else if (rnd == 3)
-				set_bkcolor(165, 60, 117);
-			else
-				set_bkcolor(155, 65, 38);
-			stats.FramesTimeFrozen++;
+			stats.FramesQBertHit++;
 		}
 	}
-
-	// Wurde die Runde abgeschlossen?
-	if (check_round())
-		new_round();
-
-	// Spawn Timer hochzählen
-	stats.FramesLastSpawn++;
 }
 
 void spiel::render_sprites()
