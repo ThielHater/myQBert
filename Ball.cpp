@@ -2,11 +2,10 @@
 #include <string>
 #include "Ball.h"
 
-Ball::Ball(Node ArgCurNode, TypeEnumBl type, char *TexName) : NPC(ArgCurNode)
+Ball::Ball(Node ArgCurNode, char *TexName) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	Type = type;
 	InitGraphics(TexName);
 }
 

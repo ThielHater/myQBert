@@ -1,13 +1,10 @@
 #pragma once
 #include "NPC.h"
 
-enum TypeEnumBl {RED, GREEN};
-
 class Ball : public NPC
 {
 	public:
-		Ball(Node ArgCurNode, TypeEnumBl type, char *TexName);
-		TypeEnumBl Type; // Roter oder grüner Ball?
+		Ball(Node ArgCurNode, char *TexName);
 		textur TexNorm;
 		textur TexJump;
 		void InitGraphics(char *TexName);

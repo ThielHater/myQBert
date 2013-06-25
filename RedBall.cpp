@@ -2,7 +2,7 @@
 #include "Ball.h"
 #include "Node.h"
 
-RedBall::RedBall(Node ArgCurNode) : Ball(ArgCurNode, RED, "Red-Ball")
+RedBall::RedBall(Node ArgCurNode) : Ball(ArgCurNode, "Red-Ball")
 {
 }
 

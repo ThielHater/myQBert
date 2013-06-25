@@ -2,7 +2,7 @@
 #include "Ball.h"
 #include "Node.h"
 
-GreenBall::GreenBall(Node ArgCurNode) : Ball(ArgCurNode, GREEN, "Green-Ball")
+GreenBall::GreenBall(Node ArgCurNode) : Ball(ArgCurNode, "Green-Ball")
 {
 }
 
