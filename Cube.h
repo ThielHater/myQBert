@@ -1,6 +1,5 @@
 #pragma once
 #include "SpaCE\objekt.h"
-#include "GameStats.h"
 
 class Cube : public objekt
 {

@@ -14,9 +14,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="myQBert.cpp">
-      <Filter>Quellcodedateien</Filter>
-    </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
     <ClCompile Include="GreenBall.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -145,7 +145,7 @@
     <ClInclude Include="GreenBall.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
-    <ClInclude Include="MyQBert.h">
+    <ClInclude Include="Game.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
   </ItemGroup>

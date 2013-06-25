@@ -138,7 +138,7 @@
     <ClCompile Include="Disk.cpp" />
     <ClCompile Include="GameStats.cpp" />
     <ClCompile Include="GreenBall.cpp" />
-    <ClCompile Include="myQBert.cpp">
+    <ClCompile Include="Game.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
@@ -162,7 +162,7 @@
     <ClInclude Include="Edge.h" />
     <ClInclude Include="GameStats.h" />
     <ClInclude Include="GreenBall.h" />
-    <ClInclude Include="MyQBert.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="QBert.h" />

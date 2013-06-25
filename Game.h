@@ -1,13 +1,13 @@
 #include "SpaCE/applikation.h"
-#include "AdjacencyList.h"
 #include "Cube.h"
-#include "QBert.h"
 #include "GameStats.h"
+#include "AdjacencyList.h"
+#include "NPC.h"
+#include "QBert.h"
 
-class MyQBert : public applikation
+class Game : public applikation
 {
 	private:
-		static MyQBert *instance;
 		AdjacencyList adjacency_list; // 31 = 1 Abgrund + 28 Würfel + 2 Disks
 		Cube cubes[29]; // 29 = 1 Abgrund + 28 Würfel
 		Cube disks[2];
@@ -24,8 +24,7 @@ class MyQBert : public applikation
 		sprite splash_sprite[3];
 
 	public:
-		MyQBert();
-		static void playSound(int i, int loop = 0);
+		Game(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
 		void window_init(char *txt, WORD icon_num, int r, int g, int b);
 		void window_mode(char *txt, bool window);
 		void load_cube_tex();

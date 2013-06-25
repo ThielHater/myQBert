@@ -1,5 +1,5 @@
 #pragma once
-#include "ball.h"
+#include "Ball.h"
 
 class RedBall : public Ball
 {

@@ -1,7 +1,6 @@
 #include <sstream>
 #include <string>
 #include "Qbert.h"
-#include "MyQBert.h"
 
 QBert::QBert(Node ArgCurNode) : NPC(ArgCurNode)
 {
@@ -10,7 +9,7 @@ QBert::QBert(Node ArgCurNode) : NPC(ArgCurNode)
 	InitGraphics("QBert");
 }
 
-void QBert::InitGraphics(char *TexName)
+void QBert::InitGraphics(const char *TexName)
 {
 	D3DXMATRIX pos;
 	D3DXMATRIX rota;
@@ -64,7 +63,7 @@ void QBert::InitGraphics(char *TexName)
 	return;
 }
 
-void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
+void QBert::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -113,7 +112,6 @@ void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Directio
 				MoveDirection = direction;
 
 				// NPC bewegen
-				MyQBert::playSound(16);
 				isMoving = true;
 				Move(MoveDirection);
 			}

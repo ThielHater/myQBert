@@ -2,24 +2,18 @@
 #include <math.h>
 #include <time.h>
 #include <fstream>
-#include <list>
 #include <sstream>
 #include <string>
-
-#include "SpaCE/applikation.h"
-#include "MyQBert.h"
-#include "Cube.h"
+#include <vector>
+#include "Game.h"
 #include "Disk.h"
-#include "GameStats.h"
 #include "Edge.h"
 #include "Node.h"
-#include "AdjacencyList.h"
 #include "Cube.h"
 #include "Ball.h"
 #include "RedBall.h"
 #include "GreenBall.h"
 #include "Coily.h"
-#include "QBert.h"
 #include "SlickSam.h"
 #include "UggWrongWay.h"
 #include "resource.h"
@@ -31,17 +25,9 @@
 	- Fall der NPCs darstellen
 */
 
-MyQBert *MyQBert::instance;
+Game myQBert(31);
 
-void MyQBert::playSound(int i, int loop) {
-	instance->play_sound(i, loop);
-}
-
-MyQBert::MyQBert() {
-	instance = this;
-}
-
-void MyQBert::window_init(char *txt, WORD icon_num, int r, int g, int b)
+void Game::window_init(char *txt, WORD icon_num, int r, int g, int b)
 {
 	set_title(txt);
 	HWND handle = FindWindow(NULL, _TEXT(txt));
@@ -54,7 +40,7 @@ void MyQBert::window_init(char *txt, WORD icon_num, int r, int g, int b)
 	set_bkcolor(r, g, b);
 }
 
-void MyQBert::window_mode(char *txt, bool full_screen)
+void Game::window_mode(char *txt, bool full_screen)
 {
 	HWND handle = FindWindow(NULL, _TEXT(txt));
 	if (full_screen)
@@ -69,7 +55,7 @@ void MyQBert::window_mode(char *txt, bool full_screen)
 	}
 }
 
-void MyQBert::load_cube_tex()
+void Game::load_cube_tex()
 {
 	std::stringstream ss;
 	for (int i=0; i<3; i++)
@@ -81,7 +67,7 @@ void MyQBert::load_cube_tex()
 	return;
 }
 
-void MyQBert::setup()
+void Game::setup()
 {
 	// Variablendeklaration
 	D3DXMATRIX rota;
@@ -188,10 +174,9 @@ void MyQBert::setup()
 	// Konsole öffnen
 	open_console("myQ*Bert Debug Console");
 	*/
-	MyQBert::playSound(8); // Level 1
 }
 
-void MyQBert::setup_nodes()
+void Game::setup_nodes()
 {
 	adjacency_list[1].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[1].push_back(Edge(Node(3, &cubes[3]), 1));
@@ -307,7 +292,7 @@ void MyQBert::setup_nodes()
 	adjacency_list[28].push_back(Edge(Node(21, &cubes[21]), 1));
 }
 
-bool MyQBert::check_round()
+bool Game::check_round()
 {
 	if ((stats.Level == 1) || (stats.Level == 2))
 	{
@@ -324,7 +309,7 @@ bool MyQBert::check_round()
 	return true;
 }
 
-void MyQBert::new_round()
+void Game::new_round()
 {
 	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
@@ -338,11 +323,6 @@ void MyQBert::new_round()
 		stats.ShowSplash = true;
 		stats.Round = 1;
 		stats.Level++;
-
-		if (stats.Level == 2)
-			MyQBert::playSound(9);
-		else // 3 und höher?
-			MyQBert::playSound(10);
 	}
 
 	load_cube_tex();
@@ -351,7 +331,7 @@ void MyQBert::new_round()
 		cubes[i].init_texture(cube_tex);
 }
 
-void MyQBert::qbert_hit()
+void Game::qbert_hit()
 {
 	D3DXMATRIX pos;
 	D3DXMATRIX rota;
@@ -405,7 +385,7 @@ void MyQBert::qbert_hit()
 	qbert->add_transform(&trans);
 }
 
-void MyQBert::reset()
+void Game::reset()
 {
 	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
@@ -418,16 +398,15 @@ void MyQBert::reset()
 		cubes[i].init_texture(cube_tex);
 }
 
-void MyQBert::game_over()
+void Game::game_over()
 {
 	/* Frage: Was sollen wir machen? */
 
 	printf("Game Over, du Lusche!\n\n");
 	reset();
-	MyQBert::playSound(8); // Level 1
 }
 
-void MyQBert::step()
+void Game::step()
 {
 	// Wurde Q*bert nicht getroffen, ist die Runde nicht zu Ende, soll der Splashscreen nicht dargestellt werden und ist das Spiel nicht pausiert?
 	if (!stats.QBertHit && !stats.RoundDone && !stats.ShowSplash && !stats.Pause)
@@ -440,15 +419,15 @@ void MyQBert::step()
 		{
 			// Q*Bert ziehen
 			if (keys[DIK_RIGHT])
-				qbert->Step(adjacency_list, stats, DIR_RIGHTDOWN);
+				qbert->Step(myQBert, adjacency_list, stats, DIR_RIGHTDOWN);
 			else if (keys[DIK_LEFT])
-				qbert->Step(adjacency_list, stats, DIR_LEFTUP);
+				qbert->Step(myQBert, adjacency_list, stats, DIR_LEFTUP);
 			else if (keys[DIK_UP])
-				qbert->Step(adjacency_list, stats, DIR_RIGHTUP);
+				qbert->Step(myQBert, adjacency_list, stats, DIR_RIGHTUP);
 			else if (keys[DIK_DOWN])
-				qbert->Step(adjacency_list, stats, DIR_LEFTDOWN);
+				qbert->Step(myQBert, adjacency_list, stats, DIR_LEFTDOWN);
 			else
-				qbert->Step(adjacency_list, stats, DIR_NONE);
+				qbert->Step(myQBert, adjacency_list, stats, DIR_NONE);
 
 			// Ist Q*Bert runtergefallen?
 			if (qbert->CurNode.NodeNum == 0)
@@ -499,7 +478,7 @@ void MyQBert::step()
 			while (it != npc_list.end())
 			{
 				// NPC ziehen
-				(*it)->Step(adjacency_list, stats, qbert->CurNode, qbert->TargetNode);
+				(*it)->Step(myQBert, adjacency_list, stats, qbert->CurNode, qbert->TargetNode);
 
 				// Game Over?
 				if (stats.LifeCount == 0)
@@ -594,9 +573,6 @@ void MyQBert::step()
 			}
 			else
 			{
-				if (stats.FramesRoundDone == 0)
-					MyQBert::playSound(4); // End Round
-
 				// Epileptiker-Warnung??
 				int rnd = rand() % 3;
 				for (int i=1; i<=28; i++)
@@ -626,7 +602,7 @@ void MyQBert::step()
 	stats.FramesPauseChanged++;
 }
 
-void MyQBert::render_sprites()
+void Game::render_sprites()
 {
 	// Ist die Runde nicht zu Ende?
 	if (!stats.ShowSplash)
@@ -692,7 +668,7 @@ void MyQBert::render_sprites()
 	}
 }
 
-int MyQBert::render()
+int Game::render()
 {
 	// Sicherheitsabfrage
 	if (stats.Level != 4)
@@ -749,5 +725,3 @@ int MyQBert::render()
 		return 0;
 	}
 }
-
-MyQBert myQBert;

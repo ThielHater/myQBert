@@ -1,6 +1,6 @@
 #include "AdjacencyList.h"
 
-AdjacencyList::AdjacencyList() : std::vector<std::vector<Edge>>(31)
+AdjacencyList::AdjacencyList(int count) : std::vector<std::vector<Edge>>(count)
 {
 }
 

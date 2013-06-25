@@ -17,7 +17,7 @@ Coily::Coily(Node ArgCurNode) : NPC(ArgCurNode)
 	InitGraphics("Coily");
 }
 
-void Coily::InitGraphics(char *TexName)
+void Coily::InitGraphics(const char *TexName)
 {
 	D3DXMATRIX pos;
 	D3DXMATRIX rota;
@@ -64,7 +64,7 @@ void Coily::InitGraphics(char *TexName)
 	return;
 }
 
-void Coily::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
+void Coily::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet Coily?
 	if (isWaiting)
