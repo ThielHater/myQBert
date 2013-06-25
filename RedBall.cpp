@@ -6,7 +6,7 @@ RedBall::RedBall(Node ArgCurNode) : Ball(ArgCurNode, "Red-Ball")
 {
 }
 
-void RedBall::Collision(GameStats &stats)
+void RedBall::Collision(applikation &myqbert, GameStats &stats)
 {
 	stats.LifeCount--;
 	stats.QBertHit = true;
@@ -14,4 +14,5 @@ void RedBall::Collision(GameStats &stats)
 		printf("Q*Bert wurde vom roten Ball getroffen, noch %d Leben!\n", stats.LifeCount);
 	else
 		printf("Q*Bert wurde vom roten Ball getroffen, kein Leben mehr!\n", stats.LifeCount);
+	myqbert.play_sound(20, 0);
 }

@@ -5,5 +5,5 @@ class GreenBall : public Ball
 {
 	public:
 		GreenBall(Node ArgCurNode);
-		void Collision(GameStats &stats);
+		void Collision(applikation &myqbert, GameStats &stats);
 };

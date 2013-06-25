@@ -61,7 +61,7 @@ void SlickSam::InitGraphics(const char *TexName)
 	return;
 }
 
-void SlickSam::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
+void SlickSam::Step(applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -87,14 +87,14 @@ void SlickSam::Step(const applikation &myqbert, const AdjacencyList &adjacency_l
 
 			// Springen der NPC und Q*Bert sich entgegen?
 			if ((CurNode.NodeNum == qbert_tar_node.NodeNum) && (TargetNode.NodeNum == qbert_cur_node.NodeNum))
-				Collision(stats);
+				Collision(myqbert, stats);
 
 			// Bewegung fertig?
 			if (!isMoving)
 			{
 				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
 				if (CurNode.NodeNum == qbert_cur_node.NodeNum)					
-					Collision(stats);					
+					Collision(myqbert, stats);					
 
 				// Würfel umfärben
 				if (CurNode.NodeNum != 0)
@@ -119,6 +119,9 @@ void SlickSam::Step(const applikation &myqbert, const AdjacencyList &adjacency_l
 					MoveDirection = DIR_LEFTDOWN;
 				}
 
+				// Sound abspielen
+				myqbert.play_sound(12, 0);
+
 				// NPC bewegen
 				isMoving = true;
 				Move(MoveDirection);
@@ -126,14 +129,14 @@ void SlickSam::Step(const applikation &myqbert, const AdjacencyList &adjacency_l
 			else
 			{
 				// Kollision
-				Collision(stats);
+				Collision(myqbert, stats);
 			}
 		}
 	}
 	return;
 }
 
-void SlickSam::Collision(GameStats &stats)
+void SlickSam::Collision(applikation &myqbert, GameStats &stats)
 {
 	CurNode.NodeNum = 0; // kleiner Hack :)
 	stats.Score += 300;
@@ -141,6 +144,7 @@ void SlickSam::Collision(GameStats &stats)
 		printf("Q*Bert hat Slick gefangen!");
 	else
 		printf("Q*Bert hat Sam gefangen!");
+	myqbert.play_sound(21, 0);
 	return;
 }
 

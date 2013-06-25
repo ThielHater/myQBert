@@ -33,7 +33,7 @@ void Ball::InitGraphics(const char *TexName)
 	return;
 }
 
-void Ball::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
+void Ball::Step(applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -59,14 +59,14 @@ void Ball::Step(const applikation &myqbert, const AdjacencyList &adjacency_list,
 
 			// Springen der NPC und Q*Bert sich entgegen?
 			if ((CurNode.NodeNum == qbert_tar_node.NodeNum) && (TargetNode.NodeNum == qbert_cur_node.NodeNum))
-				Collision(stats);
+				Collision(myqbert, stats);
 
 			// Bewegung fertig?
 			if (!isMoving)
 			{
 				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
 				if (CurNode.NodeNum == qbert_cur_node.NodeNum)					
-					Collision(stats);					
+					Collision(myqbert, stats);					
 			}
 		}
 		else
@@ -87,6 +87,9 @@ void Ball::Step(const applikation &myqbert, const AdjacencyList &adjacency_list,
 					MoveDirection = DIR_LEFTDOWN;
 				}
 
+				// Sound abspielen
+				myqbert.play_sound(12, 0);
+
 				// NPC bewegen
 				isMoving = true;
 				Move(MoveDirection);
@@ -94,7 +97,7 @@ void Ball::Step(const applikation &myqbert, const AdjacencyList &adjacency_list,
 			else
 			{
 				// Kollision
-				Collision(stats);
+				Collision(myqbert, stats);
 			}
 		}
 	}

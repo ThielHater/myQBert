@@ -81,7 +81,7 @@ void NPC::Move(DirectionEnum direction)
 	}
 }
 
-void NPC::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
+void NPC::Step(applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -115,7 +115,7 @@ void NPC::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, 
 				{
 					// Sind der NPC und Q*Bert auf dem gleichen Knoten?
 					if (CurNode.NodeNum == qbert_cur_node.NodeNum)					
-						Collision(stats);					
+						Collision(myqbert, stats);					
 
 					// Würfel umfärben
 					if (CurNode.NodeNum != 0)
@@ -143,6 +143,11 @@ void NPC::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, 
 					MoveDirection = DIR_LEFTDOWN;
 				}
 
+				/*
+					// Sound abspielen
+					myqbert.play_sound(i, 0);
+				*/
+
 				// NPC bewegen
 				isMoving = true;
 				Move(MoveDirection);
@@ -150,7 +155,7 @@ void NPC::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, 
 			else
 			{
 				// Kollision
-				Collision(stats);
+				Collision(myqbert, stats);
 			}
 		}
 	}

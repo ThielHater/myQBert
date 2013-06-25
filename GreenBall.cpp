@@ -6,9 +6,10 @@ GreenBall::GreenBall(Node ArgCurNode) : Ball(ArgCurNode, "Green-Ball")
 {
 }
 
-void GreenBall::Collision(GameStats &stats)
+void GreenBall::Collision(applikation &myqbert, GameStats &stats)
 {
 	stats.TimeFrozen = true;
 	stats.Score += 100;
 	printf("Q*Bert hat den gr\fcnen Ball gefangen, die Zeit steht still!\n");
+	myqbert.play_sound(6, 0);
 }

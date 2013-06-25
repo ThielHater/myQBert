@@ -22,6 +22,7 @@ class Game : public applikation
 		sprite rnd_sprite;
 		sprite life_sprite;
 		sprite splash_sprite[3];
+		int frame_rate;
 
 	public:
 		Game(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }

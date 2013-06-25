@@ -60,7 +60,7 @@ void UggWrongWay::InitGraphics(const char *TexName)
 	return;
 }
 
-void UggWrongWay::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
+void UggWrongWay::Step(applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -86,14 +86,14 @@ void UggWrongWay::Step(const applikation &myqbert, const AdjacencyList &adjacenc
 
 			// Springen der NPC und Q*Bert sich entgegen?
 			if ((CurNode.NodeNum == qbert_tar_node.NodeNum) && (TargetNode.NodeNum == qbert_cur_node.NodeNum))
-				Collision(stats);
+				Collision(myqbert, stats);
 
 			// Bewegung fertig?
 			if (!isMoving)
 			{
 				// Sind der NPC und Q*Bert auf dem gleichen Knoten?
 				if (CurNode.NodeNum == qbert_cur_node.NodeNum)
-					Collision(stats);
+					Collision(myqbert, stats);
 			}
 		}
 		else
@@ -132,6 +132,9 @@ void UggWrongWay::Step(const applikation &myqbert, const AdjacencyList &adjacenc
 					}
 				}
 
+				// Sound abspielen
+				myqbert.play_sound(12, 0);
+
 				// NPC bewegen
 				isMoving = true;
 				Move(MoveDirection);
@@ -139,14 +142,14 @@ void UggWrongWay::Step(const applikation &myqbert, const AdjacencyList &adjacenc
 			else
 			{
 				// Kollision
-				Collision(stats);
+				Collision(myqbert, stats);
 			}
 		}
 	}
 	return;
 }
 
-void UggWrongWay::Collision(GameStats &stats)
+void UggWrongWay::Collision(applikation &myqbert, GameStats &stats)
 {
 	stats.LifeCount--;
 	stats.QBertHit = true;
@@ -164,6 +167,7 @@ void UggWrongWay::Collision(GameStats &stats)
 		else
 			printf("Q*Bert wurde von Wrong Way gefangen, kein Leben mehr!\n", stats.LifeCount);
 	}
+	myqbert.play_sound(11, 0);
 	return;
 }
 

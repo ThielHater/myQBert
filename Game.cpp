@@ -25,7 +25,7 @@
 	- Fall der NPCs darstellen
 */
 
-Game myQBert(31);
+Game myqbert(31);
 
 void Game::window_init(char *txt, WORD icon_num, int r, int g, int b)
 {
@@ -84,7 +84,10 @@ void Game::setup()
 	// Titel, Icon und Hintergrundfarbe setzen
 	window_init("myQ*Bert", IDI_MYICON, 0, 0, 0);
 	window_mode("myQ*Bert", true);
-	set_cps(20);
+
+	// Frame Rate setzen
+	frame_rate = 30;
+	set_cps(frame_rate);
 
 	// Sprites laden
 	std::stringstream ss;
@@ -137,7 +140,7 @@ void Game::setup()
 		1. Coily-Hit
 		2. Coily-Jump
 		3. Disk
-		4. End-Level
+		4. End-Round
 		5. Extra-Life
 		6. Green-Ball
 		7. Intro
@@ -145,7 +148,7 @@ void Game::setup()
 		9. Level-2
 		10. Level-3
 		11. Other-Hit
-		12. Other-Move
+		12. Other-Jump
 		13. QBert-Drop
 		14. QBert-Fall
 		15. QBert-Hello
@@ -156,7 +159,7 @@ void Game::setup()
 		20. Red-Ball
 		21. SlickSam-Hit
 	*/
-	load_sounds(22, "myQBert/Sounds/Coily-Fall.wav", "myQBert/Sounds/Coily-Hit.wav", "myQBert/Sounds/Coily-Jump.wav", "myQBert/Sounds/Disk.wav", "myQBert/Sounds/End-Level.wav", "myQBert/Sounds/Extra-Life.wav", "myQBert/Sounds/Green-Ball.wav", "myQBert/Sounds/Intro.wav", "myQBert/Sounds/Level-1.wav", "myQBert/Sounds/Level-2.wav", "myQBert/Sounds/Level-3.wav", "myQBert/Sounds/Other-Hit.wav", "myQBert/Sounds/Other-Move.wav", "myQBert/Sounds/QBert-Drop.wav", "myQBert/Sounds/QBert-Fall.wav", "myQBert/Sounds/QBert-Hello.wav", "myQBert/Sounds/QBert-Jump.wav", "myQBert/Sounds/QBert-Swear-1.wav", "myQBert/Sounds/QBert-Swear-2.wav", "myQBert/Sounds/QBert-Swear-3.wav", "myQBert/Sounds/Red-Ball.wav", "myQBert/Sounds/SlickSam-Hit.wav");
+	load_sounds(22, "myQBert/Sounds/Coily-Fall.wav", "myQBert/Sounds/Coily-Hit.wav", "myQBert/Sounds/Coily-Jump.wav", "myQBert/Sounds/Disk.wav", "myQBert/Sounds/End-Round.wav", "myQBert/Sounds/Extra-Life.wav", "myQBert/Sounds/Green-Ball.wav", "myQBert/Sounds/Intro.wav", "myQBert/Sounds/Level-1.wav", "myQBert/Sounds/Level-2.wav", "myQBert/Sounds/Level-3.wav", "myQBert/Sounds/Other-Hit.wav", "myQBert/Sounds/Other-Jump.wav", "myQBert/Sounds/QBert-Drop.wav", "myQBert/Sounds/QBert-Fall.wav", "myQBert/Sounds/QBert-Hello.wav", "myQBert/Sounds/QBert-Jump.wav", "myQBert/Sounds/QBert-Swear-1.wav", "myQBert/Sounds/QBert-Swear-2.wav", "myQBert/Sounds/QBert-Swear-3.wav", "myQBert/Sounds/Red-Ball.wav", "myQBert/Sounds/SlickSam-Hit.wav");
 
 	// Knoten und Kanten aufbauen
 	setup_nodes();
@@ -174,6 +177,9 @@ void Game::setup()
 	// Konsole öffnen
 	open_console("myQ*Bert Debug Console");
 	*/
+
+	// Sound abspielen
+	myqbert.play_sound(8, 0);
 }
 
 void Game::setup_nodes()
@@ -315,7 +321,7 @@ void Game::new_round()
 	qbert_hit();
 
 	if (stats.Round != 4)
-	{
+	{		
 		stats.Round++;
 	}
 	else
@@ -323,6 +329,10 @@ void Game::new_round()
 		stats.ShowSplash = true;
 		stats.Round = 1;
 		stats.Level++;
+		if (stats.Level == 2)
+			myqbert.play_sound(9, 0);
+		else if (stats.Level == 3)
+			myqbert.play_sound(10, 0);
 	}
 
 	load_cube_tex();
@@ -359,6 +369,13 @@ void Game::qbert_hit()
 			qbert->set_texture(0, &qbert->TexDownLeftBalloon);
 		else if (qbert->MoveDirection == DIR_LEFTUP)
 			qbert->set_texture(0, &qbert->TexUpLeftBalloon);
+		int rnd = 1 + rand() % 3;
+		if (rnd == 1)
+			myqbert.play_sound(17, 0);
+		else if (rnd == 2)
+			myqbert.play_sound(18, 0);
+		else if (rnd == 3)
+			myqbert.play_sound(19, 0);
 	}
 	else
 	{
@@ -396,6 +413,8 @@ void Game::reset()
 
 	for (int i=1; i<=28; i++)
 		cubes[i].init_texture(cube_tex);
+
+	myqbert.play_sound(8, 0);
 }
 
 void Game::game_over()
@@ -419,33 +438,36 @@ void Game::step()
 		{
 			// Q*Bert ziehen
 			if (keys[DIK_RIGHT])
-				qbert->Step(myQBert, adjacency_list, stats, DIR_RIGHTDOWN);
+				qbert->Step(myqbert, adjacency_list, stats, DIR_RIGHTDOWN);
 			else if (keys[DIK_LEFT])
-				qbert->Step(myQBert, adjacency_list, stats, DIR_LEFTUP);
+				qbert->Step(myqbert, adjacency_list, stats, DIR_LEFTUP);
 			else if (keys[DIK_UP])
-				qbert->Step(myQBert, adjacency_list, stats, DIR_RIGHTUP);
+				qbert->Step(myqbert, adjacency_list, stats, DIR_RIGHTUP);
 			else if (keys[DIK_DOWN])
-				qbert->Step(myQBert, adjacency_list, stats, DIR_LEFTDOWN);
+				qbert->Step(myqbert, adjacency_list, stats, DIR_LEFTDOWN);
 			else
-				qbert->Step(myQBert, adjacency_list, stats, DIR_NONE);
+				qbert->Step(myqbert, adjacency_list, stats, DIR_NONE);
 
 			// Ist Q*Bert runtergefallen?
 			if (qbert->CurNode.NodeNum == 0)
+			{
 				game_over();
+				return;
+			}
 		}
 
 		// alle X Sekunden neuen NPC spawnen
-		if (stats.FramesLastSpawn >= (200 - 40*stats.Level))
+		if (stats.FramesLastSpawn >= (frame_rate*10 - frame_rate*2*stats.Level))
 		{
 			// NPC auswürfeln und einketten
 			int rnd = 1 + (rand() % 4);
 			int i = 2 + (rand() % 2);
 			if (rnd == 1)
 			{
-				Ball *b;
+				Ball *b;				
 				if (npc_list.empty())
 					b = new RedBall(Node(i, &cubes[i]));
-				else
+				else				
 					b = new GreenBall(Node(i, &cubes[i]));
 				npc_list.push_back(b);
 			}
@@ -478,7 +500,7 @@ void Game::step()
 			while (it != npc_list.end())
 			{
 				// NPC ziehen
-				(*it)->Step(myQBert, adjacency_list, stats, qbert->CurNode, qbert->TargetNode);
+				(*it)->Step(myqbert, adjacency_list, stats, qbert->CurNode, qbert->TargetNode);
 
 				// Game Over?
 				if (stats.LifeCount == 0)
@@ -509,15 +531,19 @@ void Game::step()
 			}
 
 			// Wurde die Runde abgeschlossen?
-			stats.RoundDone = check_round();
+			if (check_round())
+			{
+				stats.RoundDone = true;
+				myqbert.play_sound(4, 0);
+			}
 
 			// Spawn Timer hochzählen
 			stats.FramesLastSpawn++;
 		}
 		else
 		{
-			// War die Zeit 5 Sekunden gefroren?
-			if (stats.FramesTimeFrozen == 100)
+			// War die Zeit 3 Sekunden gefroren?
+			if (stats.FramesTimeFrozen == frame_rate*3)
 			{
 				// Zeit auftauen
 				stats.TimeFrozen = false;
@@ -545,8 +571,8 @@ void Game::step()
 		// Wurde Q*Bert getroffen?
 		if (stats.QBertHit)
 		{
-			// War die Zeit 3 Sekunden angehalten?
-			if (stats.FramesQBertHit == 60)
+			// War die Zeit 2 Sekunden angehalten?
+			if (stats.FramesQBertHit == frame_rate*2)
 			{
 				// Q*Bert freigeben
 				stats.QBertHit = false;
@@ -563,7 +589,7 @@ void Game::step()
 		else if (stats.RoundDone)
 		{
 			// War die Zeit 3 Sekunden angehalten?
-			if (stats.FramesRoundDone == 60)
+			if (stats.FramesRoundDone == frame_rate*3)
 			{
 				// Spiel freigeben
 				stats.RoundDone = false;
@@ -588,7 +614,7 @@ void Game::step()
 		else if (stats.ShowSplash)
 		{
 			// Wurde der Splashscreen 3 Sekunden dargestellt?
-			if (stats.FramesSplashShown == 60)
+			if (stats.FramesSplashShown == frame_rate*3)
 			{
 				stats.ShowSplash = false;
 				stats.FramesSplashShown = 0;

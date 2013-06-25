@@ -63,7 +63,7 @@ void QBert::InitGraphics(const char *TexName)
 	return;
 }
 
-void QBert::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
+void QBert::Step(applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction)
 {
 	// Wartet der NPC?
 	if (isWaiting)
@@ -93,6 +93,10 @@ void QBert::Step(const applikation &myqbert, const AdjacencyList &adjacency_list
 				// Würfel umfärben
 				if (CurNode.NodeNum != 0)
 					NodeEffect(stats);
+
+				// Ist Q*Bert runtergefallen?
+				else if (CurNode.NodeNum == 0)
+					myqbert.play_sound(14, 0);
 			}
 		}
 		else
@@ -110,6 +114,9 @@ void QBert::Step(const applikation &myqbert, const AdjacencyList &adjacency_list
 				else if (direction == DIR_LEFTUP)
 					TargetNode = adjacency_list[CurNode.NodeNum][3].target;
 				MoveDirection = direction;
+
+				// Sound abspielen
+				myqbert.play_sound(16, 0);
 
 				// NPC bewegen
 				isMoving = true;

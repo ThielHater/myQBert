@@ -64,7 +64,7 @@ void Coily::InitGraphics(const char *TexName)
 	return;
 }
 
-void Coily::Step(const applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
+void Coily::Step(applikation &myqbert, const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
 {
 	// Wartet Coily?
 	if (isWaiting)
@@ -90,14 +90,18 @@ void Coily::Step(const applikation &myqbert, const AdjacencyList &adjacency_list
 
 			// Springen Coily und Q*Bert sich entgegen?
 			if ((CurNode.NodeNum == qbert_tar_node.NodeNum) && (TargetNode.NodeNum == qbert_cur_node.NodeNum))
-				Collision(stats);
+				Collision(myqbert, stats);
 
 			// Bewegung fertig?
 			if (!isMoving)
 			{
 				// Sind Coily und Q*Bert auf dem gleichen Knoten?
 				if (CurNode.NodeNum == qbert_cur_node.NodeNum)
-					Collision(stats);
+					Collision(myqbert, stats);
+
+				// Ist Coily runtergefallen?
+				else if (CurNode.NodeNum == 0)
+					myqbert.play_sound(0, 0);
 			}
 		}
 		else
@@ -129,7 +133,7 @@ void Coily::Step(const applikation &myqbert, const AdjacencyList &adjacency_list
 					if (CurNode.NodeNum == qbert_cur_node.NodeNum)
 					{
 						// Coily hat Q*Bert "gefangen"
-						Collision(stats);
+						Collision(myqbert, stats);
 						return;
 					}
 
@@ -144,6 +148,12 @@ void Coily::Step(const applikation &myqbert, const AdjacencyList &adjacency_list
 					else if (adjacency_list[CurNode.NodeNum][3].target == TargetNode)
 						MoveDirection = DIR_LEFTUP;
 				}
+
+				// Sound abspielen
+				if (!isUnpacked)
+					myqbert.play_sound(12, 0);
+				else
+					myqbert.play_sound(2, 0);
 
 				// Coily bewegen
 				isMoving = true;
@@ -164,6 +174,9 @@ void Coily::Step(const applikation &myqbert, const AdjacencyList &adjacency_list
 				else if (adjacency_list[CurNode.NodeNum][3].target == TargetNode)
 					MoveDirection = DIR_LEFTUP;
 
+				// Sound abspielen
+				myqbert.play_sound(2, 0);
+
 				// Coily bewegen
 				isMoving = true;
 				Move(MoveDirection);
@@ -171,7 +184,7 @@ void Coily::Step(const applikation &myqbert, const AdjacencyList &adjacency_list
 			else
 			{
 				// Coily hat Q*Bert gefangen
-				Collision(stats);
+				Collision(myqbert, stats);
 			}
 		}
 	}
@@ -224,7 +237,7 @@ Node Coily::Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_cur_no
 	return path.front();
 }
 
-void Coily::Collision(GameStats &stats)
+void Coily::Collision(applikation &myqbert, GameStats &stats)
 {
 	stats.LifeCount--;
 	stats.QBertHit = true;
@@ -232,6 +245,7 @@ void Coily::Collision(GameStats &stats)
 		printf("Q*Bert wurde von Coily gefangen, noch %d Leben!\n", stats.LifeCount);
 	else
 		printf("Q*Bert wurde von Coily gefangen, kein Leben mehr!\n", stats.LifeCount);
+	myqbert.play_sound(1, 0);
 	return;
 }
 
