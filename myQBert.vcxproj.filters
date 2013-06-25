@@ -145,6 +145,9 @@
     <ClInclude Include="GreenBall.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
+    <ClInclude Include="MyQBert.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="SpaCE\SpaCE.lib">

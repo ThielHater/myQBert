@@ -3,11 +3,11 @@
 #include <time.h>
 #include <fstream>
 #include <list>
-#include <vector>
 #include <sstream>
 #include <string>
 
 #include "SpaCE/applikation.h"
+#include "MyQBert.h"
 #include "Cube.h"
 #include "Disk.h"
 #include "GameStats.h"
@@ -31,44 +31,8 @@
 	- Fall der NPCs darstellen
 */
 
-class spiel : public applikation
+void MyQBert::window_init(char *txt, WORD icon_num, int r, int g, int b)
 {
-	private:
-		AdjacencyList adjacency_list; // 31 = 1 Abgrund + 28 Würfel + 2 Disks
-		Cube cubes[29]; // 29 = 1 Abgrund + 28 Würfel
-		Cube disks[2];
-		textur cube_tex[3]; // werden jede Runde neu geladen!
-		textur disk_tex[4];
-		QBert *qbert;
-		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion aufgerufen
-		GameStats stats;
-		sprite digit_sprite[10];
-		sprite player_sprite;
-		sprite lvl_sprite;
-		sprite rnd_sprite;
-		sprite life_sprite;
-		sprite splash_sprite[3];
-
-	public:
-		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
-		void window_init(char *txt, WORD icon_num, int r, int g, int b);
-		void window_mode(char *txt, bool window);
-		void load_cube_tex();
-		bool check_round();
-		void new_round();
-		void qbert_hit();
-		void reset();
-		void game_over();
-		void setup();
-		void setup_nodes();
-		void step();
-		void render_sprites();
-		int render();
-};
-
-void spiel::window_init(char *txt, WORD icon_num, int r, int g, int b)
-{
-	//set_window(32, 48, 1280, 720, 1);
 	set_title(txt);
 	HWND handle = FindWindow(NULL, _TEXT(txt));
 	const HICON icon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(icon_num));
@@ -80,7 +44,7 @@ void spiel::window_init(char *txt, WORD icon_num, int r, int g, int b)
 	set_bkcolor(r, g, b);
 }
 
-void spiel::window_mode(char *txt, bool full_screen)
+void MyQBert::window_mode(char *txt, bool full_screen)
 {
 	HWND handle = FindWindow(NULL, _TEXT(txt));
 	if (full_screen)
@@ -95,7 +59,7 @@ void spiel::window_mode(char *txt, bool full_screen)
 	}
 }
 
-void spiel::load_cube_tex()
+void MyQBert::load_cube_tex()
 {
 	std::stringstream ss;
 	for (int i=0; i<3; i++)
@@ -107,7 +71,7 @@ void spiel::load_cube_tex()
 	return;
 }
 
-void spiel::setup()
+void MyQBert::setup()
 {
 	// Variablendeklaration
 	D3DXMATRIX rota;
@@ -214,11 +178,9 @@ void spiel::setup()
 	// Konsole öffnen
 	open_console("myQ*Bert Debug Console");
 	*/
-
-	return;
 }
 
-void spiel::setup_nodes()
+void MyQBert::setup_nodes()
 {
 	adjacency_list[1].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[1].push_back(Edge(Node(3, &cubes[3]), 1));
@@ -332,10 +294,9 @@ void spiel::setup_nodes()
 	adjacency_list[28].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[28].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[28].push_back(Edge(Node(21, &cubes[21]), 1));
-	return;
 }
 
-bool spiel::check_round()
+bool MyQBert::check_round()
 {
 	if ((stats.Level == 1) || (stats.Level == 2))
 	{
@@ -352,7 +313,7 @@ bool spiel::check_round()
 	return true;
 }
 
-void spiel::new_round()
+void MyQBert::new_round()
 {
 	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
@@ -374,7 +335,7 @@ void spiel::new_round()
 		cubes[i].init_texture(cube_tex);
 }
 
-void spiel::qbert_hit()
+void MyQBert::qbert_hit()
 {
 	D3DXMATRIX pos;
 	D3DXMATRIX rota;
@@ -428,7 +389,7 @@ void spiel::qbert_hit()
 	qbert->add_transform(&trans);
 }
 
-void spiel::reset()
+void MyQBert::reset()
 {
 	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
@@ -441,7 +402,7 @@ void spiel::reset()
 		cubes[i].init_texture(cube_tex);
 }
 
-void spiel::game_over()
+void MyQBert::game_over()
 {
 	/* Frage: Was sollen wir machen? */
 
@@ -449,7 +410,7 @@ void spiel::game_over()
 	reset();
 }
 
-void spiel::step()
+void MyQBert::step()
 {
 	// Wurde Q*bert nicht getroffen, ist die Runde nicht zu Ende, soll der Splashscreen nicht dargestellt werden und ist das Spiel nicht pausiert?
 	if (!stats.QBertHit && !stats.RoundDone && !stats.ShowSplash && !stats.Pause)
@@ -643,10 +604,9 @@ void spiel::step()
 		}
 	}
 	stats.FramesPauseChanged++;
-	return;
 }
 
-void spiel::render_sprites()
+void MyQBert::render_sprites()
 {
 	// Ist die Runde nicht zu Ende?
 	if (!stats.ShowSplash)
@@ -712,7 +672,7 @@ void spiel::render_sprites()
 	}
 }
 
-int spiel::render()
+int MyQBert::render()
 {
 	// Sicherheitsabfrage
 	if (stats.Level != 4)
@@ -770,4 +730,4 @@ int spiel::render()
 	}
 }
 
-spiel myQBert(31);
+MyQBert myQBert;

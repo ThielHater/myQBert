@@ -5,6 +5,6 @@
 class AdjacencyList : public std::vector<std::vector<Edge>>
 {
 	public:
-		AdjacencyList(int count);
+		AdjacencyList();
 		//void add(int ArgEdgeNum, int ArgNodeNum, Cube* ArgCube);
 };

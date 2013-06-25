@@ -162,6 +162,7 @@
     <ClInclude Include="Edge.h" />
     <ClInclude Include="GameStats.h" />
     <ClInclude Include="GreenBall.h" />
+    <ClInclude Include="MyQBert.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="QBert.h" />
