@@ -1,10 +1,13 @@
 #include "RedBall.h"
-#include "Node.h"
 #include "Ball.h"
+#include "Node.h"
 
-RedBall::RedBall(Node ArgCurNode) : Ball(ArgCurNode, RED, "Red-Ball") {}
+RedBall::RedBall(Node ArgCurNode) : Ball(ArgCurNode, RED, "Red-Ball")
+{
+}
 
-void RedBall::Collision(GameStats &stats) {
+void RedBall::Collision(GameStats &stats)
+{
 	stats.LifeCount--;
 	stats.QBertHit = true;
 	if (stats.LifeCount > 0)

@@ -2,19 +2,19 @@
 #include <string>
 #include "Ball.h"
 
-Ball::Ball(Node ArgCurNode, TypeEnumBl type, const char *name) : NPC(ArgCurNode)
+Ball::Ball(Node ArgCurNode, TypeEnumBl type, char *TexName) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
 	Type = type;
-	InitGraphics(name);
+	InitGraphics(TexName);
 }
 
 Ball::~Ball(void)
 {
 }
 
-void Ball::InitGraphics(const char *TexName)
+void Ball::InitGraphics(char *TexName)
 {
 	D3DXMATRIX pos;
 	D3DXMATRIX rota;
@@ -35,6 +35,7 @@ void Ball::InitGraphics(const char *TexName)
 	add_transform(&rota);
 	add_transform(&pos);
 	add_transform(&trans);
+	return;
 }
 
 void Ball::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
@@ -111,4 +112,5 @@ void Ball::SetTexture(void)
 		set_texture(0, &this->TexJump);
 	else
 		set_texture(0, &this->TexNorm);
+	return;
 }

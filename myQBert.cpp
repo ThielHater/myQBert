@@ -197,7 +197,6 @@ void spiel::setup()
 	*/
 	load_sounds(22, "myQBert/Sounds/Coily-Fall.wav", "myQBert/Sounds/Coily-Hit.wav", "myQBert/Sounds/Coily-Jump.wav", "myQBert/Sounds/Disk.wav", "myQBert/Sounds/End-Level.wav", "myQBert/Sounds/Extra-Life.wav", "myQBert/Sounds/Green-Ball.wav", "myQBert/Sounds/Intro.wav", "myQBert/Sounds/Level-1.wav", "myQBert/Sounds/Level-2.wav", "myQBert/Sounds/Level-3.wav", "myQBert/Sounds/Other-Hit.wav", "myQBert/Sounds/Other-Move.wav", "myQBert/Sounds/QBert-Drop.wav", "myQBert/Sounds/QBert-Fall.wav", "myQBert/Sounds/QBert-Hello.wav", "myQBert/Sounds/QBert-Jump.wav", "myQBert/Sounds/QBert-Swear-1.wav", "myQBert/Sounds/QBert-Swear-2.wav", "myQBert/Sounds/QBert-Swear-3.wav", "myQBert/Sounds/Red-Ball.wav", "myQBert/Sounds/SlickSam-Hit.wav");
 
-
 	// Knoten und Kanten aufbauen
 	setup_nodes();
 
@@ -488,10 +487,9 @@ void spiel::step()
 			{
 				Ball *b;
 				if (npc_list.empty())
-					 b = new RedBall(Node(i, &cubes[i]));
+					b = new RedBall(Node(i, &cubes[i]));
 				else
 					b = new GreenBall(Node(i, &cubes[i]));
-
 				npc_list.push_back(b);
 			}
 			else if (rnd == 2)
