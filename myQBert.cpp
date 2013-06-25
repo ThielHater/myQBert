@@ -169,6 +169,33 @@ void spiel::setup()
 		x+=dia;
 	}
 
+	/* Sounds laden
+		0. Coily-Fall
+		1. Coily-Hit
+		2. Coily-Jump
+		3. Disk
+		4. End-Level
+		5. Extra-Life
+		6. Green-Ball
+		7. Intro
+		8. Level-1
+		9. Level-2
+		10. Level-3
+		11. Other-Hit
+		12. Other-Move
+		13. QBert-Drop
+		14. QBert-Fall
+		15. QBert-Hello
+		16. QBert-Jump
+		17. QBert-Swear-1
+		18. QBert-Swear-2
+		19. QBert-Swear-3
+		20. Red-Ball
+		21. SlickSam-Hit
+	*/
+	load_sounds(22, "myQBert/Sounds/Coily-Fall.wav", "myQBert/Sounds/Coily-Hit.wav", "myQBert/Sounds/Coily-Jump.wav", "myQBert/Sounds/Disk.wav", "myQBert/Sounds/End-Level.wav", "myQBert/Sounds/Extra-Life.wav", "myQBert/Sounds/Green-Ball.wav", "myQBert/Sounds/Intro.wav", "myQBert/Sounds/Level-1.wav", "myQBert/Sounds/Level-2.wav", "myQBert/Sounds/Level-3.wav", "myQBert/Sounds/Other-Hit.wav", "myQBert/Sounds/Other-Move.wav", "myQBert/Sounds/QBert-Drop.wav", "myQBert/Sounds/QBert-Fall.wav", "myQBert/Sounds/QBert-Hello.wav", "myQBert/Sounds/QBert-Jump.wav", "myQBert/Sounds/QBert-Swear-1.wav", "myQBert/Sounds/QBert-Swear-2.wav", "myQBert/Sounds/QBert-Swear-3.wav", "myQBert/Sounds/Red-Ball.wav", "myQBert/Sounds/SlickSam-Hit.wav");
+
+
 	// Knoten und Kanten aufbauen
 	setup_nodes();
 
