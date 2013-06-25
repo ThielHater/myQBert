@@ -2,19 +2,11 @@
 #include <string>
 #include "Qbert.h"
 
-QBert::QBert(void)
-{
-}
-
 QBert::QBert(Node ArgCurNode) : NPC(ArgCurNode)
 {
 	FramesPerJump = 4;
 	FramesPerWait = 4;
 	InitGraphics("QBert");
-}
-
-QBert::~QBert(void)
-{
 }
 
 void QBert::InitGraphics(char *TexName)

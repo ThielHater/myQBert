@@ -7,7 +7,6 @@ class Ball : public NPC
 {
 	public:
 		Ball(Node ArgCurNode, TypeEnumBl type, char *TexName);
-		~Ball(void);
 		TypeEnumBl Type; // Roter oder grüner Ball?
 		textur TexNorm;
 		textur TexJump;

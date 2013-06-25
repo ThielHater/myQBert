@@ -7,7 +7,6 @@ class UggWrongWay : public NPC
 {
 	public:
 		UggWrongWay(Node ArgCurNode);
-		~UggWrongWay(void);
 		TypeEnumUW Type; // Ugg oder Wrong Way?
 		textur TexLeft;
 		textur TexLeftJump1;

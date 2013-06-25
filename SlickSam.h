@@ -7,7 +7,6 @@ class SlickSam : public NPC
 {
 	public:
 		SlickSam(Node ArgCurNode);
-		~SlickSam(void);
 		TypeEnumSS Type; // Slick oder Sam?
 		textur TexLeft;
 		textur TexLeftJump1;

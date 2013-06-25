@@ -6,6 +6,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+
 #include "SpaCE/applikation.h"
 #include "Cube.h"
 #include "Disk.h"
@@ -38,7 +39,7 @@ class spiel : public applikation
 		Cube disks[2];
 		textur cube_tex[3]; // werden jede Runde neu geladen!
 		textur disk_tex[4];
-		QBert qbert;
+		QBert *qbert;
 		std::list<NPC*> npc_list; // die gespawnten NPCs werden eingekettet und in der step() Funktion aufgerufen
 		GameStats stats;
 		sprite digit_sprite[10];
@@ -207,8 +208,7 @@ void spiel::setup()
 	set_sunlight(0, &D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1.0f, 0.0f, 0.0f);
 
 	// Q*Bert spawnen
-	QBert *q = new QBert(Node(1, &cubes[1]));
-	qbert = *q;
+	qbert = new QBert(Node(1, &cubes[1]));
 
 	/*
 	// Konsole öffnen
@@ -354,7 +354,7 @@ bool spiel::check_round()
 
 void spiel::new_round()
 {
-	qbert.CurNode = Node(1, &cubes[1]);
+	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
 
 	if (stats.Round != 4)
@@ -380,41 +380,41 @@ void spiel::qbert_hit()
 	D3DXMATRIX rota;
 	D3DXMATRIX trans;
 	D3DXMATRIX null;
-	qbert.isMoving = false;
-	qbert.isWaiting = true;
-	qbert.FirstMoveDone = false;
-	qbert.FramesJumped = 0;
-	qbert.FramesWaited = 0;
-	qbert.TargetNode.NodeNum = 0;
-	qbert.TargetNode.RelCube = 0;
-	qbert.CurNode.RelCube->get_transform(&pos);
+	qbert->isMoving = false;
+	qbert->isWaiting = true;
+	qbert->FirstMoveDone = false;
+	qbert->FramesJumped = 0;
+	qbert->FramesWaited = 0;
+	qbert->TargetNode.NodeNum = 0;
+	qbert->TargetNode.RelCube = 0;
+	qbert->CurNode.RelCube->get_transform(&pos);
 	D3DXMatrixRotationY(&rota, -D3DX_PI/2.0f);
 	D3DXMatrixTranslation(&trans, 0, 5.0f, 0);
 	D3DXMatrixTranslation(&null, 0, 0,0);
 	if (stats.QBertHit)
 	{
-		qbert.load("TriPrismH.x", "myQBert/Models");
-		if (qbert.MoveDirection == DIR_RIGHTUP)
-			qbert.set_texture(0, &qbert.TexUpRightBalloon);
-		else if (qbert.MoveDirection == DIR_RIGHTDOWN)
-			qbert.set_texture(0, &qbert.TexDownRightBalloon);
-		else if ((qbert.MoveDirection == DIR_LEFTDOWN) || (qbert.MoveDirection == DIR_NONE))
-			qbert.set_texture(0, &qbert.TexDownLeftBalloon);
-		else if (qbert.MoveDirection == DIR_LEFTUP)
-			qbert.set_texture(0, &qbert.TexUpLeftBalloon);
+		qbert->load("TriPrismH.x", "myQBert/Models");
+		if (qbert->MoveDirection == DIR_RIGHTUP)
+			qbert->set_texture(0, &qbert->TexUpRightBalloon);
+		else if (qbert->MoveDirection == DIR_RIGHTDOWN)
+			qbert->set_texture(0, &qbert->TexDownRightBalloon);
+		else if ((qbert->MoveDirection == DIR_LEFTDOWN) || (qbert->MoveDirection == DIR_NONE))
+			qbert->set_texture(0, &qbert->TexDownLeftBalloon);
+		else if (qbert->MoveDirection == DIR_LEFTUP)
+			qbert->set_texture(0, &qbert->TexUpLeftBalloon);
 	}
 	else
 	{
-		qbert.load("TriPrism.x", "myQBert/Models");
-		if (qbert.MoveDirection == DIR_RIGHTUP)
-			qbert.set_texture(0, &qbert.TexUpRight);
-		else if (qbert.MoveDirection == DIR_RIGHTDOWN)
-			qbert.set_texture(0, &qbert.TexDownRight);
-		else if ((qbert.MoveDirection == DIR_LEFTDOWN) || (qbert.MoveDirection == DIR_NONE))
-			qbert.set_texture(0, &qbert.TexDownLeft);
-		else if (qbert.MoveDirection == DIR_LEFTUP)
-			qbert.set_texture(0, &qbert.TexUpLeft);
-		qbert.MoveDirection = DIR_NONE;
+		qbert->load("TriPrism.x", "myQBert/Models");
+		if (qbert->MoveDirection == DIR_RIGHTUP)
+			qbert->set_texture(0, &qbert->TexUpRight);
+		else if (qbert->MoveDirection == DIR_RIGHTDOWN)
+			qbert->set_texture(0, &qbert->TexDownRight);
+		else if ((qbert->MoveDirection == DIR_LEFTDOWN) || (qbert->MoveDirection == DIR_NONE))
+			qbert->set_texture(0, &qbert->TexDownLeft);
+		else if (qbert->MoveDirection == DIR_LEFTUP)
+			qbert->set_texture(0, &qbert->TexUpLeft);
+		qbert->MoveDirection = DIR_NONE;
 		stats.FramesLastSpawn = 0;
 
 		for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
@@ -422,15 +422,15 @@ void spiel::qbert_hit()
 
 		npc_list.clear();
 	}
-	qbert.set_transform(&null);
-	qbert.add_transform(&rota);
-	qbert.add_transform(&pos);
-	qbert.add_transform(&trans);
+	qbert->set_transform(&null);
+	qbert->add_transform(&rota);
+	qbert->add_transform(&pos);
+	qbert->add_transform(&trans);
 }
 
 void spiel::reset()
 {
-	qbert.CurNode = Node(1, &cubes[1]);
+	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
 
 	stats.Reset();
@@ -462,18 +462,18 @@ void spiel::step()
 		{
 			// Q*Bert ziehen
 			if (keys[DIK_RIGHT])
-				qbert.Step(adjacency_list, stats, DIR_RIGHTDOWN);
+				qbert->Step(adjacency_list, stats, DIR_RIGHTDOWN);
 			else if (keys[DIK_LEFT])
-				qbert.Step(adjacency_list, stats, DIR_LEFTUP);
+				qbert->Step(adjacency_list, stats, DIR_LEFTUP);
 			else if (keys[DIK_UP])
-				qbert.Step(adjacency_list, stats, DIR_RIGHTUP);
+				qbert->Step(adjacency_list, stats, DIR_RIGHTUP);
 			else if (keys[DIK_DOWN])
-				qbert.Step(adjacency_list, stats, DIR_LEFTDOWN);
+				qbert->Step(adjacency_list, stats, DIR_LEFTDOWN);
 			else
-				qbert.Step(adjacency_list, stats, DIR_NONE);
+				qbert->Step(adjacency_list, stats, DIR_NONE);
 
 			// Ist Q*Bert runtergefallen?
-			if (qbert.CurNode.NodeNum == 0)
+			if (qbert->CurNode.NodeNum == 0)
 				game_over();
 		}
 
@@ -521,7 +521,7 @@ void spiel::step()
 			while (it != npc_list.end())
 			{
 				// NPC ziehen
-				(*it)->Step(adjacency_list, stats, qbert.CurNode, qbert.TargetNode);
+				(*it)->Step(adjacency_list, stats, qbert->CurNode, qbert->TargetNode);
 
 				// Game Over?
 				if (stats.LifeCount == 0)
@@ -728,7 +728,7 @@ int spiel::render()
 			cubes[i].render(0, RENDER_OPAQUE);
 
 		// Q*Bert rendern
-		qbert.render(1, RENDER_ALL);
+		qbert->render(1, RENDER_ALL);
 
 		// NPCs rendern
 		for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)

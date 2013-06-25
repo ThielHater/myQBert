@@ -17,10 +17,6 @@ Coily::Coily(Node ArgCurNode) : NPC(ArgCurNode)
 	InitGraphics("Coily");
 }
 
-Coily::~Coily(void)
-{
-}
-
 void Coily::InitGraphics(char *TexName)
 {
 	D3DXMATRIX pos;

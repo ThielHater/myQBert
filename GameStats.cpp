@@ -5,10 +5,6 @@ GameStats::GameStats(void)
 	Reset();
 }
 
-GameStats::~GameStats(void)
-{
-}
-
 void GameStats::Reset()
 {
 	Level = 1;

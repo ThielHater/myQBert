@@ -1,13 +1,5 @@
 #include "Cube.h"
 
-Cube::Cube(void)
-{
-}
-
-Cube::~Cube(void)
-{
-}
-
 void Cube::init_texture(textur arg_tx[])
 {
 	cur = 0;

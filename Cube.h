@@ -5,8 +5,6 @@
 class Cube : public objekt
 {
 	public:
-		Cube(void);
-		~Cube(void);
 		textur *tx[3];		
 		int cur;
 		void init_texture(textur arg_tx[]);

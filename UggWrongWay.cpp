@@ -18,10 +18,6 @@ UggWrongWay::UggWrongWay(Node ArgCurNode) : NPC(ArgCurNode)
 	}
 }
 
-UggWrongWay::~UggWrongWay(void)
-{
-}
-
 void UggWrongWay::InitGraphics(char *TexName)
 {
 	D3DXMATRIX pos;

@@ -2,22 +2,6 @@
 #include <sstream>
 #include <string>
 
-NPC::NPC(void)
-{
-	isMoving = false;
-	isWaiting = false;
-	FirstMoveDone = false;
-	MoveDirection = DIR_NONE;
-	FramesPerJump = 0;
-	FramesPerWait = 0;
-	FramesJumped = 0;
-	FramesWaited = 0;
-	CurNode.NodeNum = 0;
-	CurNode.RelCube = 0;
-	TargetNode.NodeNum = 0;
-	TargetNode.RelCube = 0;
-}
-
 NPC::NPC(Node ArgCurNode)
 {
 	isMoving = false;
@@ -31,10 +15,6 @@ NPC::NPC(Node ArgCurNode)
 	CurNode=ArgCurNode;
 	TargetNode.NodeNum = 0;
 	TargetNode.RelCube = 0;
-}
-
-NPC::~NPC(void)
-{
 }
 
 void NPC::Move(DirectionEnum direction)
@@ -174,25 +154,5 @@ void NPC::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node
 			}
 		}
 	}
-	return;
-}
-
-void NPC::InitGraphics(char *TexName)
-{
-	return;
-}
-
-void NPC::Collision(GameStats &stats)
-{
-	return;
-}
-
-void NPC::NodeEffect(GameStats &stats)
-{
-	return;
-}
-
-void NPC::SetTexture(void)
-{
 	return;
 }

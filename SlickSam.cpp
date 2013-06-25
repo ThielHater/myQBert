@@ -19,10 +19,6 @@ SlickSam::SlickSam(Node ArgCurNode) : NPC(ArgCurNode)
 	}
 }
 
-SlickSam::~SlickSam(void)
-{
-}
-
 void SlickSam::InitGraphics(char *TexName)
 {
 	D3DXMATRIX pos;

@@ -4,9 +4,7 @@
 class QBert : public NPC
 {
 	public:
-		QBert(void);
 		QBert(Node ArgCurNode);
-		~QBert(void);
 		textur TexDownLeft;
 		textur TexDownLeftJump;
 		textur TexDownLeftBalloon;

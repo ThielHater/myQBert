@@ -10,10 +10,6 @@ Ball::Ball(Node ArgCurNode, TypeEnumBl type, char *TexName) : NPC(ArgCurNode)
 	InitGraphics(TexName);
 }
 
-Ball::~Ball(void)
-{
-}
-
 void Ball::InitGraphics(char *TexName)
 {
 	D3DXMATRIX pos;

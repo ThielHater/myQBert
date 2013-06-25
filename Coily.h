@@ -9,7 +9,6 @@ class Coily : public NPC
 
 	public:
 		Coily(Node ArgCurNode);
-		~Coily(void);
 		bool isUnpacked; // Ist Coily schon entpackt?
 		textur TexUnpacked;
 		textur TexUnpackedJump;

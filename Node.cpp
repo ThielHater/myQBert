@@ -16,7 +16,3 @@ Node::Node(int ArgNodeNum, Cube* ArgCube)
 	NodeNum = ArgNodeNum;
 	RelCube = ArgCube;
 }
-
-Node::~Node(void)
-{
-}

@@ -4,7 +4,6 @@ class GameStats
 {
 	public:
 		GameStats(void);
-		~GameStats(void);
 		int Level;
 		int Round;
 		int LifeCount;
