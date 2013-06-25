@@ -388,6 +388,10 @@ void spiel::qbert_hit()
 			qbert.set_texture(0, &qbert.TexUpLeft);
 		qbert.MoveDirection = DIR_NONE;
 		stats.FramesLastSpawn = 0;
+
+		for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
+			delete *it;
+
 		npc_list.clear();
 	}
 	qbert.set_transform(&null);
@@ -506,6 +510,7 @@ void spiel::step()
 				else if (((*it)->CurNode.NodeNum == 0) || (stats.TimeFrozen))
 				{
 					// NPC entfernen
+					delete *it;
 					it = npc_list.erase(it);
 					continue;
 				}
