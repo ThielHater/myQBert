@@ -49,7 +49,7 @@ class spiel : public applikation
 		sprite splash_sprite[3];
 
 	public:
-		spiel(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
+		spiel() : adjacency_list(31) { }
 		void window_init(char *txt, WORD icon_num, int r, int g, int b);
 		void window_mode(char *txt, bool window);
 		void load_cube_tex();
@@ -770,4 +770,4 @@ int spiel::render()
 	}
 }
 
-spiel myQBert(31);
+spiel myQBert();
