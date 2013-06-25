@@ -2,28 +2,19 @@
 #include <string>
 #include "Ball.h"
 
-Ball::Ball(Node ArgCurNode) : NPC(ArgCurNode)
+Ball::Ball(Node ArgCurNode, TypeEnumBl type, const char *name) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	int rnd = rand() % 2;
-	if (rnd)
-	{
-		Type = RED;
-		InitGraphics("Red-Ball");
-	}
-	else
-	{
-		Type = GREEN;
-		InitGraphics("Green-Ball");
-	}
+	Type = type;
+	InitGraphics(name);
 }
 
 Ball::~Ball(void)
 {
 }
 
-void Ball::InitGraphics(char *TexName)
+void Ball::InitGraphics(const char *TexName)
 {
 	D3DXMATRIX pos;
 	D3DXMATRIX rota;
@@ -44,7 +35,6 @@ void Ball::InitGraphics(char *TexName)
 	add_transform(&rota);
 	add_transform(&pos);
 	add_transform(&trans);
-	return;
 }
 
 void Ball::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Node qbert_cur_node, const Node qbert_tar_node)
@@ -112,31 +102,6 @@ void Ball::Step(const AdjacencyList &adjacency_list, GameStats &stats, const Nod
 			}
 		}
 	}
-	return;
-}
-
-void Ball::Collision(GameStats &stats)
-{
-	if (Type == RED)
-	{
-		stats.LifeCount--;
-		stats.QBertHit = true;
-		if (stats.LifeCount > 0)
-			printf("Q*Bert wurde vom roten Ball getroffen, noch %d Leben!\n", stats.LifeCount);
-		else
-			printf("Q*Bert wurde vom roten Ball getroffen, kein Leben mehr!\n", stats.LifeCount);
-	}
-	else if (Type == GREEN)
-	{		
-		stats.TimeFrozen = true;
-		stats.Score += 100;
-		printf("Q*Bert hat den gr\fcnen Ball gefangen, die Zeit steht still!\n");
-	}
-	return;
-}
-
-void Ball::NodeEffect(GameStats &stats)
-{
 	return;
 }
 

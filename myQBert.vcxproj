@@ -137,6 +137,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Disk.cpp" />
     <ClCompile Include="GameStats.cpp" />
+    <ClCompile Include="GreenBall.cpp" />
     <ClCompile Include="myQBert.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -148,6 +149,7 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="QBert.cpp" />
+    <ClCompile Include="RedBall.cpp" />
     <ClCompile Include="SlickSam.cpp" />
     <ClCompile Include="UggWrongWay.cpp" />
   </ItemGroup>
@@ -159,9 +161,11 @@
     <ClInclude Include="Disk.h" />
     <ClInclude Include="Edge.h" />
     <ClInclude Include="GameStats.h" />
+    <ClInclude Include="GreenBall.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="QBert.h" />
+    <ClInclude Include="RedBall.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SlickSam.h" />
     <ClInclude Include="SpaCE\applikation.h" />

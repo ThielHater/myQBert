@@ -53,6 +53,12 @@
     <ClCompile Include="GameStats.cpp">
       <Filter>Quellcodedateien</Filter>
     </ClCompile>
+    <ClCompile Include="RedBall.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GreenBall.cpp">
+      <Filter>Quellcodedateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpaCE\applikation.h">
@@ -131,6 +137,12 @@
       <Filter>Header-Dateien</Filter>
     </ClInclude>
     <ClInclude Include="GameStats.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
+    <ClInclude Include="RedBall.h">
+      <Filter>Header-Dateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GreenBall.h">
       <Filter>Header-Dateien</Filter>
     </ClInclude>
   </ItemGroup>

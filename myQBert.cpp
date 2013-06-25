@@ -15,6 +15,8 @@
 #include "AdjacencyList.h"
 #include "Cube.h"
 #include "Ball.h"
+#include "RedBall.h"
+#include "GreenBall.h"
 #include "Coily.h"
 #include "QBert.h"
 #include "SlickSam.h"
@@ -484,7 +486,12 @@ void spiel::step()
 			int i = 2 + (rand() % 2);
 			if (rnd == 1)
 			{
-				Ball *b = new Ball(Node(i, &cubes[i]));
+				Ball *b;
+				if (npc_list.empty())
+					 b = new RedBall(Node(i, &cubes[i]));
+				else
+					b = new GreenBall(Node(i, &cubes[i]));
+
 				npc_list.push_back(b);
 			}
 			else if (rnd == 2)
