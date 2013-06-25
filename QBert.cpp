@@ -1,10 +1,11 @@
 #include <sstream>
 #include <string>
 #include "Qbert.h"
+#include "MyQBert.h"
 
 QBert::QBert(Node ArgCurNode) : NPC(ArgCurNode)
 {
-	FramesPerJump = 4;
+	FramesPerJump = 1;
 	FramesPerWait = 4;
 	InitGraphics("QBert");
 }
@@ -112,17 +113,12 @@ void QBert::Step(const AdjacencyList &adjacency_list, GameStats &stats, Directio
 				MoveDirection = direction;
 
 				// NPC bewegen
+				MyQBert::playSound(16);
 				isMoving = true;
 				Move(MoveDirection);
 			}
 		}
 	}
-	return;
-}
-
-void QBert::Collision(GameStats &stats)
-{
-	return;
 }
 
 void QBert::NodeEffect(GameStats &stats)

@@ -19,7 +19,6 @@ class QBert : public NPC
 		textur TexUpRightBalloon;
 		void InitGraphics(char *TexName);
 		void Step(const AdjacencyList &adjacency_list, GameStats &stats, DirectionEnum direction);
-		void Collision(GameStats &stats); // kein Effekt
 		void NodeEffect(GameStats &stats); // Feld wird umgefärbt
 		void SetTexture(void); // Normal
 };

@@ -31,6 +31,16 @@
 	- Fall der NPCs darstellen
 */
 
+MyQBert *MyQBert::instance;
+
+void MyQBert::playSound(int i, int loop) {
+	instance->play_sound(i, loop);
+}
+
+MyQBert::MyQBert() {
+	instance = this;
+}
+
 void MyQBert::window_init(char *txt, WORD icon_num, int r, int g, int b)
 {
 	set_title(txt);
@@ -178,6 +188,7 @@ void MyQBert::setup()
 	// Konsole öffnen
 	open_console("myQ*Bert Debug Console");
 	*/
+	MyQBert::playSound(8); // Level 1
 }
 
 void MyQBert::setup_nodes()
@@ -327,6 +338,11 @@ void MyQBert::new_round()
 		stats.ShowSplash = true;
 		stats.Round = 1;
 		stats.Level++;
+
+		if (stats.Level == 2)
+			MyQBert::playSound(9);
+		else // 3 und höher?
+			MyQBert::playSound(10);
 	}
 
 	load_cube_tex();
@@ -378,7 +394,7 @@ void MyQBert::qbert_hit()
 		qbert->MoveDirection = DIR_NONE;
 		stats.FramesLastSpawn = 0;
 
-		for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
+		for(std::vector<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 			delete *it;
 
 		npc_list.clear();
@@ -408,6 +424,7 @@ void MyQBert::game_over()
 
 	printf("Game Over, du Lusche!\n\n");
 	reset();
+	MyQBert::playSound(8); // Level 1
 }
 
 void MyQBert::step()
@@ -478,7 +495,7 @@ void MyQBert::step()
 		if (!stats.TimeFrozen)
 		{
 			// NPCs durchlaufen
-			std::list<NPC*>::iterator it = npc_list.begin();
+			std::vector<NPC*>::iterator it = npc_list.begin();
 			while (it != npc_list.end())
 			{
 				// NPC ziehen
@@ -577,6 +594,9 @@ void MyQBert::step()
 			}
 			else
 			{
+				if (stats.FramesRoundDone == 0)
+					MyQBert::playSound(4); // End Round
+
 				// Epileptiker-Warnung??
 				int rnd = rand() % 3;
 				for (int i=1; i<=28; i++)
@@ -691,7 +711,7 @@ int MyQBert::render()
 		qbert->render(1, RENDER_ALL);
 
 		// NPCs rendern
-		for(std::list<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
+		for(std::vector<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 			(*it)->render(1, RENDER_ALL);
 
 		// Sprites rendern
