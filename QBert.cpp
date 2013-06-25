@@ -5,7 +5,7 @@
 
 QBert::QBert(Node ArgCurNode) : NPC(ArgCurNode)
 {
-	FramesPerJump = 1;
+	FramesPerJump = 4;
 	FramesPerWait = 4;
 	InitGraphics("QBert");
 }
