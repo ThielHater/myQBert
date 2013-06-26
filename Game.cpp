@@ -588,15 +588,10 @@ void Game::step()
 				else if (!qbert->isMoving && ((qbert->CurNode.NodeNum == 29) || (qbert->CurNode.NodeNum == 30)))
 				{
 					if (qbert->CurNode.NodeNum == 29)
-					{
 						qbert->set_texture(0, &qbert->TexDownRight);
-						disks[0].isUsed = true;
-					}
 					else
-					{
 						qbert->set_texture(0, &qbert->TexDownLeft);
-						disks[1].isUsed = true;
-					}
+
 					stats.QBertOnDisk=true;
 					return;
 				}
@@ -607,8 +602,10 @@ void Game::step()
 			// War Q*Bert 3 Sekunden auf der Disk?
 			if (stats.FramesQBertOnDisk == frame_rate*3)
 			{
+				// Disk
 				delete disk_trans_t;
 				disk_trans_t = NULL;
+				current_disk->isUsed = true;
 
 				// Variablendeklaration
 				D3DXMATRIX pos;
@@ -642,8 +639,6 @@ void Game::step()
 			}
 			else
 			{
-				static Disk *d;
-
 				if (disk_trans_t == NULL) {
 					disk_trans_t = new D3DXMATRIX;
 
@@ -654,21 +649,21 @@ void Game::step()
 
 					// Disk und Position der Disk bestimmen
 					if (qbert->CurNode.NodeNum == 29) // Disk 1
-						d = &disks[0];
+						current_disk = &disks[0];
 					else // Disk 2
-						d = &disks[1];
+						current_disk = &disks[1];
 
 					D3DXMATRIX disktrans;
-					d->get_transform(&disktrans);
+					current_disk->get_transform(&disktrans);
 					D3DXVECTOR3 diskpos(disktrans._41, disktrans._42, disktrans._43);
 
 					D3DXVECTOR3 diff = cube1pos - diskpos;
-					D3DXVECTOR3 diff_t = diff / (frame_rate * 3);
+					D3DXVECTOR3 diff_t = diff / (frame_rate * 3.0f);
 					D3DXMatrixTranslation(disk_trans_t, diff_t.x, diff_t.y, diff_t.z);
 				}
 				
 				qbert->add_transform(disk_trans_t);
-				d->add_transform(disk_trans_t);
+				current_disk->add_transform(disk_trans_t);
 				stats.FramesQBertOnDisk++;
 			}
 		}
@@ -932,8 +927,11 @@ int Game::render()
 		// Würfel und Scheiben rendern
 		for(int i=1;i<=28;i++)
 			cubes[i].render(0, RENDER_OPAQUE);
-		disks[0].render(1, RENDER_ALL);
-		disks[1].render(1, RENDER_ALL);
+		
+		if (!disks[0].isUsed)
+			disks[0].render(1, RENDER_ALL);
+		if (!disks[1].isUsed)
+			disks[1].render(1, RENDER_ALL);
 
 		// Q*Bert rendern
 		qbert->render(1, RENDER_ALL);

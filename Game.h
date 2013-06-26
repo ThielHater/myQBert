@@ -25,6 +25,7 @@ class Game : public applikation
 		sprite splash_sprite[3];
 		int frame_rate;
 		D3DXMATRIX *disk_trans_t;
+		Disk *current_disk;
 
 	public:
 		Game(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
