@@ -90,7 +90,7 @@ void Game::setup()
 	float y=l*5.0f;
 	float z=l*dia/2.0f;
 	splashscreen intro;
-	disk_trans_t = NULL;
+	disk_trans_step = NULL;
 
 	// Splashscreen darstellen
 	intro.create("myQBert/Textures/Intro.bmp", 1, 1);
@@ -602,16 +602,18 @@ void Game::step()
 			// War Q*Bert 3 Sekunden auf der Disk?
 			if (stats.FramesQBertOnDisk == frame_rate*3)
 			{
-				// Disk
-				delete disk_trans_t;
-				disk_trans_t = NULL;
-				current_disk->isUsed = true;
-
 				// Variablendeklaration
 				D3DXMATRIX pos;
 				D3DXMATRIX rota;
 				D3DXMATRIX trans;
 				D3DXMATRIX null;
+
+				// Speicher freigeben
+				delete disk_trans_step;
+				disk_trans_step = 0;
+
+				// Disk als benutzt markieren
+				current_disk->isUsed = true;
 
 				// Q*Bert absetzen
 				stats.QBertOnDisk = false;
@@ -639,31 +641,36 @@ void Game::step()
 			}
 			else
 			{
-				if (disk_trans_t == NULL) {
-					disk_trans_t = new D3DXMATRIX;
+				// Einmalig die Schrittgröße errechnen
+				if (disk_trans_step == 0)
+				{
+					// Variablendeklaration
+					D3DXMATRIX cube_trans;
+					D3DXMATRIX disk_trans;
 
-					// Position von cube1 bestimmen
-					D3DXMATRIX cube1trans;
-					cubes[1].get_transform(&cube1trans);
-					D3DXVECTOR3 cube1pos(cube1trans._41, cube1trans._42, cube1trans._43);
+					// Speicher reservieren
+					disk_trans_step = new D3DXMATRIX;
+
+					// Position des obersten Würfel bestimmen					
+					cubes[1].get_transform(&cube_trans);
+					D3DXVECTOR3 cube_pos(cube_trans._41, cube_trans._42+5.0f, cube_trans._43+sqrt(50.0f));
 
 					// Disk und Position der Disk bestimmen
-					if (qbert->CurNode.NodeNum == 29) // Disk 1
+					if (qbert->CurNode.NodeNum == 29)
 						current_disk = &disks[0];
-					else // Disk 2
-						current_disk = &disks[1];
+					else
+						current_disk = &disks[1];					
+					current_disk->get_transform(&disk_trans);
+					D3DXVECTOR3 disk_pos(disk_trans._41, disk_trans._42, disk_trans._43);
 
-					D3DXMATRIX disktrans;
-					current_disk->get_transform(&disktrans);
-					D3DXVECTOR3 diskpos(disktrans._41, disktrans._42, disktrans._43);
-
-					D3DXVECTOR3 diff = cube1pos - diskpos;
-					D3DXVECTOR3 diff_t = diff / (frame_rate * 3.0f);
-					D3DXMatrixTranslation(disk_trans_t, diff_t.x, diff_t.y, diff_t.z);
+					// Differenz berechnen und in Matrix übertragen
+					D3DXVECTOR3 diff = (cube_pos - disk_pos) / (frame_rate * 3.0f);
+					D3DXMatrixTranslation(disk_trans_step, diff.x, diff.y, diff.z);
 				}
 				
-				qbert->add_transform(disk_trans_t);
-				current_disk->add_transform(disk_trans_t);
+				// einen Schritt weiter bewegen
+				qbert->add_transform(disk_trans_step);
+				current_disk->add_transform(disk_trans_step);
 				stats.FramesQBertOnDisk++;
 			}
 		}
