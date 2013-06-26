@@ -20,7 +20,7 @@
 
 /*
 	Zu erledigen:
-	- jede Menge Sounds
+	- noch ein paar Sounds
 	- Disks
 	- Fall der NPCs darstellen
 */
@@ -77,13 +77,17 @@ void Game::setup()
 	float x=l/2.0f*dia;
 	float y=l*5.0f;
 	float z=l*dia/2.0f;
+	splashscreen intro;
+
+	// Splashscreen darstellen
+	intro.create("myQBert/Textures/Intro.bmp", 1, 1);
 
 	// zufällige Zufallszahlen :)
 	srand((long)time(NULL));
 
 	// Titel, Icon und Hintergrundfarbe setzen
 	window_init("myQ*Bert", IDI_MYICON, 0, 0, 0);
-	window_mode("myQ*Bert", true);
+	intro.progress(10);
 
 	// Frame Rate setzen
 	frame_rate = 30;
@@ -107,12 +111,14 @@ void Game::setup()
 	lvl_sprite.load("myQBert/Textures/Level.png", 0xffffff00);
 	rnd_sprite.load("myQBert/Textures/Round.png", 0xffffff00);
 	life_sprite.load("myQBert/Textures/Life.png", 0xffffff00);
+	intro.progress(30);
 
 	// Disk Texturen laden
 	disk_tex[0].load("myQBert/Textures/Disk-1.png");
 	disk_tex[1].load("myQBert/Textures/Disk-2.png");
 	disk_tex[2].load("myQBert/Textures/Disk-3.png");
 	disk_tex[3].load("myQBert/Textures/Disk-4.png");
+	intro.progress(50);
 
 	// Würfel initialisieren
 	load_cube_tex();
@@ -134,6 +140,7 @@ void Game::setup()
 		cubes[i].add_transform(&trans);
 		x+=dia;
 	}
+	intro.progress(60);
 
 	/* Sounds laden
 		0. Coily-Fall
@@ -160,9 +167,11 @@ void Game::setup()
 		21. SlickSam-Hit
 	*/
 	load_sounds(22, "myQBert/Sounds/Coily-Fall.wav", "myQBert/Sounds/Coily-Hit.wav", "myQBert/Sounds/Coily-Jump.wav", "myQBert/Sounds/Disk.wav", "myQBert/Sounds/End-Round.wav", "myQBert/Sounds/Extra-Life.wav", "myQBert/Sounds/Green-Ball.wav", "myQBert/Sounds/Intro.wav", "myQBert/Sounds/Level-1.wav", "myQBert/Sounds/Level-2.wav", "myQBert/Sounds/Level-3.wav", "myQBert/Sounds/Other-Hit.wav", "myQBert/Sounds/Other-Jump.wav", "myQBert/Sounds/QBert-Drop.wav", "myQBert/Sounds/QBert-Fall.wav", "myQBert/Sounds/QBert-Hello.wav", "myQBert/Sounds/QBert-Jump.wav", "myQBert/Sounds/QBert-Swear-1.wav", "myQBert/Sounds/QBert-Swear-2.wav", "myQBert/Sounds/QBert-Swear-3.wav", "myQBert/Sounds/Red-Ball.wav", "myQBert/Sounds/SlickSam-Hit.wav");
+	intro.progress(70);
 
 	// Knoten und Kanten aufbauen
 	setup_nodes();
+	intro.progress(80);
 
 	// Kamera
 	set_perspektive(D3DX_PI/4.0f, 1.0f, 1000.0f);
@@ -177,6 +186,15 @@ void Game::setup()
 	// Konsole öffnen
 	open_console("myQ*Bert Debug Console");
 	*/
+
+	// Splashscreen ausblenden
+	Sleep(2000);
+	intro.progress(100);
+	Sleep(2000);
+	intro.release();
+
+	// Vollbild
+	window_mode("myQ*Bert", true);
 
 	// Sound abspielen
 	myqbert.play_sound(8, 0);
