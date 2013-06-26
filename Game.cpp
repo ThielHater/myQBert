@@ -78,6 +78,48 @@ void Game::load_disk_tex()
 	return;
 }
 
+void Game::reset()
+{
+	qbert->CurNode = Node(1, &cubes[1]);
+	qbert_hit();
+	stats.Reset();
+	reset_cubes();
+	reset_nodes();
+	reset_disks();
+	myqbert.play_sound(8, 0);
+}
+
+void Game::reset_cubes()
+{
+	load_cube_tex();
+	for (int i=1; i<=28; i++)
+		cubes[i].init_texture(cube_tex);
+}
+
+void Game::reset_nodes()
+{
+	for (int i=0; i<31; i++)
+		adjacency_list[i].clear();
+	setup_nodes();
+}
+
+void Game::reset_disks()
+{
+	D3DXMATRIX null;
+	D3DXMATRIX trans;	
+	float dia=sqrt(50.0f);
+	disks[0].isUsed=false;
+	disks[1].isUsed=false;
+	D3DXMatrixTranslation(&null, 0, 0,0);
+	disks[0].set_transform(&null);
+	disks[1].set_transform(&null);
+	D3DXMatrixTranslation(&trans, -dia/2.0f, 5.0f, dia/2.0f);
+	disks[0].add_transform(&trans);
+	D3DXMatrixTranslation(&trans, 7.0f*dia -dia/2.0f, 5.0f, dia/2.0f);
+	disks[1].add_transform(&trans);
+	rand_disks();
+}
+
 void Game::setup()
 {
 	// Variablendeklaration
@@ -90,7 +132,8 @@ void Game::setup()
 	float y=l*5.0f;
 	float z=l*dia/2.0f;
 	splashscreen intro;
-	disk_trans_step = NULL;
+	disk_trans_step = 0;
+	current_disk = 0;
 
 	// Splashscreen darstellen
 	intro.create("myQBert/Textures/Intro.bmp", 1, 1);
@@ -164,80 +207,12 @@ void Game::setup()
 	disks[0].init_texture(disk_tex);
 	disks[0].disable_reflections();
 	disks[0].add_transform(&trans);
-
 	D3DXMatrixTranslation(&trans, 7.0f*dia -dia/2.0f, 5.0f, dia/2.0f);
 	disks[1].load("Cube.x", "myQBert/Models");
 	disks[1].init_texture(disk_tex);
 	disks[1].disable_reflections();
 	disks[1].add_transform(&trans);
-
-	rnd = rand() % 6;
-	D3DXMatrixTranslation(&trans, rnd*dia/2.0f, rnd*5.0f, rnd*dia/2.0f);
-	disks[0].add_transform(&trans);
-	if (rnd == 0)
-	{
-		adjacency_list[22][3].target.NodeNum=29;
-		adjacency_list[22][3].target.RelCube=&disks[0];
-	}
-	else if (rnd == 1)
-	{
-		adjacency_list[16][3].target.NodeNum=29;
-		adjacency_list[16][3].target.RelCube=&disks[0];
-	}
-	else if (rnd == 2)
-	{
-		adjacency_list[11][3].target.NodeNum=29;
-		adjacency_list[11][3].target.RelCube=&disks[0];
-	}
-	else if (rnd == 3)
-	{
-		adjacency_list[7][3].target.NodeNum=29;
-		adjacency_list[7][3].target.RelCube=&disks[0];
-	}
-	else if (rnd == 4)
-	{
-		adjacency_list[4][3].target.NodeNum=29;
-		adjacency_list[4][3].target.RelCube=&disks[0];
-	}
-	else if (rnd == 5)
-	{
-		adjacency_list[2][3].target.NodeNum=29;
-		adjacency_list[2][3].target.RelCube=&disks[0];
-	}
-
-	rnd = rand() % 6;
-	D3DXMatrixTranslation(&trans, -(rnd*dia/2.0f), rnd*5.0f, rnd*dia/2.0f);
-	disks[1].add_transform(&trans);
-	if (rnd == 0)
-	{
-		adjacency_list[28][0].target.NodeNum=30;
-		adjacency_list[28][0].target.RelCube=&disks[1];
-	}
-	else if (rnd == 1)
-	{
-		adjacency_list[21][0].target.NodeNum=30;
-		adjacency_list[21][0].target.RelCube=&disks[1];
-	}
-	else if (rnd == 2)
-	{
-		adjacency_list[15][0].target.NodeNum=30;
-		adjacency_list[15][0].target.RelCube=&disks[1];
-	}
-	else if (rnd == 3)
-	{
-		adjacency_list[10][0].target.NodeNum=30;
-		adjacency_list[10][0].target.RelCube=&disks[1];
-	}
-	else if (rnd == 4)
-	{
-		adjacency_list[6][0].target.NodeNum=30;
-		adjacency_list[6][0].target.RelCube=&disks[1];
-	}
-	else if (rnd == 5)
-	{
-		adjacency_list[3][0].target.NodeNum=30;
-		adjacency_list[3][0].target.RelCube=&disks[1];
-	}
+	rand_disks();
 	intro.progress(60);
 
 	/* Sounds laden
@@ -415,13 +390,85 @@ void Game::setup_nodes()
 
 	// Scheiben
 	adjacency_list[29].push_back(Edge(Node(1, &cubes[1]), 1));
-	adjacency_list[29].push_back(Edge(Node(1, &cubes[1]), 1));
-	adjacency_list[29].push_back(Edge(Node(1, &cubes[1]), 1));
-	adjacency_list[29].push_back(Edge(Node(1, &cubes[1]), 1));
 	adjacency_list[30].push_back(Edge(Node(1, &cubes[1]), 1));
-	adjacency_list[30].push_back(Edge(Node(1, &cubes[1]), 1));
-	adjacency_list[30].push_back(Edge(Node(1, &cubes[1]), 1));
-	adjacency_list[30].push_back(Edge(Node(1, &cubes[1]), 1));
+}
+
+void Game::rand_disks()
+{
+	// Variablendeklaration und -initialisierung
+	D3DXMATRIX trans;
+	int rnd = 0;
+	float dia = sqrt(50.0f);
+
+	// erste Disk platzieren
+	rnd = rand() % 6;
+	D3DXMatrixTranslation(&trans, rnd*dia/2.0f, rnd*5.0f, rnd*dia/2.0f);
+	disks[0].add_transform(&trans);
+	if (rnd == 0)
+	{
+		adjacency_list[22][3].target.NodeNum=29;
+		adjacency_list[22][3].target.RelCube=&disks[0];
+	}
+	else if (rnd == 1)
+	{
+		adjacency_list[16][3].target.NodeNum=29;
+		adjacency_list[16][3].target.RelCube=&disks[0];
+	}
+	else if (rnd == 2)
+	{
+		adjacency_list[11][3].target.NodeNum=29;
+		adjacency_list[11][3].target.RelCube=&disks[0];
+	}
+	else if (rnd == 3)
+	{
+		adjacency_list[7][3].target.NodeNum=29;
+		adjacency_list[7][3].target.RelCube=&disks[0];
+	}
+	else if (rnd == 4)
+	{
+		adjacency_list[4][3].target.NodeNum=29;
+		adjacency_list[4][3].target.RelCube=&disks[0];
+	}
+	else if (rnd == 5)
+	{
+		adjacency_list[2][3].target.NodeNum=29;
+		adjacency_list[2][3].target.RelCube=&disks[0];
+	}
+
+	// zweite Disk platzieren
+	rnd = rand() % 6;
+	D3DXMatrixTranslation(&trans, -(rnd*dia/2.0f), rnd*5.0f, rnd*dia/2.0f);
+	disks[1].add_transform(&trans);
+	if (rnd == 0)
+	{
+		adjacency_list[28][0].target.NodeNum=30;
+		adjacency_list[28][0].target.RelCube=&disks[1];
+	}
+	else if (rnd == 1)
+	{
+		adjacency_list[21][0].target.NodeNum=30;
+		adjacency_list[21][0].target.RelCube=&disks[1];
+	}
+	else if (rnd == 2)
+	{
+		adjacency_list[15][0].target.NodeNum=30;
+		adjacency_list[15][0].target.RelCube=&disks[1];
+	}
+	else if (rnd == 3)
+	{
+		adjacency_list[10][0].target.NodeNum=30;
+		adjacency_list[10][0].target.RelCube=&disks[1];
+	}
+	else if (rnd == 4)
+	{
+		adjacency_list[6][0].target.NodeNum=30;
+		adjacency_list[6][0].target.RelCube=&disks[1];
+	}
+	else if (rnd == 5)
+	{
+		adjacency_list[3][0].target.NodeNum=30;
+		adjacency_list[3][0].target.RelCube=&disks[1];
+	}
 }
 
 bool Game::check_round()
@@ -461,10 +508,9 @@ void Game::new_round()
 			myqbert.play_sound(10, 0);
 	}
 
-	load_cube_tex();
-
-	for (int i=1; i<=28; i++)
-		cubes[i].init_texture(cube_tex);
+	reset_cubes();
+	reset_nodes();
+	reset_disks();
 }
 
 void Game::qbert_hit()
@@ -528,21 +574,6 @@ void Game::qbert_hit()
 	qbert->add_transform(&trans);
 }
 
-void Game::reset()
-{
-	qbert->CurNode = Node(1, &cubes[1]);
-	qbert_hit();
-
-	stats.Reset();
-
-	load_cube_tex();
-
-	for (int i=1; i<=28; i++)
-		cubes[i].init_texture(cube_tex);
-
-	myqbert.play_sound(8, 0);
-}
-
 void Game::game_over()
 {
 	/* Frage: Was sollen wir machen? */
@@ -591,16 +622,16 @@ void Game::step()
 						qbert->set_texture(0, &qbert->TexDownRight);
 					else
 						qbert->set_texture(0, &qbert->TexDownLeft);
-
 					stats.QBertOnDisk=true;
+					myqbert.play_sound(3, 0);
 					return;
 				}
 			}
 		}
 		else
 		{
-			// War Q*Bert 3 Sekunden auf der Disk?
-			if (stats.FramesQBertOnDisk == frame_rate*3)
+			// War Q*Bert 2 Sekunden auf der Disk?
+			if (stats.FramesQBertOnDisk == frame_rate*2)
 			{
 				// Variablendeklaration
 				D3DXMATRIX pos;
@@ -614,6 +645,38 @@ void Game::step()
 
 				// Disk als benutzt markieren
 				current_disk->isUsed = true;
+
+				// Kante zur Scheibe entfernen
+				if (qbert->CurNode.NodeNum == 29)
+				{
+					adjacency_list[22][3].target.NodeNum=0;
+					adjacency_list[22][3].target.RelCube=&cubes[0];
+					adjacency_list[16][3].target.NodeNum=0;
+					adjacency_list[16][3].target.RelCube=&cubes[0];
+					adjacency_list[11][3].target.NodeNum=0;
+					adjacency_list[11][3].target.RelCube=&cubes[0];
+					adjacency_list[7][3].target.NodeNum=0;
+					adjacency_list[7][3].target.RelCube=&cubes[0];
+					adjacency_list[4][3].target.NodeNum=0;
+					adjacency_list[4][3].target.RelCube=&cubes[0];
+					adjacency_list[2][3].target.NodeNum=0;
+					adjacency_list[2][3].target.RelCube=&cubes[0];
+				}
+				else
+				{
+					adjacency_list[28][0].target.NodeNum=0;
+					adjacency_list[28][0].target.RelCube=&cubes[0];
+					adjacency_list[21][0].target.NodeNum=0;
+					adjacency_list[21][0].target.RelCube=&cubes[0];
+					adjacency_list[15][0].target.NodeNum=0;
+					adjacency_list[15][0].target.RelCube=&cubes[0];
+					adjacency_list[10][0].target.NodeNum=0;
+					adjacency_list[10][0].target.RelCube=&cubes[0];
+					adjacency_list[6][0].target.NodeNum=0;
+					adjacency_list[6][0].target.RelCube=&cubes[0];
+					adjacency_list[3][0].target.NodeNum=0;
+					adjacency_list[3][0].target.RelCube=&cubes[0];
+				}
 
 				// Q*Bert absetzen
 				stats.QBertOnDisk = false;
@@ -651,7 +714,7 @@ void Game::step()
 					// Speicher reservieren
 					disk_trans_step = new D3DXMATRIX;
 
-					// Position des obersten Würfel bestimmen					
+					// Position des obersten Würfel bestimmen
 					cubes[1].get_transform(&cube_trans);
 					D3DXVECTOR3 cube_pos(cube_trans._41, cube_trans._42+5.0f, cube_trans._43+sqrt(50.0f));
 
@@ -659,15 +722,15 @@ void Game::step()
 					if (qbert->CurNode.NodeNum == 29)
 						current_disk = &disks[0];
 					else
-						current_disk = &disks[1];					
+						current_disk = &disks[1];
 					current_disk->get_transform(&disk_trans);
 					D3DXVECTOR3 disk_pos(disk_trans._41, disk_trans._42, disk_trans._43);
 
 					// Differenz berechnen und in Matrix übertragen
-					D3DXVECTOR3 diff = (cube_pos - disk_pos) / (frame_rate * 3.0f);
+					D3DXVECTOR3 diff = (cube_pos - disk_pos) / (frame_rate*2);
 					D3DXMatrixTranslation(disk_trans_step, diff.x, diff.y, diff.z);
 				}
-				
+
 				// einen Schritt weiter bewegen
 				qbert->add_transform(disk_trans_step);
 				current_disk->add_transform(disk_trans_step);
@@ -934,7 +997,7 @@ int Game::render()
 		// Würfel und Scheiben rendern
 		for(int i=1;i<=28;i++)
 			cubes[i].render(0, RENDER_OPAQUE);
-		
+
 		if (!disks[0].isUsed)
 			disks[0].render(1, RENDER_ALL);
 		if (!disks[1].isUsed)
