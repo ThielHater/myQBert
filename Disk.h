@@ -12,5 +12,4 @@ class Disk : public Cube
 		bool isUsed;
 		void init_texture(textur arg_tx[]);
 		void update_texture(void);
-		void Move(Cube *c); // wird aufgerufen, wenn Q*Bert auf die Disk hüpft
 };

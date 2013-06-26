@@ -90,6 +90,7 @@ void Game::setup()
 	float y=l*5.0f;
 	float z=l*dia/2.0f;
 	splashscreen intro;
+	disk_trans_t = NULL;
 
 	// Splashscreen darstellen
 	intro.create("myQBert/Textures/Intro.bmp", 1, 1);
@@ -606,6 +607,8 @@ void Game::step()
 			// War Q*Bert 3 Sekunden auf der Disk?
 			if (stats.FramesQBertOnDisk == frame_rate*3)
 			{
+				disk_trans_t = NULL;
+
 				// Variablendeklaration
 				D3DXMATRIX pos;
 				D3DXMATRIX rota;
@@ -638,6 +641,34 @@ void Game::step()
 			}
 			else
 			{
+				static Disk *d;
+
+				if (disk_trans_t == NULL) {
+					disk_trans_t = new D3DXMATRIX;
+
+					// Position von cube1 bestimmen
+					Cube *cube1 = &cubes[1];
+					D3DXMATRIX cube1trans;
+					cube1->get_transform(&cube1trans);
+					D3DXVECTOR3 cube1pos(cube1trans._41, cube1trans._42, cube1trans._43);
+
+					// Disk und Position der Disk bestimmen
+					if (qbert->CurNode.NodeNum == 29) // Disk 1
+						d = &disks[0];
+					else // Disk 2
+						d = &disks[1];
+
+					D3DXMATRIX disktrans;
+					d->get_transform(&disktrans);
+					D3DXVECTOR3 diskpos(disktrans._41, disktrans._42, disktrans._43);
+
+					D3DXVECTOR3 diff = cube1pos - diskpos;
+					D3DXVECTOR3 diff_t = diff / (frame_rate * 3);
+					D3DXMatrixTranslation(disk_trans_t, diff_t.x, diff_t.y, diff_t.z);
+				}
+				
+				qbert->add_transform(disk_trans_t);
+				d->add_transform(disk_trans_t);
 				stats.FramesQBertOnDisk++;
 			}
 		}
