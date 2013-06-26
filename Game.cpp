@@ -607,6 +607,7 @@ void Game::step()
 			// War Q*Bert 3 Sekunden auf der Disk?
 			if (stats.FramesQBertOnDisk == frame_rate*3)
 			{
+				delete disk_trans_t;
 				disk_trans_t = NULL;
 
 				// Variablendeklaration
@@ -647,9 +648,8 @@ void Game::step()
 					disk_trans_t = new D3DXMATRIX;
 
 					// Position von cube1 bestimmen
-					Cube *cube1 = &cubes[1];
 					D3DXMATRIX cube1trans;
-					cube1->get_transform(&cube1trans);
+					cubes[1].get_transform(&cube1trans);
 					D3DXVECTOR3 cube1pos(cube1trans._41, cube1trans._42, cube1trans._43);
 
 					// Disk und Position der Disk bestimmen
