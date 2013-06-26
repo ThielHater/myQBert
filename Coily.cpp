@@ -239,13 +239,25 @@ Node Coily::Step_Unpacked(const AdjacencyList &adjacency_list, Node qbert_cur_no
 
 void Coily::Collision(applikation &myqbert, GameStats &stats)
 {
-	stats.LifeCount--;
-	stats.QBertHit = true;
-	if (stats.LifeCount > 0)
-		printf("Q*Bert wurde von Coily gefangen, noch %d Leben!\n", stats.LifeCount);
+	// Ist Coily nicht auf eine Scheibe gehüpft?
+	if ((CurNode.NodeNum != 29) && (CurNode.NodeNum != 30))
+	{
+		// Coily hat Q*Bert gefangen
+		stats.LifeCount--;
+		stats.QBertHit = true;
+		if (stats.LifeCount > 0)
+			printf("Q*Bert wurde von Coily gefangen, noch %d Leben!\n", stats.LifeCount);
+		else
+			printf("Q*Bert wurde von Coily gefangen, kein Leben mehr!\n", stats.LifeCount);
+		myqbert.play_sound(1, 0);
+	}
 	else
-		printf("Q*Bert wurde von Coily gefangen, kein Leben mehr!\n", stats.LifeCount);
-	myqbert.play_sound(1, 0);
+	{
+		// Coily fällt
+		CurNode.NodeNum = 0;
+		printf("Coily ist in seinen Tod gesprungen!\n");
+		myqbert.play_sound(0, 0);
+	}
 	return;
 }
 
