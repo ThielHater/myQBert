@@ -6,6 +6,6 @@ class Cube : public objekt
 	public:
 		textur *tx[3];		
 		int cur;
-		void init_texture(textur arg_tx[]);
-		void update_texture(void);
+		virtual void init_texture(textur arg_tx[]);
+		virtual void update_texture(void);
 };

@@ -66,7 +66,7 @@ void NPC::Move(DirectionEnum direction)
 			FramesJumped = 0;
 			isMoving = false;
 			isWaiting = true;
-			FirstMoveDone = false;			
+			FirstMoveDone = false;
 
 			// Textur ändern
 			SetTexture();
@@ -114,8 +114,8 @@ void NPC::Step(applikation &myqbert, const AdjacencyList &adjacency_list, GameSt
 				if (!isMoving)
 				{
 					// Sind der NPC und Q*Bert auf dem gleichen Knoten?
-					if (CurNode.NodeNum == qbert_cur_node.NodeNum)					
-						Collision(myqbert, stats);					
+					if (CurNode.NodeNum == qbert_cur_node.NodeNum)
+						Collision(myqbert, stats);
 
 					// Würfel umfärben
 					if (CurNode.NodeNum != 0)

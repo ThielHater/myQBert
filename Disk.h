@@ -6,7 +6,11 @@ class Disk : public Cube
 	public:
 		Disk(void);
 		textur *tx[4];
+		int FramesPerMove;
+		int FramesMoved;
 		int cur;
 		bool isUsed;
-		int Move(void); // wird aufgerufen, wenn Q*Bert auf die Disk hüpft
+		void init_texture(textur arg_tx[]);
+		void update_texture(void);
+		void Move(Cube *c); // wird aufgerufen, wenn Q*Bert auf die Disk hüpft
 };

@@ -1,6 +1,7 @@
 #include <sstream>
 #include <string>
 #include "Qbert.h"
+#include "Disk.h"
 
 QBert::QBert(Node ArgCurNode) : NPC(ArgCurNode)
 {
@@ -91,12 +92,12 @@ void QBert::Step(applikation &myqbert, const AdjacencyList &adjacency_list, Game
 			if (!isMoving)
 			{
 				// Würfel umfärben
-				if (CurNode.NodeNum != 0)
-					NodeEffect(stats);
+				if ((CurNode.NodeNum != 0) && (CurNode.NodeNum != 29) && (CurNode.NodeNum != 30))				
+					NodeEffect(stats);				
 
 				// Ist Q*Bert runtergefallen?
-				else if (CurNode.NodeNum == 0)
-					myqbert.play_sound(14, 0);
+				else if (CurNode.NodeNum == 0)				
+					myqbert.play_sound(14, 0);				
 			}
 		}
 		else
