@@ -19,9 +19,9 @@
 
 /*
 	Zu erledigen:
-	- noch ein paar Sounds
-	- Disks
-	- Fall der NPCs darstellen
+	- noch ein paar Sounds (Intro, Extra-Life, QBert-Hello)
+	- Fall der NPCs darstellen?
+	- weitere Level?
 */
 
 Game myqbert(31);
@@ -170,12 +170,6 @@ void Game::setup()
 	lvl_sprite.load("myQBert/Textures/Level.png", 0xffffff00);
 	rnd_sprite.load("myQBert/Textures/Round.png", 0xffffff00);
 	life_sprite.load("myQBert/Textures/Life.png", 0xffffff00);
-
-	// Disk Texturen laden
-	disk_tex[0].load("myQBert/Textures/Disk-1.png");
-	disk_tex[1].load("myQBert/Textures/Disk-2.png");
-	disk_tex[2].load("myQBert/Textures/Disk-3.png");
-	disk_tex[3].load("myQBert/Textures/Disk-4.png");
 	intro.progress(30);
 
 	// Würfel initialisieren
@@ -257,9 +251,8 @@ void Game::setup()
 	*/
 
 	// Splashscreen ausblenden
-	//Sleep(2000);
 	intro.progress(100);
-	//Sleep(2000);
+	Sleep(1000);
 	intro.release();
 
 	// Vollbild
@@ -271,9 +264,6 @@ void Game::setup()
 
 void Game::setup_nodes()
 {
-	// Abgrund
-	adjacency_list[0].push_back(Edge(Node(0, &cubes[0]), 1));
-
 	// Würfel
 	adjacency_list[1].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[1].push_back(Edge(Node(3, &cubes[3]), 1));
@@ -387,10 +377,6 @@ void Game::setup_nodes()
 	adjacency_list[28].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[28].push_back(Edge(Node(0, &cubes[0]), 1));
 	adjacency_list[28].push_back(Edge(Node(21, &cubes[21]), 1));
-
-	// Scheiben
-	adjacency_list[29].push_back(Edge(Node(1, &cubes[1]), 1));
-	adjacency_list[30].push_back(Edge(Node(1, &cubes[1]), 1));
 }
 
 void Game::rand_disks()
@@ -492,7 +478,9 @@ void Game::new_round()
 {
 	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
-
+	
+	stats.Score += stats.Round*100;
+	
 	if (stats.Round != 4)
 	{
 		stats.Round++;
@@ -699,12 +687,15 @@ void Game::step()
 				qbert->add_transform(&pos);
 				qbert->add_transform(&trans);
 
+				// Sound abspielen
+				myqbert.play_sound(13, 0);
+
 				// Würfel umfärben
 				qbert->NodeEffect(stats);
 			}
 			else
 			{
-				// Einmalig die Schrittgröße errechnen
+				// einmalig die Schrittgröße errechnen
 				if (disk_trans_step == 0)
 				{
 					// Variablendeklaration
@@ -727,7 +718,7 @@ void Game::step()
 					D3DXVECTOR3 disk_pos(disk_trans._41, disk_trans._42, disk_trans._43);
 
 					// Differenz berechnen und in Matrix übertragen
-					D3DXVECTOR3 diff = (cube_pos - disk_pos) / (frame_rate*2);
+					D3DXVECTOR3 diff = (cube_pos - disk_pos) / (float)(frame_rate*2);
 					D3DXMatrixTranslation(disk_trans_step, diff.x, diff.y, diff.z);
 				}
 
@@ -823,6 +814,16 @@ void Game::step()
 			if (check_round())
 			{
 				stats.RoundDone = true;
+				if (!disks[0].isUsed)
+				{
+					stats.Score += 50;
+					disks[0].isUsed = true;
+				}
+				if (!disks[1].isUsed)
+				{
+					stats.Score += 50;
+					disks[1].isUsed = true;
+				}				
 				myqbert.play_sound(4, 0);
 			}
 
