@@ -73,7 +73,7 @@
       <AdditionalDependencies>comctl32.lib;dinput8.lib;dxguid.lib;dsound.lib;winmm.lib;d3dx9.lib;d3d9.lib;Vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release/myQBert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <IgnoreSpecificDefaultLibraries>libci.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libci.lib;libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>.\Release/myQBert.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
