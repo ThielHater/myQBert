@@ -132,12 +132,21 @@ void UggWrongWay::Step(applikation &myqbert, const AdjacencyList &adjacency_list
 					}
 				}
 
-				// Sound abspielen
-				myqbert.play_sound(12, 0);
+				// Ist Ugg/Wrong Way nicht auf eine Scheibe gehüpft?
+				if ((TargetNode.NodeNum != 29) && (TargetNode.NodeNum != 30))
+				{
+					// Sound abspielen
+					myqbert.play_sound(12, 0);
 
-				// NPC bewegen
-				isMoving = true;
-				Move(MoveDirection);
+					// NPC bewegen
+					isMoving = true;
+					Move(MoveDirection);
+				}
+				else
+				{
+					// Ugg/Wrong Way fällt
+					CurNode.NodeNum = 0;
+				}
 			}
 			else
 			{
