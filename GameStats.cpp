@@ -24,4 +24,6 @@ void GameStats::Reset()
 	FramesRoundDone = 0;
 	FramesSplashShown = 0;
 	FramesPauseChanged = 0;
+	BackgroundColor = 0;
+	CubeTexIndex = 0;
 }

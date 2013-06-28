@@ -52,6 +52,7 @@ void Game::window_mode(char *txt, bool full_screen)
 		SetWindowLong(handle, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
 		SendMessage(handle, WM_SYSCOMMAND, SC_RESTORE, 0);
 	}
+	ShowCursor(false);
 }
 
 void Game::load_cube_tex()
@@ -565,7 +566,6 @@ void Game::qbert_hit()
 void Game::game_over()
 {
 	/* Frage: Was sollen wir machen? */
-
 	printf("Game Over, du Lusche!\n\n");
 	reset();
 }
@@ -725,6 +725,8 @@ void Game::step()
 				// einen Schritt weiter bewegen
 				qbert->add_transform(disk_trans_step);
 				current_disk->add_transform(disk_trans_step);
+
+				// Frames hochzählen
 				stats.FramesQBertOnDisk++;
 			}
 		}
@@ -842,16 +844,23 @@ void Game::step()
 			}
 			else
 			{
-				// Epileptiker-Warnung??
-				int rnd = 1 + rand() % 4;
-				if (rnd == 1)
+				// Zurücksetzen
+				if (stats.BackgroundColor > 3)
+					stats.BackgroundColor = 0;
+
+				// Hintergrundfarbe ändern
+				if (stats.BackgroundColor == 0)
 					set_bkcolor(155, 121, 60);
-				else if (rnd == 2)
+				else if (stats.BackgroundColor == 1)
 					set_bkcolor(161, 98, 229);
-				else if (rnd == 3)
+				else if (stats.BackgroundColor == 2)
 					set_bkcolor(165, 60, 117);
-				else if (rnd == 4)
+				else if (stats.BackgroundColor == 3)
 					set_bkcolor(155, 65, 38);
+				if (stats.FramesTimeFrozen % 2)
+					stats.BackgroundColor++;
+
+				// Frames hochzählen
 				stats.FramesTimeFrozen++;
 			}
 		}
@@ -871,6 +880,7 @@ void Game::step()
 			}
 			else
 			{
+				// Frames hochzählen
 				stats.FramesQBertHit++;
 			}
 		}
@@ -878,8 +888,8 @@ void Game::step()
 		// Ist die Runde zu Ende?
 		else if (stats.RoundDone)
 		{
-			// War die Zeit 3 Sekunden angehalten?
-			if (stats.FramesRoundDone == frame_rate*3)
+			// War die Zeit 2 Sekunden angehalten?
+			if (stats.FramesRoundDone == frame_rate*2)
 			{
 				// Spiel freigeben
 				stats.RoundDone = false;
@@ -889,13 +899,22 @@ void Game::step()
 			}
 			else
 			{
-				// Epileptiker-Warnung??
-				int rnd = rand() % 3;
+				// Zurücksetzen
+				if (stats.CubeTexIndex > 2)
+					stats.CubeTexIndex = 0;
+
+				// Würfelfarbe ändern
 				for (int i=1; i<=28; i++)
 				{
-					cubes[i].cur = rnd;
+					cubes[i].cur = stats.CubeTexIndex;
 					cubes[i].update_texture();
 				}
+
+				// weniger Flackern, als letztes wird die dritte Textur dargestellt, wie im Original :)
+				if (stats.FramesRoundDone % 2)
+					stats.CubeTexIndex++;
+
+				// Frames hochzählen
 				stats.FramesRoundDone++;
 			}
 		}
@@ -911,10 +930,13 @@ void Game::step()
 			}
 			else
 			{
+				// Frames hochzählen
 				stats.FramesSplashShown++;
 			}
 		}
 	}
+
+	// Frames hochzählen
 	stats.FramesPauseChanged++;
 }
 
@@ -998,7 +1020,6 @@ int Game::render()
 		// Würfel und Scheiben rendern
 		for(int i=1;i<=28;i++)
 			cubes[i].render(0, RENDER_OPAQUE);
-
 		if (!disks[0].isUsed)
 			disks[0].render(1, RENDER_ALL);
 		if (!disks[1].isUsed)

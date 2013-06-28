@@ -15,6 +15,8 @@ class GameStats
 		int FramesRoundDone;
 		int FramesSplashShown;
 		int FramesPauseChanged;
+		int BackgroundColor;
+		int CubeTexIndex;
 		bool TimeFrozen; // Zeit wird pausiert, nur Q*Bert kann sich bewegen
 		bool QBertHit;
 		bool QBertOnDisk;

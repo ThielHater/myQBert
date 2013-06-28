@@ -30,7 +30,7 @@ class Game : public applikation
 	public:
 		Game(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
 		void window_init(char *txt, WORD icon_num, int r, int g, int b);
-		void window_mode(char *txt, bool window);
+		void window_mode(char *txt, bool full_screen);
 		void load_cube_tex();
 		void load_disk_tex();
 		void reset();
