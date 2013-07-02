@@ -150,22 +150,31 @@ void SlickSam::Collision(applikation &myqbert, GameStats &stats)
 
 void SlickSam::NodeEffect(GameStats &stats)
 {
-	if (Type == SLICK)
+	// Ist der Würfel zurückfärbbar?
+	if (CurNode.RelCube->cur > 0)
 	{
-		// Würfel umfärben (erste Farbe)
-		stats.Score -= CurNode.RelCube->cur*25;
-		this->CurNode.RelCube->cur = 0;
-		this->CurNode.RelCube->update_texture();
-	}
-	else
-	{
-		// Würfel umfärben (vorherige Farbe)		
-		if (CurNode.RelCube->cur > 0)
+		// Punkte aktualisieren
+		if (CurNode.RelCube->cur == 2)
 		{
-			stats.Score -= 25;
-			this->CurNode.RelCube->cur--;
-			this->CurNode.RelCube->update_texture();	
+			if (Type == SLICK)
+				stats.Score -= 40;
+			else
+				stats.Score -= 25;
 		}
+		else if (CurNode.RelCube->cur == 1)
+		{
+			if (stats.Level == 2)
+				stats.Score -= 15;
+			else
+				stats.Score -= 25;
+		}
+
+		// Würfel umfärben (1. Farbe oder vorherige Farbe)
+		if (Type == SLICK)
+			this->CurNode.RelCube->cur = 0;
+		else
+			this->CurNode.RelCube->cur--;
+		this->CurNode.RelCube->update_texture();
 	}
 	return;
 }
@@ -174,21 +183,21 @@ void SlickSam::SetTexture(void)
 {
 	if (isMoving)
 	{
-		int rnd = 1 + rand() % 3;
+		int rnd = rand() % 3;
 		if (MoveDirection == DIR_LEFTDOWN)
 		{
-			if (rnd == 1)
+			if (rnd == 0)
 				set_texture(0, &this->TexLeftJump1);
-			else if (rnd == 2)
+			else if (rnd == 1)
 				set_texture(0, &this->TexLeftJump2);
 			else
 				set_texture(0, &this->TexLeftJump3);
 		}
 		else if (MoveDirection == DIR_RIGHTDOWN)
 		{
-			if (rnd == 1)
+			if (rnd == 0)
 				set_texture(0, &this->TexRightJump1);
-			else if (rnd == 2)
+			else if (rnd == 1)
 				set_texture(0, &this->TexRightJump2);
 			else
 				set_texture(0, &this->TexRightJump3);

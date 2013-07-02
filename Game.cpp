@@ -19,9 +19,11 @@
 
 /*
 	Zu erledigen:
-	- noch ein paar Sounds (Intro, Extra-Life, QBert-Hello)
-	- Fall der NPCs darstellen?
+	- noch ein paar Sounds (Intro, QBert-Hello)
+	- Spielfeld leeren, wenn Coily runterfällt
+	- mehr als zwei Disks
 	- weitere Level?
+	- Fall der NPCs darstellen?
 */
 
 Game myqbert(31);
@@ -52,7 +54,7 @@ void Game::window_mode(char *txt, bool full_screen)
 		SetWindowLong(handle, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
 		SendMessage(handle, WM_SYSCOMMAND, SC_RESTORE, 0);
 	}
-	ShowCursor(false);
+	ShowCursor(!full_screen);
 }
 
 void Game::load_cube_tex()
@@ -458,6 +460,50 @@ void Game::rand_disks()
 	}
 }
 
+void Game::spawn_npc()
+{
+	// NPC auswürfeln und einketten
+	int rnd = rand() % 5;
+	int num = 2 + (rand() % 2);
+	int npc_allowed[3][4][5] = { { { 1, 1, 0, 0, 0 }, { 1, 1, 0, 0, 0 }, { 0, 1, 1, 1, 5 }, { 1, 1, 1, 0, 5 } },    // Level 1
+								 { { 0, 1, 1, 1, 5 }, { 0, 1, 1, 1, 5 }, { 1, 1, 1, 0, 5 }, { 1, 1, 1, 1, 5 } },    // Level 2
+								 { { 1, 1, 1, 0, 5 }, { 0, 1, 1, 1, 5 }, { 1, 1, 1, 1, 5 }, { 1, 1, 1, 1, 5 } } };  // Level 3
+
+	while (true)
+	{
+		if (npc_allowed[stats.Level-1][stats.Round-1][rnd])
+			break;
+		rnd = rand() % 5;
+	}
+
+	if (rnd == 0)
+	{
+		RedBall *b = new RedBall(Node(num, &cubes[num]));		
+		npc_list.push_back(b);
+	}
+	else if (rnd == 1)
+	{
+		Coily *c = new Coily(Node(num, &cubes[num]));		
+		npc_list.push_back(c);
+	}
+	else if (rnd == 2)
+	{
+		GreenBall *b = new GreenBall(Node(num, &cubes[num]));		
+		npc_list.push_back(b);
+	}
+	else if (rnd == 3)
+	{
+		num = (num == 2) ? 22 : 28;
+		UggWrongWay *uw = new UggWrongWay(Node(num, &cubes[num]));			
+		npc_list.push_back(uw);
+	}
+	else if (rnd == 4)
+	{	
+		SlickSam *ss = new SlickSam(Node(num, &cubes[num]));
+		npc_list.push_back(ss);
+	}
+}
+
 bool Game::check_round()
 {
 	if ((stats.Level == 1) || (stats.Level == 2))
@@ -480,7 +526,7 @@ void Game::new_round()
 	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
 	
-	stats.Score += stats.Round*100;
+	stats.Score += stats.Level*1000 + (stats.Round - 1)*250;
 	
 	if (stats.Round != 4)
 	{
@@ -530,12 +576,12 @@ void Game::qbert_hit()
 			qbert->set_texture(0, &qbert->TexDownLeftBalloon);
 		else if (qbert->MoveDirection == DIR_LEFTUP)
 			qbert->set_texture(0, &qbert->TexUpLeftBalloon);
-		int rnd = 1 + rand() % 3;
-		if (rnd == 1)
+		int rnd = rand() % 3;
+		if (rnd == 0)
 			myqbert.play_sound(17, 0);
-		else if (rnd == 2)
+		else if (rnd == 1)
 			myqbert.play_sound(18, 0);
-		else if (rnd == 3)
+		else if (rnd == 2)
 			myqbert.play_sound(19, 0);
 	}
 	else
@@ -734,34 +780,8 @@ void Game::step()
 		// alle X Sekunden neuen NPC spawnen
 		if (stats.FramesLastSpawn >= (frame_rate*10 - frame_rate*2*stats.Level))
 		{
-			// NPC auswürfeln und einketten
-			int rnd = 1 + (rand() % 4);
-			int i = 2 + (rand() % 2);
-			if (rnd == 1)
-			{
-				Ball *b;
-				if (npc_list.empty())
-					b = new RedBall(Node(i, &cubes[i]));
-				else
-					b = new GreenBall(Node(i, &cubes[i]));
-				npc_list.push_back(b);
-			}
-			else if (rnd == 2)
-			{
-				Coily *c = new Coily(Node(i, &cubes[i]));
-				npc_list.push_back(c);
-			}
-			else if (rnd == 3)
-			{
-				SlickSam *ss = new SlickSam(Node(i, &cubes[i]));
-				npc_list.push_back(ss);
-			}
-			else if (rnd == 4)
-			{
-				i = (i == 2) ? 22 : 28;
-				UggWrongWay *uww = new UggWrongWay(Node(i, &cubes[i]));
-				npc_list.push_back(uww);
-			}
+			// neuen NPC spawnen
+			spawn_npc();
 
 			// Spawn Timer zurücksetzen
 			stats.FramesLastSpawn = 0;
@@ -810,6 +830,14 @@ void Game::step()
 
 				// nächster NPC
 				++it;
+			}
+
+			// Hat Q*Bert genug Punkte für ein Extra Leben?
+			if (((stats.LastExtraLife == 0) && (stats.Score >= 8000)) || (stats.Score >= stats.LastExtraLife + 14000))
+			{
+				stats.LifeCount++;
+				stats.LastExtraLife += 14000;
+				myqbert.play_sound(5, 0);
 			}
 
 			// Wurde die Runde abgeschlossen?

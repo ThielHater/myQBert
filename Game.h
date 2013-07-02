@@ -40,6 +40,7 @@ class Game : public applikation
 		void setup();
 		void setup_nodes();
 		void rand_disks();
+		void spawn_npc();
 		bool check_round();
 		void new_round();
 		void qbert_hit();	

@@ -254,6 +254,7 @@ void Coily::Collision(applikation &myqbert, GameStats &stats)
 	else
 	{
 		// Coily fällt
+		stats.Score += 500;
 		CurNode.NodeNum = 0;
 		printf("Coily ist in seinen Tod gesprungen!\n");
 		myqbert.play_sound(0, 0);

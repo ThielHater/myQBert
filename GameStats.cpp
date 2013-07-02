@@ -11,6 +11,7 @@ void GameStats::Reset()
 	Round = 1;
 	LifeCount = 3;
 	Score = 0;
+	LastExtraLife = 0;
 	TimeFrozen = false;
 	QBertHit = false;
 	QBertOnDisk = false;

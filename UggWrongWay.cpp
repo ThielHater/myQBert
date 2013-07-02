@@ -189,21 +189,21 @@ void UggWrongWay::SetTexture(void)
 {
 	if (isMoving)
 	{		
-		int rnd = 1 + rand() % 3;
+		int rnd = rand() % 3;
 		if ((MoveDirection == DIR_LEFTUP) || (MoveDirection == DIR_RIGHTDOWN))
 		{
-			if (rnd == 1)
+			if (rnd == 0)
 				set_texture(0, &this->TexLeftJump1);
-			else if (rnd == 2)
+			else if (rnd == 1)
 				set_texture(0, &this->TexLeftJump2);
 			else
 				set_texture(0, &this->TexLeftJump3);
 		}
 		else if ((MoveDirection == DIR_RIGHTUP) || (MoveDirection == DIR_LEFTDOWN))
 		{
-			if (rnd == 1)
+			if (rnd == 0)
 				set_texture(0, &this->TexRightJump1);
-			else if (rnd == 2)
+			else if (rnd == 1)
 				set_texture(0, &this->TexRightJump2);
 			else
 				set_texture(0, &this->TexRightJump3);

@@ -8,6 +8,7 @@ class GameStats
 		int Round;
 		int LifeCount;
 		int Score;
+		int LastExtraLife;
 		int FramesLastSpawn;
 		int FramesTimeFrozen;
 		int FramesQBertHit;
