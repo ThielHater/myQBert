@@ -244,7 +244,7 @@ void Coily::Collision(applikation &myqbert, GameStats &stats)
 	{
 		// Coily hat Q*Bert gefangen
 		stats.LifeCount--;
-		stats.QBertHit = true;
+		stats.QBertHit = (stats.LifeCount != 0);
 		if (stats.LifeCount > 0)
 			printf("Q*Bert wurde von Coily gefangen, noch %d Leben!\n", stats.LifeCount);
 		else
@@ -253,8 +253,9 @@ void Coily::Collision(applikation &myqbert, GameStats &stats)
 	}
 	else
 	{
-		// Coily fällt
+		// Coily fällt runtern
 		stats.Score += 500;
+		stats.ClearNPC = true;
 		CurNode.NodeNum = 0;
 		printf("Coily ist in seinen Tod gesprungen!\n");
 		myqbert.play_sound(0, 0);

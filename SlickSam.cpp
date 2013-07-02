@@ -137,9 +137,9 @@ void SlickSam::Step(applikation &myqbert, const AdjacencyList &adjacency_list, G
 }
 
 void SlickSam::Collision(applikation &myqbert, GameStats &stats)
-{
-	CurNode.NodeNum = 0; // kleiner Hack :)
+{	
 	stats.Score += 300;
+	CurNode.NodeNum = 0;
 	if (Type == SLICK)
 		printf("Q*Bert hat Slick gefangen!");
 	else

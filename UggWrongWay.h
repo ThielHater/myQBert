@@ -6,7 +6,7 @@ enum TypeEnumUW {UGG, WRONGWAY};
 class UggWrongWay : public NPC
 {
 	public:
-		UggWrongWay(Node ArgCurNode);
+		UggWrongWay(Node ArgCurNode, TypeEnumUW ArgType);
 		TypeEnumUW Type; // Ugg oder Wrong Way?
 		textur TexLeft;
 		textur TexLeftJump1;

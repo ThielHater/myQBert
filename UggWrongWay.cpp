@@ -2,20 +2,15 @@
 #include <string>
 #include "UggWrongWay.h"
 
-UggWrongWay::UggWrongWay(Node ArgCurNode) : NPC(ArgCurNode)
+UggWrongWay::UggWrongWay(Node ArgCurNode, TypeEnumUW ArgType) : NPC(ArgCurNode)
 {
 	FramesPerJump = 5;
 	FramesPerWait = 5;
-	if (CurNode.NodeNum == 22) // kleiner Hack :)
-	{
-		Type = UGG;
+	Type = ArgType;
+	if (Type == UGG)
 		InitGraphics("Ugg");
-	}
 	else
-	{
-		Type = WRONGWAY;
 		InitGraphics("Wrong-Way");
-	}
 }
 
 void UggWrongWay::InitGraphics(const char *TexName)
@@ -161,7 +156,7 @@ void UggWrongWay::Step(applikation &myqbert, const AdjacencyList &adjacency_list
 void UggWrongWay::Collision(applikation &myqbert, GameStats &stats)
 {
 	stats.LifeCount--;
-	stats.QBertHit = true;
+	stats.QBertHit = (stats.LifeCount != 0);
 	if (Type == UGG)
 	{
 		if (stats.LifeCount > 0)

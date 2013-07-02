@@ -18,11 +18,11 @@
 #include "resource.h"
 
 /*
-	Zu erledigen:
-	- noch ein paar Sounds (Intro, QBert-Hello)
-	- Spielfeld leeren, wenn Coily runterfällt
+	Zu erledigen:	
 	- mehr als zwei Disks
-	- weitere Level?
+	- zwei Spieler
+	- weitere Level (Spawnmanager und Punkte schon fertig, Texturen und NodeEffect fehlen)
+	- noch ein paar Sounds (Intro, QBert-Hello)?
 	- Fall der NPCs darstellen?
 */
 
@@ -465,15 +465,20 @@ void Game::spawn_npc()
 	// NPC auswürfeln und einketten
 	int rnd = rand() % 5;
 	int num = 2 + (rand() % 2);
-	int npc_allowed[3][4][5] = { { { 1, 1, 0, 0, 0 }, { 1, 1, 0, 0, 0 }, { 0, 1, 1, 1, 5 }, { 1, 1, 1, 0, 5 } },    // Level 1
-								 { { 0, 1, 1, 1, 5 }, { 0, 1, 1, 1, 5 }, { 1, 1, 1, 0, 5 }, { 1, 1, 1, 1, 5 } },    // Level 2
-								 { { 1, 1, 1, 0, 5 }, { 0, 1, 1, 1, 5 }, { 1, 1, 1, 1, 5 }, { 1, 1, 1, 1, 5 } } };  // Level 3
 
-	while (true)
+	// ab Level 5 dürfen jede Runde alle NPCs spawnen!
+	if (stats.Level < 5)
 	{
-		if (npc_allowed[stats.Level-1][stats.Round-1][rnd])
-			break;
-		rnd = rand() % 5;
+		int npc_allowed[4][4][5] = { { { 1, 1, 0, 0, 0 }, { 1, 1, 0, 0, 0 }, { 0, 1, 1, 1, 1 }, { 1, 1, 1, 0, 1 } },   // Level 1
+									 { { 0, 1, 1, 1, 1 }, { 0, 1, 1, 1, 1 }, { 1, 1, 1, 0, 1 }, { 1, 1, 1, 1, 1 } },   // Level 2
+									 { { 1, 1, 1, 0, 1 }, { 0, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 } },   // Level 3
+									 { { 1, 1, 1, 0, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 0, 1 }, { 1, 1, 1, 1, 1 } } }; // Level 4
+		while (true)
+		{
+			if (npc_allowed[stats.Level-1][stats.Round-1][rnd])
+				break;
+			rnd = rand() % 5;
+		}
 	}
 
 	if (rnd == 0)
@@ -493,8 +498,11 @@ void Game::spawn_npc()
 	}
 	else if (rnd == 3)
 	{
-		num = (num == 2) ? 22 : 28;
-		UggWrongWay *uw = new UggWrongWay(Node(num, &cubes[num]));			
+		UggWrongWay *uw = 0;
+		if (num == 2)
+			uw = new UggWrongWay(Node(22, &cubes[22]), UGG);
+		else
+			uw = new UggWrongWay(Node(28, &cubes[28]), WRONGWAY);			
 		npc_list.push_back(uw);
 	}
 	else if (rnd == 4)
@@ -526,7 +534,10 @@ void Game::new_round()
 	qbert->CurNode = Node(1, &cubes[1]);
 	qbert_hit();
 	
-	stats.Score += stats.Level*1000 + (stats.Round - 1)*250;
+	if (stats.Level*1000 + (stats.Round - 1)*250 < 5000)
+		stats.Score += stats.Level*1000 + (stats.Round - 1)*250;
+	else
+		stats.Score += 5000;
 	
 	if (stats.Round != 4)
 	{
@@ -600,7 +611,6 @@ void Game::qbert_hit()
 
 		for(std::vector<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
 			delete *it;
-
 		npc_list.clear();
 	}
 	qbert->set_transform(&null);
@@ -613,6 +623,7 @@ void Game::game_over()
 {
 	/* Frage: Was sollen wir machen? */
 	printf("Game Over, du Lusche!\n\n");
+	qbert->MoveDirection = DIR_NONE;
 	reset();
 }
 
@@ -649,7 +660,7 @@ void Game::step()
 					return;
 				}
 
-				// Ist Q*Bert auf einen Würfel gehüpft?
+				// Ist Q*Bert auf eine Scheibe gehüpft?
 				else if (!qbert->isMoving && ((qbert->CurNode.NodeNum == 29) || (qbert->CurNode.NodeNum == 30)))
 				{
 					if (qbert->CurNode.NodeNum == 29)
@@ -799,7 +810,7 @@ void Game::step()
 
 			// NPCs durchlaufen
 			std::vector<NPC*>::iterator it = npc_list.begin();
-			while (it != npc_list.end())
+			while ((it != npc_list.end()) && !stats.ClearNPC)
 			{
 				// NPC ziehen
 				(*it)->Step(myqbert, adjacency_list, stats, qbert->CurNode, qbert->TargetNode);
@@ -807,7 +818,6 @@ void Game::step()
 				// Game Over?
 				if (stats.LifeCount == 0)
 				{
-					stats.QBertHit = false; // kleiner Hack :)
 					game_over();
 					return;
 				}
@@ -830,6 +840,15 @@ void Game::step()
 
 				// nächster NPC
 				++it;
+			}
+
+			// Sollen alle NPCs entfernt werden?
+			if (stats.ClearNPC)
+			{
+				for(std::vector<NPC*>::iterator it = npc_list.begin(); it != npc_list.end(); ++it)
+					delete *it;
+				npc_list.clear();
+				stats.ClearNPC = false;
 			}
 
 			// Hat Q*Bert genug Punkte für ein Extra Leben?
@@ -1071,21 +1090,26 @@ int Game::render()
 				// Screenshot machen
 				screenshot("myQBert");
 			}
-			else if ((keys[DIK_F2] || keys[DIK_PAUSE] || keys[DIK_P]) && (stats.FramesPauseChanged >= 10))
+			else if (keys[DIK_F2])
+			{
+				// Fenstermodus
+				window_mode("myQ*Bert", false);
+			}
+			else if (keys[DIK_F3])
+			{
+				// Vollbildmodus
+				window_mode("myQ*Bert", true);
+			}
+			else if ((keys[DIK_PAUSE] || keys[DIK_P] || keys[DIK_SPACE]) && (stats.FramesPauseChanged >= 10))
 			{
 				// Spiel pausieren
 				stats.FramesPauseChanged = 0;
 				stats.Pause = !stats.Pause;
 			}
-			else if (keys[DIK_F3])
+			else if (keys[DIK_ESCAPE] || keys[DIK_Q])
 			{
-				// Fenstermodus
-				window_mode("myQ*Bert", false);
-			}
-			else if (keys[DIK_F4])
-			{
-				// Vollbildmodus
-				window_mode("myQ*Bert", true);
+				// Spiel beenden
+				return 0;
 			}
 		}
 		return 1;

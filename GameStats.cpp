@@ -18,6 +18,7 @@ void GameStats::Reset()
 	RoundDone = false;
 	ShowSplash = true;
 	Pause = false;
+	ClearNPC = false;
 	FramesLastSpawn = 0;
 	FramesTimeFrozen = 0;
 	FramesQBertHit = 0;

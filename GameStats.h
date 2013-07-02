@@ -24,5 +24,6 @@ class GameStats
 		bool RoundDone;
 		bool ShowSplash;
 		bool Pause;
+		bool ClearNPC;
 		void Reset();
 };
