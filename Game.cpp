@@ -912,8 +912,11 @@ void Game::step()
 		// Hat Q*Bert genug Punkte für ein Extra Leben?
 		if (((stats.LastExtraLife == 0) && (stats.Score >= 8000)) || (stats.Score >= stats.LastExtraLife + 14000))
 		{
+			if (stats.LastExtraLife == 0)
+				stats.LastExtraLife = 8000;
+			else
+				stats.LastExtraLife += 14000;
 			stats.LifeCount++;
-			stats.LastExtraLife += 14000;
 			myqbert.play_sound(5, 0);
 		}
 	}
