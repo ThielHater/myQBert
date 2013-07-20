@@ -22,13 +22,14 @@ class Game : public applikation
 		sprite lvl_sprite;
 		sprite rnd_sprite;
 		sprite life_sprite;
-		sprite splash_sprite[3];
-		int frame_rate;
+		sprite splash_sprite[4];
 		D3DXMATRIX *disk_trans_step;
 		Disk *current_disk;
+		int frame_rate;
+		bool quit_game;
 
 	public:
-		Game(int ArgAdjCount) : adjacency_list(ArgAdjCount) { }
+		Game(int ArgAdjCount) : adjacency_list(ArgAdjCount) { frame_rate = 30; quit_game = false; }
 		void window_init(char *txt, WORD icon_num, int r, int g, int b);
 		void window_mode(char *txt, bool full_screen);
 		void load_cube_tex();

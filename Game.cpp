@@ -149,7 +149,6 @@ void Game::setup()
 	intro.progress(10);
 
 	// Frame Rate setzen
-	frame_rate = 30;
 	set_cps(frame_rate);
 
 	// Knoten und Kanten aufbauen
@@ -163,7 +162,7 @@ void Game::setup()
 		digit_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
 		ss.str(std::string()); ss.clear();
 	}
-	for (int i=0; i<3; i++)
+	for (int i=0; i<4; i++)
 	{
 		ss <<"myQBert/Textures/Level-Splash-" <<(i+1) <<".png";
 		splash_sprite[i].load((char*)ss.str().c_str(), 0xffffff00);
@@ -552,11 +551,16 @@ void Game::new_round()
 			myqbert.play_sound(9, 0);
 		else if (stats.Level == 3)
 			myqbert.play_sound(10, 0);
+		else if (stats.Level == 4)
+			myqbert.play_sound(7, 0);
 	}
 
-	reset_cubes();
-	reset_nodes();
-	reset_disks();
+	if (stats.Level != 4)
+	{
+		reset_cubes();
+		reset_nodes();
+		reset_disks();
+	}
 }
 
 void Game::qbert_hit()
@@ -670,6 +674,23 @@ void Game::step()
 					stats.QBertOnDisk=true;
 					myqbert.play_sound(3, 0);
 					return;
+				}
+
+				// Wurde die Runde abgeschlossen?
+				else if (check_round())
+				{
+					stats.RoundDone = true;
+					if (!disks[0].isUsed)
+					{
+						stats.Score += 50;
+						disks[0].isUsed = true;
+					}
+					if (!disks[1].isUsed)
+					{
+						stats.Score += 50;
+						disks[1].isUsed = true;
+					}				
+					myqbert.play_sound(4, 0);
 				}
 			}
 		}
@@ -851,43 +872,19 @@ void Game::step()
 				stats.ClearNPC = false;
 			}
 
-			// Hat Q*Bert genug Punkte für ein Extra Leben?
-			if (((stats.LastExtraLife == 0) && (stats.Score >= 8000)) || (stats.Score >= stats.LastExtraLife + 14000))
-			{
-				stats.LifeCount++;
-				stats.LastExtraLife += 14000;
-				myqbert.play_sound(5, 0);
-			}
-
-			// Wurde die Runde abgeschlossen?
-			if (check_round())
-			{
-				stats.RoundDone = true;
-				if (!disks[0].isUsed)
-				{
-					stats.Score += 50;
-					disks[0].isUsed = true;
-				}
-				if (!disks[1].isUsed)
-				{
-					stats.Score += 50;
-					disks[1].isUsed = true;
-				}				
-				myqbert.play_sound(4, 0);
-			}
-
 			// Spawn Timer hochzählen
 			stats.FramesLastSpawn++;
 		}
 		else
 		{
-			// War die Zeit 3 Sekunden gefroren?
-			if (stats.FramesTimeFrozen == frame_rate*3)
+			// War die Zeit 3 Sekunden gefroren oder wurde die Runde abgeschlossen?
+			if ((stats.FramesTimeFrozen == frame_rate*3) || (stats.RoundDone))
 			{
 				// Zeit auftauen
 				stats.TimeFrozen = false;
 				stats.FramesTimeFrozen = 0;
 				set_bkcolor(0, 0, 0);
+				stop_sound(6);
 			}
 			else
 			{
@@ -910,6 +907,14 @@ void Game::step()
 				// Frames hochzählen
 				stats.FramesTimeFrozen++;
 			}
+		}
+
+		// Hat Q*Bert genug Punkte für ein Extra Leben?
+		if (((stats.LastExtraLife == 0) && (stats.Score >= 8000)) || (stats.Score >= stats.LastExtraLife + 14000))
+		{
+			stats.LifeCount++;
+			stats.LastExtraLife += 14000;
+			myqbert.play_sound(5, 0);
 		}
 	}
 	else
@@ -969,11 +974,15 @@ void Game::step()
 		// Soll der Splashscreen dargestellt werden?
 		else if (stats.ShowSplash)
 		{
-			// Wurde der Splashscreen 3 Sekunden dargestellt?
-			if (stats.FramesSplashShown == frame_rate*3)
+			// Wurde der Splashscreen 3 bzw. 6 Sekunden dargestellt?
+			if (((stats.Level != 4) && (stats.FramesSplashShown == frame_rate*3)) || ((stats.Level == 4) && (stats.FramesSplashShown == frame_rate*6)))
 			{
 				stats.ShowSplash = false;
 				stats.FramesSplashShown = 0;
+
+				// Spiel beenden
+				if (stats.Level == 4)
+					quit_game = true;
 			}
 			else
 			{
@@ -1055,8 +1064,8 @@ void Game::render_sprites()
 
 int Game::render()
 {
-	// Sicherheitsabfrage
-	if (stats.Level != 4)
+	// Soll das Spiel nicht beendet werden?
+	if (!quit_game)
 	{
 		// Array für Tastatureingaben
 		unsigned char keys[256];
