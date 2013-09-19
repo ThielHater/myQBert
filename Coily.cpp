@@ -253,7 +253,7 @@ void Coily::Collision(applikation &myqbert, GameStats &stats)
 	}
 	else
 	{
-		// Coily fällt runtern
+		// Coily fällt runter
 		stats.Score += 500;
 		stats.ClearNPC = true;
 		CurNode.NodeNum = 0;
